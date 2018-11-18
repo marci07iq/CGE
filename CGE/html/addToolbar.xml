@@ -1,0 +1,47 @@
+<body>
+	<div
+		id = "objectAddToolbar"
+		bgcolor = "#FF2D2D30"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="0.0"
+			></bot>
+			<top
+				rel="1.0"
+				abs="0.0"
+			></top>
+			<left
+				rel="0.0"
+				abs="0.0"
+			></left>
+			<right
+				rel="0.0"
+				abs="200.0"
+			></right>
+		</location>
+		<label
+			id = "objectAddToolbarNameLabel"
+			align = "0"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-30.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="0.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="0.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+		</location>Add primitive</label>
+	</div>
+</body>
