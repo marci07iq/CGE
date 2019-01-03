@@ -45,6 +45,7 @@
 		<button
 				id = "objectEditorMenuNewButton"
 				callback = "editorMenuNewButton"
+				trigger = "0"
 			>
 			<location>
 				<bot
@@ -67,6 +68,7 @@
 		<button
 				id = "objectEditorMenuOpenButton"
 				callback = "editorMenuOpenButton"
+				trigger = "1"
 			>
 			<location>
 				<bot
@@ -89,6 +91,7 @@
 		<button
 			id = "objectEditorMenuSaveButton"
 			callback = "editorMenuSaveButton"
+			trigger = "2"
 		>
 			<location>
 				<bot
@@ -109,8 +112,8 @@
 				></right>
 			</location>Save</button>
 		<button
-			id = "objectEditorMenuExitButton"
-			callback = "editorMenuExitButton"
+			id = "objectEditorMenuSettingsButton"
+			callback = "editorMenuSettingsButton"
 		>
 			<location>
 				<bot
@@ -123,13 +126,13 @@
 				></top>
 				<left
 					rel="1.0"
-					abs="-50.0"
+					abs="-100.0"
 				></left>
 				<right
 					rel="1.0"
 					abs="0.0"
 				></right>
-			</location>Exit</button>
+			</location>Settings</button>
 	</div>
 	<div
 		id = "objectEditorToolbar" 

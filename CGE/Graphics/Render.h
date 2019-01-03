@@ -6,6 +6,8 @@ extern Shader edgeShader;
 
 extern list<Object*> objs;
 
+extern set<Object*> selectedObjects;
+
 namespace MainGameCanvas {
   extern int mxold;
   extern int myold;

@@ -1,6 +1,4 @@
 #pragma once
 
-#include <GL/glew.h>
-
-#define SCRIPT_GUI
-#include "../NGin/NGin.h"
+#include "../NGin/GUI/Graphics.h"
+# include "../NGin/Maths/Point.h"

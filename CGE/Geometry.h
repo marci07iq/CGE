@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics\Shader.h"
+#include "Graphics/Transpose.h"
 
 typedef fVec3 Vertex;
 struct Edge;
@@ -77,6 +77,8 @@ struct CSGPoly {
 
   }
   void flip();
+
+  bool intersectRay(fVec3 from, fVec3 dir, float& at);
 };
 
 struct CSGNode {
@@ -99,16 +101,16 @@ struct CSGNode {
 };
 
 struct Object {
-  GLuint _obj_vao;
-  GLuint _obj_pos_vbo;
-  GLuint _obj_col_vbo;
+  GLuint _obj_vao = 0;
+  GLuint _obj_pos_vbo = 0;
+  GLuint _obj_col_vbo = 0;
 
-  GLuint _edge_vao;
-  GLuint _edge_a_vbo;
-  GLuint _edge_b_vbo;
-  GLuint _edge_c_vbo;
-  GLuint _edge_d_vbo;
-  GLuint _edge_t_vbo;
+  GLuint _edge_vao = 0;
+  GLuint _edge_a_vbo = 0;
+  GLuint _edge_b_vbo = 0;
+  GLuint _edge_c_vbo = 0;
+  GLuint _edge_d_vbo = 0;
+  GLuint _edge_t_vbo = 0;
 
   list<shared_ptr<CSGPoly>> _polygons;
   
@@ -151,6 +153,8 @@ struct Object {
   void setCone(list<fVec3> points, fVec3 top, fVec3 dir, float nearDist, float farDist);
 
   void setShared(void* to);
+
+  bool intersectRay(fVec3 from, fVec3 dir, float& at);
 };
 
 Object operator|(Object& lhs, Object& rhs);
@@ -163,3 +167,5 @@ Object operator*(Object& lhs, Object& rhs);
 
 extern Graphics::WinHwnd objectMainWindowHwnd;
 extern Graphics::CanvasHwnd objectMainCanvasHwnd;
+
+extern Graphics::WinHwnd objectSettingsWindowHwnd;

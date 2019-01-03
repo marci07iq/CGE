@@ -8,6 +8,7 @@ GLuint textures;
 GLuint texSampler;
 
 list<Object*> objs;
+set<Object*> selectedObjects;
 
 namespace MainGameCanvas {
   int mxold;
@@ -91,8 +92,19 @@ namespace MainGameCanvas {
       glUniform3f(loc, view.cameraEye[0], view.cameraEye[1], view.cameraEye[2]);
     }
 
+    loc = glGetUniformLocation(edgeShader._pID, "color");
+    if (loc != -1) {
+      glUniform4f(loc, 0, 0, 0, 1);
+    }
 
     for (auto&& it : objs) {
+      if (loc != -1) {
+        if(selectedObjects.count(it)) {
+          glUniform4f(loc, 1, 0, 0, 1);
+        } else {
+          glUniform4f(loc, 0, 0, 0, 1);
+        }
+      }
       it->drawEdges();
     }
 
@@ -105,11 +117,11 @@ namespace MainGameCanvas {
         glVertex3f(it.x, it.y, it.z);
       }
       glVertex3f(polyRays.front().x, polyRays.front().y, polyRays.front().z);
-      glEnd();
+      Gll::gllEnd();
     }*/
     Graphics::resetViewport();
 
-    //glutPostRedisplay();
+    //Graphics::requestRedraw();
     return 0;
   }
   int resizeManager(int x, int y) {
@@ -168,7 +180,7 @@ namespace MainGameCanvas {
   int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, Canvas* me) {
     if (evt._key._type == evt._key.type_mouse) {
       if (evt._type == evt.evt_down) {
-        if (evt._key._keycode == 2) {
+        if (evt._key._keycode == 1) {
           turnDown = true;
           return 1;
         }
@@ -182,14 +194,35 @@ namespace MainGameCanvas {
             view.model_view, view.projection, view.viewport,
             &pos3D_ax, &pos3D_ay, &pos3D_az);
 
-          vec3<double> rayori = { pos3D_ax, pos3D_ay, pos3D_az };
+          vec3<double> raydir = vec3<double>{ pos3D_ax, pos3D_ay, pos3D_az } -view.cameraEye;
 
-          polyRays.push_front(rayori);
+          float dist = INFINITY;
+          Object* obj = NULL;
+
+          for (auto&& it : objs) {
+            float nDist = INFINITY;
+            if(it->intersectRay(view.cameraEye, raydir, nDist)) {
+              if (nDist < dist) {
+                dist = nDist;
+                obj = it;
+              }
+            }
+          }
+
+         
+          if (!down.count(key_location(key(0, evt._key.type_special)))) {
+            selectedObjects.clear();
+          }
+          if (obj) {
+            selectedObjects.insert(obj);
+          }
+          
+          /*polyRays.push_front(rayori);*/
           return 1;
         }
       }
       if (evt._type == evt.evt_up) {
-        if (evt._key._keycode == 2) {
+        if (evt._key._keycode == 1) {
           turnDown = false;
           return 1;
         }
@@ -207,7 +240,7 @@ namespace MainGameCanvas {
     if(evt._key._type == evt._key.type_key) {
       if (evt._type == evt.evt_pressed) {
         if (evt._key._keycode == 'c') {
-          doCarve();
+          //doCarve();
           polyRays.clear();
         }
       }

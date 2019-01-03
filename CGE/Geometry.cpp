@@ -3,6 +3,8 @@
 Graphics::WinHwnd objectMainWindowHwnd;
 Graphics::CanvasHwnd objectMainCanvasHwnd;
 
+Graphics::WinHwnd objectSettingsWindowHwnd;
+
 //Insert to array
 void insertColor(float* arr, size_t to, colorargb col, fVec3 light = {1,1,1}) {
   arr[to] = ((col >> 16) & 255) / 255.0 * light.x;
@@ -438,6 +440,14 @@ void Object::setShared(void* to) {
   }
 }
 
+bool Object::intersectRay(fVec3 from, fVec3 dir, float & at) {
+  bool intersectAny = false;
+  for (auto&& it : _polygons) {
+    intersectAny |= it->intersectRay(from, dir, at);
+  }
+  return intersectAny;
+}
+
 void Object::clean() {
   if (_obj_pos_vbo) {
     glDeleteBuffers(1, &_obj_pos_vbo);
@@ -722,6 +732,27 @@ void CSGPoly::flip() {
   }
   reverse(_vertices.begin(), _vertices.end());
   _plane->flip();
+}
+
+bool CSGPoly::intersectRay(fVec3 from, fVec3 dir, float & at) {
+  bool isIn = true;
+  float loc = dot(*(_vertices[0]->_pos) - from, *(_plane->_norm)) / dot(dir, *(_plane->_norm));
+  fVec3 pt = from + dir * loc;
+  for (int i = 0; i < _vertices.size() && isIn; i++) {
+    if (dot(
+      crs(
+        *(_vertices[(i + 1) % _vertices.size()]->_pos) - *(_vertices[i]->_pos),
+        pt - *(_vertices[i]->_pos)
+      ).norm(), 
+      (_plane->_norm)->norm()
+    ) < CSGPlane::EPSILON) {
+      isIn = false;
+    }
+  }
+  if (isIn) {
+    at = min(at, loc);
+  }
+  return isIn;
 }
 
 CSGVertex::CSGVertex() {
