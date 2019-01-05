@@ -1,10 +1,10 @@
-#include "Graphics/Render.h"
+#include "Main.h"
 
 void createSettings(Graphics::TableHwnd& table) {
   Graphics::deleteElements(table);
   int i = 0;
   for (auto&& it : keybinds) {
-    Graphics::TablerowHwnd row = Graphics::createTableRow("objectKeybindRow" + to_string(i), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"));
+    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(i), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"));
     Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(i), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), it.second.display, 0);
     Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(i), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), it.second, i, keybindReply);
     Graphics::addElement(row, name);
@@ -116,19 +116,12 @@ void mainWindowSetup(Graphics::WinHwnd win) {
   glDebugMessageCallback(MessageCallback, 0);
 
   glDisable(GL_DITHER);
-  //glDisable(GL_POINT_SMOOTH);
-  //glDisable(GL_LINE_SMOOTH);
-  //glDisable(GL_POLYGON_SMOOTH);
-  //glHint(GL_POINT_SMOOTH, GL_DONT_CARE);
-  //glHint(GL_LINE_SMOOTH, GL_DONT_CARE);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
-//#define GL_MULTISAMPLE_ARB 0x809D
-//  glDisable(GL_MULTISAMPLE_ARB);
 
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
-  baseShader.create("Graphics/Core");
-  edgeShader.create("Graphics/Edges", 7);
+  baseShader.create("Renderer/Core");
+  edgeShader.create("Renderer/Edges", 7);
   Gll::gllInit("../NGin/GUI/GLL_Res/");
 
   objectMainCanvasHwnd = Graphics::createCanvas("objectEditorCanvas", fullContainer, IWindowManagers{
@@ -139,7 +132,6 @@ void mainWindowSetup(Graphics::WinHwnd win) {
     MainGameCanvas::mouseMoveManager,
   });
   Graphics::addElement((Graphics::PanelHwnd)Graphics::getElementById("objectEditorCanvasContainer"), objectMainCanvasHwnd);
-
 }
 void initGraphics() {
   Graphics::setName("editorMenuNewButton", editorMenuNewButton);
@@ -154,11 +146,6 @@ void initGraphics() {
 
   Graphics::setName("addToolbarCubeButton", addToolbarCubeButton);
 
-  //glutInitContextVersion(4, 2);
-  //glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
-  //glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
-
-  //glutInit(&argc, argv);
   Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 3.3
@@ -167,6 +154,8 @@ void initGraphics() {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // We don't want the old OpenGL 
   
   Graphics::CreateMainWindow("CGE", Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, mainWindowSetup);
+
+  Graphics::cleanQueues();
 }
 
 int main() {
@@ -178,30 +167,11 @@ int main() {
   loadColors();
 
   initGraphics();
+ 
+  mainEditor.init(objectMainCanvasHwnd, (Graphics::TablerowHwnd)Graphics::getElementById("objectEditorToolRibbon"), (Graphics::PanelHwnd)Graphics::getElementById("objectToolContainer"));
 
-  Graphics::cleanQueues();
-
-  Object o1;
-  o1.setCube();
-  o1.setShared(reinterpret_cast<void*>(0xffff0000));
-
-  o1.upload();
-  objs.push_back(&o1);
-
-  Object o2;
-  o2.setCube({2,0.5,0.2},{0,0,0});
-  o2.setShared(reinterpret_cast<void*>(0xff00ff00));
-
-  o2.upload();
-  objs.push_back(&o2);
-
-  Object o3;
-  o3.setCube({ 0.2,1,2 }, { 0,1,0 });
-  o3.setShared(reinterpret_cast<void*>(0xff0000ff));
-
-  o3.upload();
-  objs.push_back(&o3);
-
+  mainEditor.registerPlugin("PluginSelect", createPluginSelect);
+  mainEditor.pushPlugin(mainEditor.findPlugin("PluginSelect"));
 
   Graphics::requestRedraw();
   Graphics::mainLoop();

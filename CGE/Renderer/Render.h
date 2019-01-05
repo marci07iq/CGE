@@ -1,12 +1,8 @@
 #pragma once
 
-#include "../Geometry.h"
-extern Shader baseShader;
-extern Shader edgeShader;
+#include "../Editor/Editor.h"
 
-extern list<Object*> objs;
-
-extern set<Object*> selectedObjects;
+extern Editor mainEditor;
 
 namespace MainGameCanvas {
   extern int mxold;

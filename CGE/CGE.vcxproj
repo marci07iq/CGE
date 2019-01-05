@@ -155,10 +155,14 @@
     <ClCompile Include="..\..\..\..\Programming\NGin\Network\Network.cpp" />
     <ClCompile Include="..\..\..\..\Programming\NGin\Network\NetworkData.cpp" />
     <ClCompile Include="..\..\..\..\Programming\NGin\Scripts\Scripts.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Graphics\Render.cpp" />
-    <ClCompile Include="Graphics\Transpose.cpp" />
+    <ClCompile Include="..\NGin\GUI\Texture.cpp" />
+    <ClCompile Include="CSG\Geometry.cpp" />
+    <ClCompile Include="Editor\Editor.cpp" />
+    <ClCompile Include="Editor\ToolSelect.cpp" />
+    <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Renderer\Render.cpp" />
+    <ClCompile Include="Renderer\Transpose.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Programming\NGin\GL_Lib\GLFW\glfw3.h" />
@@ -211,10 +215,15 @@
     <ClInclude Include="..\..\..\..\Programming\NGin\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="..\..\..\..\Programming\NGin\rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="..\..\..\..\Programming\NGin\Scripts\Scripts.h" />
+    <ClInclude Include="..\NGin\GUI\Texture.h" />
+    <ClInclude Include="CSG\Geometry.h" />
     <ClInclude Include="Defs.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Graphics\Render.h" />
-    <ClInclude Include="Graphics\Transpose.h" />
+    <ClInclude Include="Editor\Editor.h" />
+    <ClInclude Include="Editor\ToolSelect.h" />
+    <ClInclude Include="Framework.h" />
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="Renderer\Render.h" />
+    <ClInclude Include="Renderer\Transpose.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Programming\NGin\GUI\GLL_Res\LegDraw.frag" />
@@ -225,11 +234,11 @@
     <None Include="..\..\..\..\Programming\NGin\Maths\BigNumberLibrary\Cbnl.inl" />
     <None Include="..\..\..\..\Programming\NGin\Maths\BigNumberLibrary\Cbnl64.inl" />
     <None Include="..\..\..\..\Programming\NGin\rapidxml\manual.html" />
-    <None Include="Graphics\Core.frag" />
-    <None Include="Graphics\Core.vert" />
-    <None Include="Graphics\Edges.frag" />
-    <None Include="Graphics\Edges.geom" />
-    <None Include="Graphics\Edges.vert" />
+    <None Include="Renderer\Core.frag" />
+    <None Include="Renderer\Core.vert" />
+    <None Include="Renderer\Edges.frag" />
+    <None Include="Renderer\Edges.geom" />
+    <None Include="Renderer\Edges.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

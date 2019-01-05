@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/Transpose.h"
+#include "../Defs.h"
 
 typedef fVec3 Vertex;
 struct Edge;

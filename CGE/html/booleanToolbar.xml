@@ -1,7 +1,7 @@
 <body>
 	<div
 		id = "objectBooleanToolbar"
-		bgcolor = "#FF2D2D30"
+		bgcolor = "#BF2D2D30"
 	>
 		<location>
 			<bot
@@ -36,7 +36,7 @@
 				></top>
 				<left
 					rel="0.0"
-					abs="0.0"
+					abs="10.0"
 				></left>
 				<right
 					rel="1.0"

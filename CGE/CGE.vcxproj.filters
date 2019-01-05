@@ -16,20 +16,23 @@
     <Filter Include="NGin">
       <UniqueIdentifier>{5a2add22-c003-4df5-a3ff-e34574c9eac3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{1716000a-e9de-47ff-b369-bdc1157c93a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{2f97eed2-4456-46bd-bf1d-3f513fd92fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CSG">
+      <UniqueIdentifier>{128b0d9e-f8e7-42b7-8627-b7b8f4af383b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{e71416d2-4fb9-4140-b2af-fd579717801a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer\Shaders">
+      <UniqueIdentifier>{fca4099b-f83c-40d8-866f-197aa241cb8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Render.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Transpose.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Programming\NGin\Network\Compress.cpp">
       <Filter>NGin</Filter>
     </ClCompile>
@@ -141,20 +144,32 @@
     <ClCompile Include="..\..\..\..\Programming\NGin\GUI\Shader.cpp">
       <Filter>NGin</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Render.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Transpose.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Editor.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ToolSelect.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="CSG\Geometry.cpp">
+      <Filter>Source Files\CSG</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NGin\GUI\Texture.cpp">
+      <Filter>NGin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Render.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Transpose.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Programming\NGin\Network\Compress.h">
       <Filter>NGin</Filter>
     </ClInclude>
@@ -305,23 +320,35 @@
     <ClInclude Include="..\..\..\..\Programming\NGin\GUI\Shader.h">
       <Filter>NGin</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\Render.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\Transpose.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Editor.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ToolSelect.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="CSG\Geometry.h">
+      <Filter>Source Files\CSG</Filter>
+    </ClInclude>
+    <ClInclude Include="Defs.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NGin\GUI\Texture.h">
+      <Filter>NGin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\Core.frag">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Graphics\Core.vert">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Graphics\Edges.frag">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Graphics\Edges.vert">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Graphics\Edges.geom">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="..\..\..\..\Programming\NGin\rapidxml\manual.html">
       <Filter>NGin</Filter>
     </None>
@@ -345,6 +372,21 @@
     </None>
     <None Include="..\..\..\..\Programming\NGin\GUI\GLL_Res\Text.vert">
       <Filter>NGin</Filter>
+    </None>
+    <None Include="Renderer\Core.vert">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\Edges.frag">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\Edges.geom">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\Edges.vert">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\Core.frag">
+      <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
