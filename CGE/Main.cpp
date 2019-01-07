@@ -14,13 +14,13 @@ void createSettings(Graphics::TableHwnd& table) {
   }
 }
 
-void editorMenuNewButton(Graphics::ElemHwnd sender) {
+void editorMenuNewButton(Graphics::ElemHwnd sender, void* data) {
   cout << "NEW" << endl;
 }
-void editorMenuOpenButton(Graphics::ElemHwnd sender) {
+void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
   cout << "OPEN" << endl;
 }
-void editorMenuSaveButton(Graphics::ElemHwnd sender) {
+void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
   cout << "SAVE" << endl;
 }
 void settingsWindowSetup(Graphics::WinHwnd win) {
@@ -29,10 +29,10 @@ void settingsWindowSetup(Graphics::WinHwnd win) {
   Graphics::TableHwnd table = (Graphics::TableHwnd)Graphics::getElementById("objectSettingsMenuTable");
   createSettings(table);
 }
-void editorMenuSettingsButton(Graphics::ElemHwnd sender) {
+void editorMenuSettingsButton(Graphics::ElemHwnd sender, void* data) {
   Graphics::CreateMainWindow("Settings", Graphics::defaultWindowManagers, 0, 0, false, 0, 0, false, 0, NULL, settingsWindowSetup);
 }
-void editorMenuExitButton(Graphics::ElemHwnd sender) {
+void editorMenuExitButton(Graphics::ElemHwnd sender, void* data) {
   Graphics::forceShutdown();
 }
 
@@ -45,7 +45,7 @@ enum Toolbars {
 };
 Toolbars currentToolbar;
 
-void editorToolAddButton(Graphics::ElemHwnd sender) {
+/*void editorToolAddButton(Graphics::ElemHwnd sender) {
   if(currentToolbar == Toolbars::AddToolbar) {
     currentToolbar = Toolbars::NoToolbar;
     Graphics::deleteElements((Panel*)Graphics::getElementById("objectToolContainer"));
@@ -74,11 +74,12 @@ void editorToolBooleanButton(Graphics::ElemHwnd sender) {
   string fl = "html/booleanToolbar.xml";
   Graphics::setElements((Panel*)Graphics::getElementById(ele), fl);
 }
+*/
 
 //Add toolbar
-void addToolbarCubeButton(Graphics::ElemHwnd sender) {
+/*void addToolbarCubeButton(Graphics::ElemHwnd sender) {
 
-}
+}*/
 
 
 void GLAPIENTRY MessageCallback(GLenum source,
@@ -120,8 +121,6 @@ void mainWindowSetup(Graphics::WinHwnd win) {
 
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
-  baseShader.create("Renderer/Core");
-  edgeShader.create("Renderer/Edges", 7);
   Gll::gllInit("../NGin/GUI/GLL_Res/");
 
   objectMainCanvasHwnd = Graphics::createCanvas("objectEditorCanvas", fullContainer, IWindowManagers{
@@ -140,11 +139,11 @@ void initGraphics() {
   Graphics::setName("editorMenuSettingsButton", editorMenuSettingsButton);
   Graphics::setName("editorMenuExitButton", editorMenuExitButton);
 
-  Graphics::setName("editorToolAddButton", editorToolAddButton);
+  /*Graphics::setName("editorToolAddButton", editorToolAddButton);
   Graphics::setName("editorToolSelectButton", editorToolSelectButton);
   Graphics::setName("editorToolBooleanButton", editorToolBooleanButton);
 
-  Graphics::setName("addToolbarCubeButton", addToolbarCubeButton);
+  Graphics::setName("addToolbarCubeButton", addToolbarCubeButton);*/
 
   Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
@@ -168,10 +167,16 @@ int main() {
 
   initGraphics();
  
-  mainEditor.init(objectMainCanvasHwnd, (Graphics::TablerowHwnd)Graphics::getElementById("objectEditorToolRibbon"), (Graphics::PanelHwnd)Graphics::getElementById("objectToolContainer"));
+  mainEditor.init(objectMainCanvasHwnd, (Graphics::TablerowHwnd)Graphics::getElementById("objectEditorToolRibbon"), (Graphics::TableHwnd)Graphics::getElementById("objectEditorToolbar"), (Graphics::PanelHwnd)Graphics::getElementById("objectToolContainer"));
 
   mainEditor.registerPlugin("PluginSelect", createPluginSelect);
-  mainEditor.pushPlugin(mainEditor.findPlugin("PluginSelect"));
+  mainEditor.registerPlugin("PluginBoolean", createPluginBoolean);
+  mainEditor.registerPlugin("PluginObject", createPluginObject);
+
+  mainEditor.findStaticPlugin("PluginObject");
+  mainEditor.findStaticPlugin("PluginBoolean");
+
+  mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
 
   Graphics::requestRedraw();
   Graphics::mainLoop();

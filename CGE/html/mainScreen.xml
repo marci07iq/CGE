@@ -157,7 +157,7 @@
 			></right>
 		</location>
 	</tr>
-	<div
+	<table
 		id = "objectEditorToolbar" 
 		bgcolor = "#FF2D2D30"
 	>
@@ -176,76 +176,10 @@
 			></left>
 			<right
 				rel="0.0"
-				abs="30.0"
+				abs="50.0"
 			></right>
 		</location>
-		<button
-				id = "objectEditorToolAddButton"
-				callback = "editorToolAddButton"
-			>
-			<location>
-				<bot
-					rel="1.0"
-					abs="-30.0"
-				></bot>
-				<top
-					rel="1.0"
-					abs="0.0"
-				></top>
-				<left
-					rel="0.0"
-					abs="0.0"
-				></left>
-				<right
-					rel="1.0"
-					abs="0.0"
-				></right>
-			</location>+</button>
-		<button
-				id = "objectEditorToolSelectButton"
-				callback = "editorToolSelectButton"
-			>
-			<location>
-				<bot
-					rel="1.0"
-					abs="-60.0"
-				></bot>
-				<top
-					rel="1.0"
-					abs="-30.0"
-				></top>
-				<left
-					rel="0.0"
-					abs="0.0"
-				></left>
-				<right
-					rel="1.0"
-					abs="0.0"
-				></right>
-			</location>O</button>
-		<button
-				id = "objectEditorToolBooleanButton"
-				callback = "editorToolBooleanButton"
-			>
-			<location>
-				<bot
-					rel="1.0"
-					abs="-90.0"
-				></bot>
-				<top
-					rel="1.0"
-					abs="-60.0"
-				></top>
-				<left
-					rel="0.0"
-					abs="0.0"
-				></left>
-				<right
-					rel="1.0"
-					abs="0.0"
-				></right>
-			</location>*</button>
-	</div>
+	</table>
 	<div
 		id = "objectToolContainer" 
 	>
@@ -264,7 +198,7 @@
 			></left>
 			<right
 				rel="0.0"
-				abs="30.0"
+				abs="50.0"
 			></right>
 	</location></div>
 </body>

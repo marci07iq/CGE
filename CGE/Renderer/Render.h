@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Editor/Editor.h"
-
-extern Editor mainEditor;
+#include "../Editor/ToolSelect.h"
+#include "../Editor/ToolBoolean.h"
+#include "../Editor/ToolObject.h"
 
 namespace MainGameCanvas {
   extern int mxold;

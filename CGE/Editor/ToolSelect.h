@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Framework.h"
+#include "Framework.h"
 
 class PluginSelect : public EditorPlugin {
   public:
@@ -17,14 +17,25 @@ class PluginSelect : public EditorPlugin {
     }
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
+    int renderSelection(int ax, int ay, int bx, int by, set<key_location>& down);
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
     int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down);
-    //void doCarve();
-    int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down);
+    int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down);   
 
     string getClassName() {
-      return "EditorPlugin";
+      return "PluginSelect";
+    }
+
+    void onAdded();
+    void onActivated();
+    void onDeactivated();
+
+    void selectAll() {
+      selectedObjects.insert(_editor->objs.begin(), _editor->objs.end());
+    }
+    void deselectAll() {
+      selectedObjects.clear();
     }
   };
 

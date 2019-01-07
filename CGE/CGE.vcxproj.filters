@@ -162,11 +162,17 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Framework.cpp">
-      <Filter>Source Files\Main</Filter>
-    </ClCompile>
     <ClCompile Include="..\NGin\GUI\Texture.cpp">
       <Filter>NGin</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ToolBoolean.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Framework.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ToolObject.cpp">
+      <Filter>Source Files\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -341,11 +347,17 @@
     <ClInclude Include="Main.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Framework.h">
-      <Filter>Source Files\Main</Filter>
-    </ClInclude>
     <ClInclude Include="..\NGin\GUI\Texture.h">
       <Filter>NGin</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Framework.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ToolBoolean.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ToolObject.h">
+      <Filter>Source Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
