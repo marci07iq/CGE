@@ -2,15 +2,13 @@
 
 void createSettings(Graphics::TableHwnd& table) {
   Graphics::deleteElements(table);
-  int i = 0;
   for (auto&& it : keybinds) {
-    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(i), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"));
-    Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(i), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), it.second.display, 0);
-    Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(i), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), it.second, i, keybindReply);
+    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(it.first), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"));
+    Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), it.second.display, 0);
+    Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), it.second, it.first, keybindReply);
     Graphics::addElement(row, name);
     Graphics::addElement(row, ctrl);
     Graphics::addElement(table, row);
-    ++i;
   }
 }
 
@@ -147,10 +145,10 @@ void initGraphics() {
 
   Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 3.3
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 4.3
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // We don't want the old OpenGL 
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
   
   Graphics::CreateMainWindow("CGE", Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, mainWindowSetup);
 
@@ -172,9 +170,11 @@ int main() {
   mainEditor.registerPlugin("PluginSelect", createPluginSelect);
   mainEditor.registerPlugin("PluginBoolean", createPluginBoolean);
   mainEditor.registerPlugin("PluginObject", createPluginObject);
+  mainEditor.registerPlugin("PluginCreate", createPluginCreate);
 
   mainEditor.findStaticPlugin("PluginObject");
   mainEditor.findStaticPlugin("PluginBoolean");
+  mainEditor.findStaticPlugin("PluginCreate");
 
   mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
 

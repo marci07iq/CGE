@@ -153,9 +153,6 @@
     <ClCompile Include="Editor\Editor.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\ToolSelect.cpp">
-      <Filter>Source Files\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="CSG\Geometry.cpp">
       <Filter>Source Files\CSG</Filter>
     </ClCompile>
@@ -165,14 +162,23 @@
     <ClCompile Include="..\NGin\GUI\Texture.cpp">
       <Filter>NGin</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\ToolBoolean.cpp">
-      <Filter>Source Files\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Framework.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\ToolObject.cpp">
+    <ClCompile Include="Editor\PluginCreate.cpp">
       <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\PluginObject.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\PluginSelect.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\PluginBoolean.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="CSG\Object.cpp">
+      <Filter>Source Files\CSG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +341,6 @@
     <ClInclude Include="Editor\Editor.h">
       <Filter>Source Files\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\ToolSelect.h">
-      <Filter>Source Files\Editor</Filter>
-    </ClInclude>
     <ClInclude Include="CSG\Geometry.h">
       <Filter>Source Files\CSG</Filter>
     </ClInclude>
@@ -353,11 +356,20 @@
     <ClInclude Include="Editor\Framework.h">
       <Filter>Source Files\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\ToolBoolean.h">
+    <ClInclude Include="Editor\PluginCreate.h">
       <Filter>Source Files\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\ToolObject.h">
+    <ClInclude Include="Editor\PluginObject.h">
       <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\PluginSelect.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\PluginBoolean.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="CSG\Object.h">
+      <Filter>Source Files\CSG</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

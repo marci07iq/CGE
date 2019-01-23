@@ -13,6 +13,10 @@ class PluginBoolean : public EditorPlugin {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }
 
+    static void staticInit() {
+
+    }
+
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
@@ -24,4 +28,4 @@ class PluginBoolean : public EditorPlugin {
     }
   };
 
-EditorPlugin* createPluginBoolean(Editor* e);
+EditorPlugin* createPluginBoolean(Editor* e, bool staticInit);

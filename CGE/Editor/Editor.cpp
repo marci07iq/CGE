@@ -7,7 +7,7 @@ GLuint Editor::_baseShader_res_alpha;
 
 Shader Editor::_edgeShader;
 GLuint Editor::_edgeShader_transform;
-GLuint Editor::_edgeShader_transform2;
+//GLuint Editor::_edgeShader_transform2;
 GLuint Editor::_edgeShader_cam_eye;
 GLuint Editor::_edgeShader_color;
 
@@ -17,6 +17,7 @@ map<string, PluginCreator> Editor::_pluginTypes;
 
 void Editor::registerPlugin(string name, PluginCreator creator) {
   _pluginTypes[name] = creator;
+  creator(NULL, true);
 }
 
 Editor::Editor() {
@@ -32,7 +33,7 @@ void Editor::staticInit() {
 
   _edgeShader.create("Renderer/Edges", 7);
   _edgeShader_transform = glGetUniformLocation(_edgeShader._pID, "transform");
-  _edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
+  //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
   _edgeShader_cam_eye = glGetUniformLocation(_edgeShader._pID, "cam_eye");
   _edgeShader_color = glGetUniformLocation(_edgeShader._pID, "color");
 }
@@ -43,23 +44,23 @@ void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, 
   _toolbar = sidebar;
   _config = config;
 
-  Object* o1 = new Object();
-  o1->setCube();
-  o1->setShared(reinterpret_cast<void*>(0xffff0000));
+  shared_ptr<Object_Raw> o1 = make_shared<Object_Raw>();
+  o1->setCube({1,1,1},{0,0,0});
+  o1->setColor(0xffff0000);
 
   o1->upload();
   objs.push_back(o1);
 
-  Object* o2 = new Object();
+  shared_ptr<Object_Raw> o2 = make_shared<Object_Raw>();
   o2->setCube({ 2,0.5,0.2 }, { 0,0,0 });
-  o2->setShared(reinterpret_cast<void*>(0xff00ff00));
+  o2->setColor(0xff00ff00);
 
   o2->upload();
   objs.push_back(o2);
 
-  Object* o3 = new Object();
+  shared_ptr<Object_Raw> o3 = make_shared<Object_Raw>();
   o3->setCube({ 0.2,1,2 }, { 0,1,0 });
-  o3->setShared(reinterpret_cast<void*>(0xff0000ff));
+  o3->setColor(0xff0000ff);
 
   o3->upload();
   objs.push_back(o3);
@@ -73,7 +74,7 @@ EditorPlugin * Editor::findStaticPlugin(string name) {
   if (_staticPlugins.count(name)) {
     return _staticPlugins[name];
   }
-  EditorPlugin* newPlugin = _staticPlugins[name] = _pluginTypes[name](this);
+  EditorPlugin* newPlugin = _staticPlugins[name] = _pluginTypes[name](this, false);
   newPlugin->onAdded();
   return newPlugin;
 }
@@ -89,7 +90,7 @@ void Editor::activateStaticPlugin(EditorPlugin * plugin) {
 }
 
 EditorPlugin * Editor::createDynamicPlugin(string name) {
-  EditorPlugin* newPlugin = _pluginTypes[name](this);
+  EditorPlugin* newPlugin = _pluginTypes[name](this, false);
   newPlugin->onAdded();
   return newPlugin;
 }
@@ -131,19 +132,20 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   view.viewport[1] = ay;
   view.viewport[2] = bx - ax;
   view.viewport[3] = by - ay;
+  glViewport(ax, ay, bx-ax, by-ay);
 
   modview.createLook(view.cameraEye, -viewOffset.toCartesian().norm());
-  modview.transpose();
+  //modview.transpose();
   modview.read(view.model_view);
   modview.read(worldM);
 
   camview.setIdentity();
-  camview.project(PI / 2, (bx - ax)*1.0f / (by - ay), 256, 0.01);
+  camview.project(CONS_PI / 2, (bx - ax)*1.0f / (by - ay), 256, 0.01);
   //camview.ortho(ax, bx, ay, by, 256, 0.01);
-  camview.transpose();
+  //camview.transpose();
   camview.read(view.projection);
 
-  camview.matrix = modview.matrix * camview.matrix;
+  camview.matrix = camview.matrix * modview.matrix;
 
   camview.read(cameraM);
 
@@ -166,7 +168,7 @@ void Editor::beginObjectDraw() {
   }
 
 }
-void Editor::drawObject(Object * what, colorargb mix, float resAlpha) {
+void Editor::drawObject(shared_ptr<Object> what, colorargb mix, float resAlpha) {
   glUniform4f(_baseShader_mix_color,
     ((mix >> 16) & 0xff) / 255.0,
     ((mix >> 8) & 0xff) / 255.0,
@@ -186,12 +188,12 @@ void Editor::beginEdgeDraw() {
   _edgeShader.bind();
 
   if (_edgeShader_transform != -1) {
-    glUniformMatrix4fv(_edgeShader_transform, 1, false, worldM);
+    glUniformMatrix4fv(_edgeShader_transform, 1, false, cameraM);
   }
 
-  if (_edgeShader_transform2 != -1) {
+  /*if (_edgeShader_transform2 != -1) {
     glUniformMatrix4fv(_edgeShader_transform2, 1, false, cameraM);
-  }
+  }*/
 
   if (_edgeShader_cam_eye != -1) {
     glUniform3f(_edgeShader_cam_eye, view.cameraEye[0], view.cameraEye[1], view.cameraEye[2]);
@@ -201,7 +203,7 @@ void Editor::beginEdgeDraw() {
   glUniform4f(_edgeShader_color, 0, 0, 0, 1);
   }*/
 }
-void Editor::drawEdge(Object * what, colorargb edge) {
+void Editor::drawEdge(shared_ptr<Object> what, colorargb edge) {
   glUniform4f(_edgeShader_color,
     ((edge >> 16) & 0xff) / 255.0,
     ((edge >> 8) & 0xff) / 255.0,
@@ -247,10 +249,10 @@ int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& do
 
   if (drawDown) {
     polar_vec3 right = viewOffset;
-    right.phi -= HALF_PI;
-    right.theta = HALF_PI;
+    right.phi -= CONS_HALF_PI;
+    right.theta = CONS_HALF_PI;
     polar_vec3 top = viewOffset;
-    top.theta += HALF_PI;
+    top.theta += CONS_HALF_PI;
 
     viewCenter += right.toCartesian() * (x - ox) * 0.003;
     viewCenter += top.toCartesian() * (y - oy) * 0.003;

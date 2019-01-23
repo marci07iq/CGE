@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Framework.h"
-#include "ToolSelect.h"
+#include "PluginSelect.h"
 
 class PluginObject : public EditorPlugin {
   public:
@@ -14,6 +14,10 @@ class PluginObject : public EditorPlugin {
 
     PluginObject(Editor* e) : EditorPlugin(e) {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+    }
+
+    static void staticInit() {
+
     }
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
@@ -31,4 +35,4 @@ class PluginObject : public EditorPlugin {
     void onDeactivated();
   };
 
-EditorPlugin* createPluginObject(Editor* e);
+EditorPlugin* createPluginObject(Editor* e, bool staticInit);

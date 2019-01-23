@@ -1,4 +1,4 @@
-#include "ToolBoolean.h"
+#include "PluginBoolean.h"
 
 int PluginBoolean::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
   return 0;
@@ -16,6 +16,11 @@ int PluginBoolean::guiEventManager(gui_event evt, int mx, int my, set<key_locati
   return 0;
 }
 
-EditorPlugin * createPluginBoolean(Editor * e) {
-  return new PluginBoolean(e);
+EditorPlugin * createPluginBoolean(Editor * e, bool staticInit) {
+  if (staticInit) {
+    PluginBoolean::staticInit();
+    return NULL;
+  } else {
+    return new PluginBoolean(e);
+  }
 }

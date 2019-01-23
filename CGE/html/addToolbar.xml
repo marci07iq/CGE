@@ -1,6 +1,6 @@
 <body>
 	<div
-		id = "objectAddToolbar"
+		id = "objectPluginCreate"
 		bgcolor = "#BF2D2D30"
 	>
 		<location>
@@ -22,17 +22,17 @@
 			></right>
 		</location>
 		<label
-			id = "objectAddToolbarNameLabel"
+			id = "objectPluginCreateNameLabel"
 			align = "0"
 		>
 			<location>
 				<bot
 					rel="1.0"
-					abs="-30.0"
+					abs="-60.0"
 				></bot>
 				<top
 					rel="1.0"
-					abs="0.0"
+					abs="-30.0"
 				></top>
 				<left
 					rel="0.0"
@@ -42,28 +42,75 @@
 					rel="1.0"
 					abs="0.0"
 				></right>
-		</location>Add primitive</label>
-		<button
-			id = "objectAddToolbarCubeButton"
-			callback = "addToolbarCubeButton"
+		</location>Position</label>
+		<input
+			id = "objectPluginCreatePositionXInput"
+			inputfunc = "pluginCreatePositionXInput"
+			validatorfunc = "numericalValidator"
 		>
-		<location>
-			<bot
-				rel="1.0"
-				abs="-60.0"
-			></bot>
-			<top
-				rel="1.0"
-				abs="-30.0"
-			></top>
-			<left
-				rel="0.0"
-				abs="0.0"
-			></left>
-			<right
-				rel="1.0"
-				abs="0.0"
-			></right>
-		</location>Cube</button>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-80.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-60.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0.0</input>
+		<input
+			id = "objectPluginCreatePositionYInput"
+			inputfunc = "pluginCreatePositionYInput"
+			validatorfunc = "numericalValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-100.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-80.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0.0</input>
+		<input
+			id = "objectPluginCreatePositionZInput"
+			inputfunc = "pluginCreatePositionZInput"
+			validatorfunc = "numericalValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-120.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-100.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0.0</input>
 	</div>
 </body>

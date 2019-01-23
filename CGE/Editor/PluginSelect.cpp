@@ -1,4 +1,4 @@
-#include "ToolSelect.h"
+#include "PluginSelect.h"
 
 void pluginSelectAllIcon(Graphics::ElemHwnd elem, void* plugin) {
   ((PluginSelect*)plugin)->selectAll();
@@ -16,8 +16,9 @@ int PluginSelect::renderSelection(int ax, int ay, int bx, int by, set<key_locati
   for (auto&& it : _editor->objs) {
     if (selectedObjects.count(it) || it == highlightedObject) {
       _editor->drawObject(it, 0x30ffffff, 1);
+    } else {
+      _editor->drawObject(it, 0x00ffffff, 1);
     }
-    _editor->drawObject(it, 0x00ffffff, 1);
   }
   _editor->endObjectDraw();
 
@@ -49,6 +50,8 @@ int PluginSelect::mouseEntryManager(int state) {
 int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
   GLdouble pos3D_ax = 0, pos3D_ay = 0, pos3D_az = 0;
 
+  //cout << 2.0*(x -  _editor->view.viewport[0])/ _editor->view.viewport[2]-1 << " " << 2.0*(y - _editor->view.viewport[1]) / _editor->view.viewport[3] - 1 << endl;
+
   // get 3D coordinates based on window coordinates
   gluUnProject(x, y, 0,
     _editor->view.model_view, _editor->view.projection, _editor->view.viewport,
@@ -57,13 +60,13 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
   vec3<double> raydir = vec3<double>{ pos3D_ax, pos3D_ay, pos3D_az } -_editor->view.cameraEye;
 
   float dist = INFINITY;
-  Object* oldhighlight = highlightedObject;
+  shared_ptr<Object> oldhighlight = highlightedObject;
   highlightedObject = NULL;
 
   for (auto&& it : _editor->objs) {
     float nDist = INFINITY;
     if (it->intersectRay(_editor->view.cameraEye, raydir, nDist)) {
-      if (nDist < dist) {
+      if (0 < nDist && nDist < dist) {
         dist = nDist;
         highlightedObject = it;
       }
@@ -73,6 +76,7 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
   if (oldhighlight != highlightedObject) {
     return 1;
   }
+  return 0;
 }
 int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down) {
 
@@ -95,8 +99,8 @@ int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_locatio
 
 void PluginSelect::onAdded() {
   _ribbonElement = Graphics::createPanel("objectPluginSelectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 80)), 0x00000000);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectAllIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginSelectAllIcon, this, "selectall", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectClearIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginSelectClearIcon, this, "deselect", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectAllIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", 8, pluginSelectAllIcon, this, "selectall", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectClearIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", 9, pluginSelectClearIcon, this, "deselect", "html/icons.ilf"));
 }
 
 void PluginSelect::onActivated() {
@@ -107,27 +111,11 @@ void PluginSelect::onDeactivated() {
   _editor->removeRibbon(_ribbonElement);
 }
 
-/*void doCarve() {
-  if (polyRays.size() >= 3) {
-    Object obj;
-    obj.setCone(polyRays, view.cameraEye, -viewOffset.toCartesian(), 0.1, 100);
-    obj.setShared(reinterpret_cast<void*>(0xff0000));
-    auto it = objs.begin();
-    while (it != objs.end()) {
-      Object* res = new Object(**it - obj); //cut
-      (*it)->clean();
-      Object* toWipe = *it;
-      *it = res;
-      delete toWipe;
-      res->upload();
-      ++it;
-    }
+EditorPlugin * createPluginSelect(Editor * e, bool staticInit) {
+  if (staticInit) {
+    PluginSelect::staticInit();
+    return NULL;
+  } else {
+    return new PluginSelect(e);
   }
-  //Object* res = new Object(obj);
-  //res->upload();
-  //objs.push_back(res);
-}*/
-
-EditorPlugin * createPluginSelect(Editor * e) {
-  return new PluginSelect(e);
 }

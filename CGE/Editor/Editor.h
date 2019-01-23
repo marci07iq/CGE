@@ -5,7 +5,7 @@
 class EditorPlugin;
 class Editor;
 
-typedef EditorPlugin*(*PluginCreator)(Editor*);
+typedef EditorPlugin*(*PluginCreator)(Editor*, bool);
 
 class Editor {
 public:
@@ -18,7 +18,7 @@ public:
 
   static Shader _edgeShader;
   static GLuint _edgeShader_transform;
-  static GLuint _edgeShader_transform2;
+  //static GLuint _edgeShader_transform2;
   static GLuint _edgeShader_cam_eye;
   static GLuint _edgeShader_color;
 
@@ -38,7 +38,7 @@ public:
   Graphics::TableHwnd _toolbar; //Sidebar for access to plugins
   Graphics::PanelHwnd _config; //Large pane next to sidebar
 
-  list<Object*> objs;
+  list<shared_ptr<Object>> objs;
 
   OpenGLData view;
 
@@ -75,11 +75,16 @@ public:
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
 
   void beginObjectDraw();
-  void drawObject(Object* what, colorargb mix = 0x00000000, float resAlpha = 1);
+  void drawObject(shared_ptr<Object> what, colorargb mix = 0x00000000, float resAlpha = 1);
   void endObjectDraw();
   void beginEdgeDraw();
-  void drawEdge(Object* what, colorargb edge = 0xff000000);
+  void drawEdge(shared_ptr<Object> what, colorargb edge = 0xff000000);
   void endEdgeDraw();
+
+  void removeObject(shared_ptr<Object> obj) {
+    objs.remove(obj);
+    obj->_toDelete = true;
+  }
 
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);
