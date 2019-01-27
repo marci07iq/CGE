@@ -32,11 +32,11 @@ int PluginObject::resizeManager(int x, int y) {
 int PluginObject::mouseEntryManager(int state) {
   return selectorPlugin->mouseEntryManager(state);
 }
-int PluginObject::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
-  return selectorPlugin->mouseMoveManager(x, y, ox, oy, down);
+int PluginObject::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+  return selectorPlugin->mouseMoveManager(x, y, ox, oy, down, in);
 }
-int PluginObject::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down) {
-  return selectorPlugin->guiEventManager(evt, mx, my, down);
+int PluginObject::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+  return selectorPlugin->guiEventManager(evt, mx, my, down, in);
 }
 
 void PluginObject::onAdded() {

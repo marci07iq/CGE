@@ -20,11 +20,11 @@ namespace MainGameCanvas {
   int mouseEntryManager(int state) {
     return mainEditor.mouseEntryManager(state);
   }
-  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
-    return mainEditor.mouseMoveManager(x, y, ox, oy, down);
+  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, Canvas* me) {
+    return mainEditor.mouseMoveManager(x, y, ox, oy, down, me->isIn(x, y));
   }
   int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, Canvas* me) {
-    return mainEditor.guiEventManager(evt, mx, my, down);
+    return mainEditor.guiEventManager(evt, mx, my, down, me->isIn(mx, my));
   }
   /*void doCarve() {
     if(polyRays.size() >= 3) {

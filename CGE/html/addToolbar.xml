@@ -46,7 +46,7 @@
 		<input
 			id = "objectPluginCreatePositionXInput"
 			inputfunc = "pluginCreatePositionXInput"
-			validatorfunc = "numericalValidator"
+			validatorfunc = "floatValidator"
 		>
 			<location>
 				<bot
@@ -69,7 +69,7 @@
 		<input
 			id = "objectPluginCreatePositionYInput"
 			inputfunc = "pluginCreatePositionYInput"
-			validatorfunc = "numericalValidator"
+			validatorfunc = "floatValidator"
 		>
 			<location>
 				<bot
@@ -92,7 +92,7 @@
 		<input
 			id = "objectPluginCreatePositionZInput"
 			inputfunc = "pluginCreatePositionZInput"
-			validatorfunc = "numericalValidator"
+			validatorfunc = "floatValidator"
 		>
 			<location>
 				<bot
@@ -112,5 +112,27 @@
 					abs="0.0"
 				></right>
 			</location>0.0</input>
+		<button
+			id = "objectPluginCreateDoneButton"
+			callback = "pluginCreateDoneButton"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-150.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-120.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>Done</button>
 	</div>
 </body>

@@ -47,7 +47,7 @@ int PluginSelect::resizeManager(int x, int y) {
 int PluginSelect::mouseEntryManager(int state) {
   return 0;
 }
-int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
+int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
   GLdouble pos3D_ax = 0, pos3D_ay = 0, pos3D_az = 0;
 
   //cout << 2.0*(x -  _editor->view.viewport[0])/ _editor->view.viewport[2]-1 << " " << 2.0*(y - _editor->view.viewport[1]) / _editor->view.viewport[3] - 1 << endl;
@@ -78,10 +78,10 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
   }
   return 0;
 }
-int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down) {
+int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
 
   if (evt._key._type == evt._key.type_mouse) {
-    if (evt._type == evt.evt_down) {
+    if (evt._type == evt.evt_down && in) {
       if (evt._key._keycode == 0) {
         if (!down.count(key_location(key(GLFW_KEY_LEFT_SHIFT, evt._key.type_key)))) {
           selectedObjects.clear();

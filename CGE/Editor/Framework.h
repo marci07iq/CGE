@@ -11,7 +11,7 @@ public:
   Graphics::ElemHwnd _ribbonElement = NULL;
   Graphics::ElemHwnd _toolbarElement = NULL;
   
-  Graphics::ElemHwnd _config = NULL;
+  Graphics::PanelHwnd _config = NULL;
 
   EditorPlugin(Editor* e) {
     _editor = e;
@@ -27,17 +27,20 @@ public:
   virtual int mouseEntryManager(int state) {
     return 0;
   }
-  virtual int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
+  virtual int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
     return 0;
   }
   //virtual void doCarve();
-  virtual int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down) {
+  virtual int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
     return 0;
   }
 
   virtual string getClassName() {
     return "EditorPlugin";
   }
+
+  void hideConfig();
+  void showConfig();
 
   virtual void onAdded() {
   }

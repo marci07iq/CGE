@@ -34,7 +34,7 @@ void editorMenuExitButton(Graphics::ElemHwnd sender, void* data) {
   Graphics::forceShutdown();
 }
 
-
+/*
 enum Toolbars {
   NoToolbar,
   AddToolbar,
@@ -42,7 +42,7 @@ enum Toolbars {
   BooleanToolbar,
 };
 Toolbars currentToolbar;
-
+*/
 /*void editorToolAddButton(Graphics::ElemHwnd sender) {
   if(currentToolbar == Toolbars::AddToolbar) {
     currentToolbar = Toolbars::NoToolbar;
@@ -136,6 +136,10 @@ void initGraphics() {
   Graphics::setName("editorMenuSaveButton", editorMenuSaveButton);
   Graphics::setName("editorMenuSettingsButton", editorMenuSettingsButton);
   Graphics::setName("editorMenuExitButton", editorMenuExitButton);
+
+  Graphics::setName("numericalValidator", numericalValidator);
+  Graphics::setName("textValidator", textValidator);
+  Graphics::setName("floatValidator", floatValidator);
 
   /*Graphics::setName("editorToolAddButton", editorToolAddButton);
   Graphics::setName("editorToolSelectButton", editorToolSelectButton);

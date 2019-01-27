@@ -87,9 +87,10 @@
       <PreprocessorDefinitions>M_CLIENT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Marci\Documents\Programming\Libraries\CGAL\include\;C:\Users\Marci\Documents\Programming\Libraries\libigl\include\;C:\Users\Marci\Documents\Programming\Libraries\eigen;C:\Program Files (x86)\boost_1_59_0\;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../NGin/bin/glfw3.lib;../NGin/bin/glfw3dll.lib;opengl32.lib;glu32.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libgmp-10.lib;CGAL_Core-vc140-mt-4.13.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../NGin/bin/glfw3.lib;../NGin/bin/glfw3dll.lib;opengl32.lib;glu32.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libgmp-10.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libmpfr-4.lib;CGAL_Core-vc140-mt-4.13.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\Marci\Documents\Programming\Libraries\CGAL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -117,11 +118,12 @@
       <PreprocessorDefinitions>M_CLIENT;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WIN32;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Marci\Documents\Programming\Libraries\CGAL\include\;C:\Users\Marci\Documents\Programming\Libraries\libigl\include\;C:\Users\Marci\Documents\Programming\Libraries\eigen;C:\Program Files (x86)\boost_1_59_0\;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>../NGin/bin/glfw3.lib;../NGin/bin/glfw3dll.lib;opengl32.lib;glu32.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libgmp-10.lib;CGAL_Core-vc140-mt-4.13.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../NGin/bin/glfw3.lib;../NGin/bin/glfw3dll.lib;opengl32.lib;glu32.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libgmp-10.lib;C:\Users\Marci\Documents\Programming\Libraries\CGAL\auxiliary\gmp\lib\libmpfr-4.lib;CGAL_Core-vc140-mt-4.13.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\Marci\Documents\Programming\Libraries\CGAL\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

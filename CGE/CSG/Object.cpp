@@ -18,11 +18,6 @@ void Object::drawEdges() {
 
 }
 
-/*void Object::setCone(list<fVec3> points, fVec3 top, fVec3 dir, float nearDist, float farDist) {
-
-}*/
-
-
 bool Object::intersectRay(fVec3 from, fVec3 dir, float & at) {
   return false;
 }
@@ -38,7 +33,7 @@ Object_Raw::Object_Raw() {
 }
 
 void Object_Raw::setColor(colorargb to) {
-  _color = to;
+  _mesh.setColor(to);
 }
 
 void Object_Raw::compile() {
@@ -61,9 +56,9 @@ void Object_Raw::upload() {
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 2)).norm(),
       vec3<double>(1, 2, 3).norm()));
 
-    insertColor(col, 9 * i + 0, _color, light);
-    insertColor(col, 9 * i + 3, _color, light);
-    insertColor(col, 9 * i + 6, _color, light);
+    insertColor(col, 9 * i + 0, _mesh._color[i], light);
+    insertColor(col, 9 * i + 3, _mesh._color[i], light);
+    insertColor(col, 9 * i + 6, _mesh._color[i], light);
   }
 
   glGenBuffers(1, &_obj_pos_vbo);
@@ -158,8 +153,10 @@ void Object_Raw::upload() {
 }
 
 void Object_Raw::draw() {
-  glBindVertexArray(_obj_vao);
-  glDrawArrays(GL_TRIANGLES, 0, _mesh.faces() * 3);
+  if (_obj_vao != 0) {
+    glBindVertexArray(_obj_vao);
+    glDrawArrays(GL_TRIANGLES, 0, _mesh.faces() * 3);
+  }
 }
 void Object_Raw::drawEdges() {
   /*glBindVertexArray(_edge_vao);
@@ -193,6 +190,7 @@ void Object_Raw::setCube(fVec3 radius, fVec3 center) {
     1,5,7,
     1,7,3;
 
+    _mesh.setColor(0xffff00ff);
 }
 
 bool Object_Raw::intersectRay(fVec3 from, fVec3 dir, float & at) {
@@ -239,60 +237,6 @@ void Object_Raw::clean() {
   }
 }
 
-
-/*
-Object_Raw operator|(Object& lhs, Object& rhs) {
-  shared_ptr<CSGNode> a = make_shared<CSGNode>(lhs.clone()._polygons);
-  shared_ptr<CSGNode> b = make_shared<CSGNode>(rhs.clone()._polygons);
-
-  a->clipTo(b);
-  b->clipTo(a);
-  b->invert();
-  b->clipTo(a);
-  b->invert();
-  a->build(b->allPolygons());
-  return Object_Raw(a->allPolygons());
-}
-
-Object_Raw operator+(Object& lhs, Object& rhs) {
-  shared_ptr<CSGNode> a = make_shared<CSGNode>(lhs.clone()._polygons);
-  shared_ptr<CSGNode> b = make_shared<CSGNode>(rhs.clone()._polygons);
-
-  a->clipTo(b);
-  b->clipTo(a);
-  b->invert();
-  b->clipTo(a);
-  b->invert();
-  a->build(b->allPolygons());
-  return Object_Raw(a->allPolygons());
-}
-
-Object_Raw operator-(Object& lhs, Object& rhs) {
-  shared_ptr<CSGNode> a = make_shared<CSGNode>(lhs.clone()._polygons);
-  shared_ptr<CSGNode> b = make_shared<CSGNode>(rhs.clone()._polygons);
-
-  a->invert();
-  a->clipTo(b);
-  b->clipTo(a);
-  b->invert();
-  b->clipTo(a);
-  b->invert();
-  a->build(b->allPolygons());
-  a->invert();
-  return Object(a->allPolygons());
-}
-
-Object_Raw operator*(Object& lhs, Object& rhs) {
-  shared_ptr<CSGNode> a = make_shared<CSGNode>(lhs.clone()._polygons);
-  shared_ptr<CSGNode> b = make_shared<CSGNode>(rhs.clone()._polygons);
-
-  a->invert();
-  b->clipTo(a);
-  b->invert();
-  a->clipTo(b);
-  b->clipTo(a);
-  a->build(b->allPolygons());
-  a->invert();
-  return Object_Raw(a->allPolygons());
-}
-*/
+/*void Object_CSG::compile() {
+  
+}*/

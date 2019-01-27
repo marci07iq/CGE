@@ -88,8 +88,8 @@ public:
 
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);
-  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down);
-  int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down);
+  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
+  int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in);
 };
 
 enum Icons {

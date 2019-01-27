@@ -25,17 +25,22 @@ Editor::Editor() {
 }
 
 void Editor::staticInit() {
-  _baseShader.create("Renderer/Core");
-  _baseShader_transform = glGetUniformLocation(_baseShader._pID, "transform");
-  _baseShader_mix_color = glGetUniformLocation(_baseShader._pID, "mix_color");
-  _baseShader_res_alpha = glGetUniformLocation(_baseShader._pID, "res_alpha");
+  static bool first = true;
+  if(first) {
+    first = false;
+
+    _baseShader.create("Renderer/Core");
+    _baseShader_transform = glGetUniformLocation(_baseShader._pID, "transform");
+    _baseShader_mix_color = glGetUniformLocation(_baseShader._pID, "mix_color");
+    _baseShader_res_alpha = glGetUniformLocation(_baseShader._pID, "res_alpha");
 
 
-  _edgeShader.create("Renderer/Edges", 7);
-  _edgeShader_transform = glGetUniformLocation(_edgeShader._pID, "transform");
-  //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
-  _edgeShader_cam_eye = glGetUniformLocation(_edgeShader._pID, "cam_eye");
-  _edgeShader_color = glGetUniformLocation(_edgeShader._pID, "color");
+    _edgeShader.create("Renderer/Edges", 7);
+    _edgeShader_transform = glGetUniformLocation(_edgeShader._pID, "transform");
+    //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
+    _edgeShader_cam_eye = glGetUniformLocation(_edgeShader._pID, "cam_eye");
+    _edgeShader_color = glGetUniformLocation(_edgeShader._pID, "color");
+  }
 }
 
 void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, Graphics::TableHwnd sidebar, Graphics::PanelHwnd config) {
@@ -48,15 +53,20 @@ void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, 
   o1->setCube({1,1,1},{0,0,0});
   o1->setColor(0xffff0000);
 
-  o1->upload();
-  objs.push_back(o1);
+  /*o1->upload();
+  objs.push_back(o1);*/
 
   shared_ptr<Object_Raw> o2 = make_shared<Object_Raw>();
   o2->setCube({ 2,0.5,0.2 }, { 0,0,0 });
   o2->setColor(0xff00ff00);
 
-  o2->upload();
-  objs.push_back(o2);
+  /*o2->upload();
+  objs.push_back(o2);*/
+
+  shared_ptr<Object_Raw> o4 = make_shared<Object_Raw>();
+  Mesh::booleanSubtract({&o1->_mesh}, { &o2->_mesh }, o4->_mesh);
+  o4->upload();
+  objs.push_back(o4);
 
   shared_ptr<Object_Raw> o3 = make_shared<Object_Raw>();
   o3->setCube({ 0.2,1,2 }, { 0,1,0 });
@@ -65,9 +75,7 @@ void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, 
   o3->upload();
   objs.push_back(o3);
 
-  if (_edgeShader._pID == 0) {
-    staticInit();
-  }
+  staticInit();
 }
 
 EditorPlugin * Editor::findStaticPlugin(string name) {
@@ -86,6 +94,8 @@ void Editor::activateStaticPlugin(EditorPlugin * plugin) {
     }
     _currentPlugin = plugin;
     plugin->onActivated();
+    //Dont delete element(s), it is the owner plugins job.
+    _config->elements.clear();
   }
 }
 
@@ -238,10 +248,10 @@ int Editor::mouseEntryManager(int state) {
   return res;
 }
 
-int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down) {
+int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
   int res = 0;
   if (_currentPlugin) {
-    res |= _currentPlugin->mouseMoveManager(x, y, ox, oy, down);
+    res |= _currentPlugin->mouseMoveManager(x, y, ox, oy, down, in);
     if (res & 2) {
       return res;
     }
@@ -282,10 +292,10 @@ int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& do
   return res;
 }
 
-int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down) {
+int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
   int res = 0;
   if (_currentPlugin) {
-    res |= _currentPlugin->guiEventManager(evt, mx, my, down);
+    res |= _currentPlugin->guiEventManager(evt, mx, my, down, in);
     if (res & 2) {
       return res;
     }
@@ -293,7 +303,7 @@ int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& do
 
 
   if (evt._key._type == evt._key.type_mouse) {
-    if (evt._type == evt.evt_down) {
+    if (evt._type == evt.evt_down && in) {
       if (evt._key._keycode == 1) {
         turnDown = true;
         return 1;
