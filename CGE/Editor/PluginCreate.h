@@ -17,6 +17,8 @@ class PluginCreate : public EditorPlugin {
 
     shared_ptr<Object_Raw> _temp;
 
+    Transpose _temp_movement;
+
     PluginCreate(Editor* e) : EditorPlugin(e) {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
       _temp = NULL;
@@ -57,7 +59,7 @@ class PluginCreate : public EditorPlugin {
     void onMoveInput(float value, int axis) {
       //_temp->_mesh._transform(axis, 3) = value;
       //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
-
+      _temp_movement.matrix[3][axis] = value;
     }
   };
 

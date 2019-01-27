@@ -1,0 +1,69 @@
+<body>
+	<div
+		id = "objectPluginBoolean"
+		bgcolor = "#BF2D2D30"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="0.0"
+			></bot>
+			<top
+				rel="1.0"
+				abs="0.0"
+			></top>
+			<left
+				rel="0.0"
+				abs="0.0"
+			></left>
+			<right
+				rel="0.0"
+				abs="200.0"
+			></right>
+		</location>
+		<button
+			id = "objectPluginBooleanSelectLhs"
+			callback = "pluginBooleanSelectLhs"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-50.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-30.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>LHS</button>
+		<button
+			id = "objectPluginBooleanSelectRhs"
+			callback = "pluginBooleanSelectRhs"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-80.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-60.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>RHS</button>
+	</div>
+</body>

@@ -38,6 +38,7 @@ public:
   GLuint _obj_vao = 0;
   GLuint _obj_pos_vbo = 0;
   GLuint _obj_col_vbo = 0;
+  GLuint _obj_lig_vbo = 0;
 
   GLuint _edge_vao = 0;
   GLuint _edge_a_vbo = 0;
@@ -61,6 +62,8 @@ public:
   void setColor(colorargb to);
 
   bool intersectRay(fVec3 from, fVec3 dir, float& at);
+
+  void applyTransform(Eigen::Matrix4d trans);
 };
 
 /*class Object_CSG {

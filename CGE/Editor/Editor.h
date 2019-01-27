@@ -43,10 +43,10 @@ public:
   OpenGLData view;
 
   Transpose modview;
-  float worldM[16];
+  //float worldM[16];
 
   Transpose camview;
-  float cameraM[16];
+  //float cameraM[16];
 
   bool drawDown;
   bool turnDown;
@@ -74,7 +74,7 @@ public:
 
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
 
-  void beginObjectDraw();
+  void beginObjectDraw(Transpose objectTransform = Transpose());
   void drawObject(shared_ptr<Object> what, colorargb mix = 0x00000000, float resAlpha = 1);
   void endObjectDraw();
   void beginEdgeDraw();

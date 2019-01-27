@@ -45,20 +45,21 @@ void Object_Raw::upload() {
 
   float* vert = new float[3 * 3 * _mesh.faces()];
   float* col = new float[3 * 3 * _mesh.faces()];
+  float* light = new float[3 * _mesh.faces()];
 
   for (int i = 0; i < _mesh.faces(); i++) {
     insertVector(vert, 9 * i + 0, _mesh.vertex(i, 0));
     insertVector(vert, 9 * i + 3, _mesh.vertex(i, 1));
     insertVector(vert, 9 * i + 6, _mesh.vertex(i, 2));
 
-    fVec3 light = fVec3(0.7 + 0.3*dot(crs(
+    light[3* i] = light[3 * i + 1] = light[3 * i + 2] = 0.7 + 0.3*dot(crs(
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 1),
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 2)).norm(),
-      vec3<double>(1, 2, 3).norm()));
+      vec3<double>(1, 2, 3).norm());
 
-    insertColor(col, 9 * i + 0, _mesh._color[i], light);
-    insertColor(col, 9 * i + 3, _mesh._color[i], light);
-    insertColor(col, 9 * i + 6, _mesh._color[i], light);
+    insertColor(col, 9 * i + 0, _mesh._color[i]);
+    insertColor(col, 9 * i + 3, _mesh._color[i]);
+    insertColor(col, 9 * i + 6, _mesh._color[i]);
   }
 
   glGenBuffers(1, &_obj_pos_vbo);
@@ -68,6 +69,10 @@ void Object_Raw::upload() {
   glGenBuffers(1, &_obj_col_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_col_vbo);
   glBufferData(GL_ARRAY_BUFFER, _mesh.faces() * 3 * 3 * sizeof(float), col, GL_STATIC_DRAW);
+  
+  glGenBuffers(1, &_obj_lig_vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, _obj_lig_vbo);
+  glBufferData(GL_ARRAY_BUFFER, _mesh.faces() * 3 * sizeof(float), light, GL_STATIC_DRAW);
 
   glGenVertexArrays(1, &_obj_vao);
   glBindVertexArray(_obj_vao);
@@ -77,9 +82,13 @@ void Object_Raw::upload() {
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_col_vbo);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(2);
+  glBindBuffer(GL_ARRAY_BUFFER, _obj_lig_vbo);
+  glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 
   delete[_mesh.faces() * 3 * 3] vert;
   delete[_mesh.faces() * 3 * 3] col;
+  delete[_mesh.faces() * 3] light;
 
   //Edges
   /*
@@ -197,6 +206,11 @@ bool Object_Raw::intersectRay(fVec3 from, fVec3 dir, float & at) {
   return _mesh.intersectRay(from, dir, at);
 }
 
+void Object_Raw::applyTransform(Eigen::Matrix4d trans) {
+  _mesh.applyTransform(trans);
+  upload();
+}
+
 void Object_Raw::clean() {
   if (_obj_pos_vbo) {
     glDeleteBuffers(1, &_obj_pos_vbo);
@@ -205,6 +219,10 @@ void Object_Raw::clean() {
   if (_obj_col_vbo) {
     glDeleteBuffers(1, &_obj_col_vbo);
     _obj_col_vbo = 0;
+  }
+  if (_obj_lig_vbo) {
+    glDeleteBuffers(1, &_obj_lig_vbo);
+    _obj_lig_vbo = 0;
   }
   if (_obj_vao) {
     glDeleteVertexArrays(1, &_obj_vao);

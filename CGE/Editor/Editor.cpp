@@ -93,9 +93,9 @@ void Editor::activateStaticPlugin(EditorPlugin * plugin) {
       _currentPlugin->onDeactivated();
     }
     _currentPlugin = plugin;
+    _config->elements.clear();
     plugin->onActivated();
     //Dont delete element(s), it is the owner plugins job.
-    _config->elements.clear();
   }
 }
 
@@ -147,7 +147,7 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   modview.createLook(view.cameraEye, -viewOffset.toCartesian().norm());
   //modview.transpose();
   modview.read(view.model_view);
-  modview.read(worldM);
+  //modview.read(worldM);
 
   camview.setIdentity();
   camview.project(CONS_PI / 2, (bx - ax)*1.0f / (by - ay), 256, 0.01);
@@ -157,7 +157,7 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
 
   camview.matrix = camview.matrix * modview.matrix;
 
-  camview.read(cameraM);
+  //camview.read(cameraM);
 
   int res = 0;
   if (_currentPlugin) {
@@ -170,11 +170,16 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
 
 }
 
-void Editor::beginObjectDraw() {
+void Editor::beginObjectDraw(Transpose objectTransform) {
   _baseShader.bind();
 
+  Transpose objview;
+  objview.matrix = camview.matrix * objectTransform.matrix;
+  float readMatrix[16];
+  objview.read(readMatrix);
+
   if (_baseShader_transform != -1) {
-    glUniformMatrix4fv(_baseShader_transform, 1, false, cameraM);
+    glUniformMatrix4fv(_baseShader_transform, 1, false, readMatrix);
   }
 
 }
@@ -198,7 +203,9 @@ void Editor::beginEdgeDraw() {
   _edgeShader.bind();
 
   if (_edgeShader_transform != -1) {
-    glUniformMatrix4fv(_edgeShader_transform, 1, false, cameraM);
+    float readcamera[16];
+    camview.read(readcamera);
+    glUniformMatrix4fv(_edgeShader_transform, 1, false, readcamera);
   }
 
   /*if (_edgeShader_transform2 != -1) {

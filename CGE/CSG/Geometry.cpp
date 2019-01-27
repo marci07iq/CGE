@@ -139,3 +139,16 @@ void Mesh::booleanSubtract(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res) {
 void Mesh::booleanIntersect(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res) {
   booleanOperation(lhs, rhs, igl::MESH_BOOLEAN_TYPE_INTERSECT, res);
 }
+
+void Mesh::applyTransform(Eigen::Matrix4d trans) {
+  for (size_t row = 0; row < _V.rows(); ++row) {
+    Eigen::Vector4d pos_4;
+
+    pos_4 << _V.block<1, 3>(row, 0).transpose().eval(), 1.0;
+    pos_4 = trans * pos_4;
+    
+    _V(row, 0) = pos_4(0);
+    _V(row, 1) = pos_4(1);
+    _V(row, 2) = pos_4(2);
+  }
+}

@@ -5,9 +5,9 @@
 
 class PluginBoolean;
 
-void pluginBooleanUnionButton(Graphics::ElemHwnd sender, PluginBoolean * plugin);
-void pluginBooleanSubtractButton(Graphics::ElemHwnd sender, PluginBoolean * plugin);
-void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, PluginBoolean * plugin);
+void pluginBooleanUnionButton(Graphics::ElemHwnd sender, void * plugin);
+void pluginBooleanSubtractButton(Graphics::ElemHwnd sender, void * plugin);
+void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, void * plugin);
 
 void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, PluginBoolean * plugin);
 void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, PluginBoolean * plugin);
@@ -22,6 +22,9 @@ class PluginBoolean : public EditorPlugin {
     }
 
     static void staticInit() {
+      Graphics::setName("pluginBooleanSelectLhs", pluginBooleanSelectLhs);
+      Graphics::setName("pluginBooleanSelectRhs", pluginBooleanSelectRhs);
+
       Graphics::setName("pluginBooleanUnionButton", pluginBooleanUnionButton);
       Graphics::setName("pluginBooleanSubtractButton", pluginBooleanSubtractButton);
       Graphics::setName("pluginBooleanIntersectButton", pluginBooleanIntersectButton);
@@ -36,6 +39,10 @@ class PluginBoolean : public EditorPlugin {
     string getClassName() {
       return "PluginBoolean";
     }
+
+    void onAdded();
+    void onActivated();
+    void onDeactivated();
 
     void selectType(int group);
 

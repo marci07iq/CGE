@@ -36,6 +36,7 @@ int PluginCreate::renderManager(int ax, int ay, int bx, int by, set<key_location
     _editor->drawObject(it, 0x7fffffff);
   }
   if(_temp != NULL) {
+    _editor->beginObjectDraw(_temp_movement);
     _editor->drawObject(_temp);
   }
   _editor->endObjectDraw();
@@ -66,6 +67,15 @@ int PluginCreate::guiEventManager(gui_event evt, int mx, int my, set<key_locatio
 
 void PluginCreate::newObject(bool keep) {
   if (keep && _temp != NULL) {
+
+    double transMatrix[16];
+    //_temp_movement.transpose();
+    _temp_movement.read(transMatrix);
+    _temp_movement.setIdentity();
+
+    Eigen::Matrix4d mat = Eigen::Map<Eigen::Matrix4d>(transMatrix);
+    _temp->applyTransform(mat);
+
     _editor->objs.push_back(_temp);
   }
   _temp = make_shared<Object_Raw>();

@@ -21,6 +21,9 @@ struct Mesh {
   static void booleanUnion(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res);
   static void booleanSubtract(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res);
   static void booleanIntersect(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res);
+
+  void applyTransform(Eigen::Matrix4d trans);
+  
 };
 
 extern Graphics::WinHwnd objectMainWindowHwnd;

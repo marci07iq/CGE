@@ -81,7 +81,7 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
 int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
 
   if (evt._key._type == evt._key.type_mouse) {
-    if (evt._type == evt.evt_down && in) {
+    if (evt._type == evt.evt_pressed && in) {
       if (evt._key._keycode == 0) {
         if (!down.count(key_location(key(GLFW_KEY_LEFT_SHIFT, evt._key.type_key)))) {
           selectedObjects.clear();
