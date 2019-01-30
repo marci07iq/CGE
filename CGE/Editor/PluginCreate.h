@@ -5,10 +5,13 @@
 class PluginCreate;
 
 void pluginCreatePositionXInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-
 void pluginCreatePositionYInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-
 void pluginCreatePositionZInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+
+void pluginCreateSizeXInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+void pluginCreateSizeYInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+void pluginCreateSizeZInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+
 
 void pluginCreateDoneButton(Graphics::ElemHwnd sender, PluginCreate* plugin);
 
@@ -28,6 +31,10 @@ class PluginCreate : public EditorPlugin {
       Graphics::setName("pluginCreatePositionXInput", pluginCreatePositionXInput);
       Graphics::setName("pluginCreatePositionYInput", pluginCreatePositionYInput);
       Graphics::setName("pluginCreatePositionZInput", pluginCreatePositionZInput);
+
+      Graphics::setName("pluginCreateSizeXInput", pluginCreateSizeXInput);
+      Graphics::setName("pluginCreateSizeYInput", pluginCreateSizeYInput);
+      Graphics::setName("pluginCreateSizeZInput", pluginCreateSizeZInput);
 
       Graphics::setName("pluginCreateDoneButton", pluginCreateDoneButton);
     }
@@ -60,6 +67,11 @@ class PluginCreate : public EditorPlugin {
       //_temp->_mesh._transform(axis, 3) = value;
       //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
       _temp_movement.matrix[3][axis] = value;
+    }
+    void onResizeInput(float value, int axis) {
+      //_temp->_mesh._transform(axis, 3) = value;
+      //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
+      _temp_movement.matrix[axis][axis] = value;
     }
   };
 

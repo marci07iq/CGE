@@ -17,9 +17,26 @@ void editorMenuNewButton(Graphics::ElemHwnd sender, void* data) {
 }
 void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
   cout << "OPEN" << endl;
+  string file = openFileSelector("Select file", {{"Polygon File (*.ply)","*.ply"},{ "Any file (*.*)","*.*" } });
+  if (file.length()) {
+    shared_ptr<Object_Raw> newObj = make_shared<Object_Raw>();
+    newObj->_mesh.readPly(file);
+    newObj->upload();
+    mainEditor.objs.push_back(newObj);
+  }
 }
 void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
   cout << "SAVE" << endl;
+  string file = saveFileSelector("Select file", { { "Polygon File (*.ply)","*.ply" } });
+  if (file.length()) {
+    Mesh compact;
+    list<Mesh*> meshPtrs;
+    for (auto&& it : mainEditor.objs) {
+      meshPtrs.push_back(&(it->_mesh));
+    }
+    compactOperation(meshPtrs, compact);
+    compact.writePly(file, false);
+  }
 }
 void settingsWindowSetup(Graphics::WinHwnd win) {
   objectSettingsWindowHwnd = win;

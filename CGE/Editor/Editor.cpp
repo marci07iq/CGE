@@ -75,6 +75,11 @@ void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, 
   o3->upload();
   objs.push_back(o3);
 
+  shared_ptr<Object_Raw> o5 = make_shared<Object_Raw>();
+  o5->_mesh.readPly("../_TRASH/Model.ply");
+  o5->upload();
+  objs.push_back(o5);
+
   staticInit();
 }
 

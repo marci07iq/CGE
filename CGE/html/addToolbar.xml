@@ -22,7 +22,7 @@
 			></right>
 		</location>
 		<label
-			id = "objectPluginCreateNameLabel"
+			id = "objectPluginCreatePositionLabel"
 			align = "0"
 		>
 			<location>
@@ -65,7 +65,7 @@
 					rel="1.0"
 					abs="0.0"
 				></right>
-			</location>0.0</input>
+			</location>0</input>
 		<input
 			id = "objectPluginCreatePositionYInput"
 			inputfunc = "pluginCreatePositionYInput"
@@ -88,7 +88,7 @@
 					rel="1.0"
 					abs="0.0"
 				></right>
-			</location>0.0</input>
+			</location>0</input>
 		<input
 			id = "objectPluginCreatePositionZInput"
 			inputfunc = "pluginCreatePositionZInput"
@@ -111,7 +111,101 @@
 					rel="1.0"
 					abs="0.0"
 				></right>
-			</location>0.0</input>
+			</location>0</input>
+			
+		<label
+			id = "objectPluginCreateSizeLabel"
+			align = "0"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-180.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-150.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+		</location>Size</label>
+		<input
+			id = "objectPluginCreateSizeXInput"
+			inputfunc = "pluginCreateSizeXInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-200.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-180.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+		<input
+			id = "objectPluginCreateSizeYInput"
+			inputfunc = "pluginCreateSizeYInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-220.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-200.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+		<input
+			id = "objectPluginCreateSizeZInput"
+			inputfunc = "pluginCreateSizeZInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-240.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-220.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+			
+			
 		<button
 			id = "objectPluginCreateDoneButton"
 			callback = "pluginCreateDoneButton"
@@ -119,11 +213,11 @@
 			<location>
 				<bot
 					rel="1.0"
-					abs="-150.0"
+					abs="-300.0"
 				></bot>
 				<top
 					rel="1.0"
-					abs="-120.0"
+					abs="-270.0"
 				></top>
 				<left
 					rel="0.0"

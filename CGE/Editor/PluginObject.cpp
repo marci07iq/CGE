@@ -1,10 +1,5 @@
 #include "PluginObject.h"
 
-void pluginObjectMainButton(Graphics::ElemHwnd elem, void* editor) {
-  //Editor* e = (Editor*)editor;
-  ((Editor*)editor)->activateStaticPlugin(((Editor*)editor)->findStaticPlugin("PluginObject"));
-}
-
 void pluginObjectDeleteIcon(Graphics::ElemHwnd elem, void* plugin) {
   for (auto&& it : ((PluginObject*)plugin)->selectorPlugin->selectedObjects) {
     ((PluginObject*)plugin)->_editor->removeObject(it);
@@ -21,6 +16,11 @@ void pluginObjectCutIcon(Graphics::ElemHwnd elem, void* plugin) {
 }
 void pluginObjectMoveIcon(Graphics::ElemHwnd elem, void* plugin) {
   //mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
+}
+
+void pluginObjectMainButton(Graphics::ElemHwnd elem, void* editor) {
+  //Editor* e = (Editor*)editor;
+  ((Editor*)editor)->activateStaticPlugin(((Editor*)editor)->findStaticPlugin("PluginObject"));
 }
 
 int PluginObject::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {

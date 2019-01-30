@@ -23,8 +23,12 @@ struct Mesh {
   static void booleanIntersect(list<Mesh*> lhs, list<Mesh*> rhs, Mesh& res);
 
   void applyTransform(Eigen::Matrix4d trans);
-  
+ 
+  void readPly(const string filename);
+  void writePly(const string filename, bool saveFaceColor = true);
 };
+
+void compactOperation(list<Mesh*> parts, Mesh& res);
 
 extern Graphics::WinHwnd objectMainWindowHwnd;
 extern Graphics::CanvasHwnd objectMainCanvasHwnd;

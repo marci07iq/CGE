@@ -10,6 +10,16 @@ void pluginCreatePositionZInput(Graphics::ElemHwnd sender, PluginCreate * plugin
   plugin->onMoveInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 2);
 }
 
+void pluginCreateSizeXInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
+  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 0);
+}
+void pluginCreateSizeYInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
+  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 1);
+}
+void pluginCreateSizeZInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
+  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 2);
+}
+
 void pluginCreateDoneButton(Graphics::ElemHwnd sender, PluginCreate* plugin) {
   plugin->onDone();
 }
@@ -88,7 +98,12 @@ void PluginCreate::onAdded() {
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionXInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionYInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionZInput"))->data = this;
+  
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeXInput"))->data = this;
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeYInput"))->data = this;
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeZInput"))->data = this;
 
+  
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginCreateDoneButton"))->data = this;
 
   _toolbarElement = Graphics::createButton("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "+", -1, pluginCreateMainButton, (void*)_editor);
