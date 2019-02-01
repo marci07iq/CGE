@@ -171,6 +171,7 @@
     <ClCompile Include="Editor\Editor.cpp" />
     <ClCompile Include="Editor\Framework.cpp" />
     <ClCompile Include="Editor\PluginBoolean.cpp" />
+    <ClCompile Include="Editor\PluginColor.cpp" />
     <ClCompile Include="Editor\PluginCreate.cpp" />
     <ClCompile Include="Editor\PluginObject.cpp" />
     <ClCompile Include="Editor\PluginSelect.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Editor\Editor.h" />
     <ClInclude Include="Editor\Framework.h" />
     <ClInclude Include="Editor\PluginBoolean.h" />
+    <ClInclude Include="Editor\PluginColor.h" />
     <ClInclude Include="Editor\PluginCreate.h" />
     <ClInclude Include="Editor\PluginObject.h" />
     <ClInclude Include="Editor\PluginSelect.h" />

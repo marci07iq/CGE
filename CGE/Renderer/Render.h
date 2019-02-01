@@ -4,6 +4,7 @@
 #include "../Editor/PluginBoolean.h"
 #include "../Editor/PluginObject.h"
 #include "../Editor/PluginCreate.h"
+#include "../Editor/PluginColor.h"
 
 namespace MainGameCanvas {
   extern int mxold;
@@ -14,9 +15,9 @@ namespace MainGameCanvas {
   extern bool lockMouse;
 
   void normalizeAngles();
-  int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
-  int resizeManager(int x, int y);
-  int mouseEntryManager(int state);
-  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, Canvas* me);
-  int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, Canvas* me);
+  int renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down);
+  int resizeManager(Canvas* me, int x, int y);
+  int mouseEntryManager(Canvas* me, int state);
+  int mouseMoveManager(Canvas* me, int x, int y, int ox, int oy, set<key_location>& down);
+  int guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down);
 }

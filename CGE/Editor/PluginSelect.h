@@ -7,11 +7,6 @@ class PluginSelect : public EditorPlugin {
     set<shared_ptr<Object>> selectedObjects;
     shared_ptr<Object> highlightedObject;
 
-    Graphics::ElemHwnd _ribbonElement = NULL;
-    Graphics::ElemHwnd _toolbarElement = NULL;
-
-    Graphics::ElemHwnd _config = NULL;
-
     PluginSelect(Editor* e) : EditorPlugin(e) {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }

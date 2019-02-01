@@ -1,27 +1,27 @@
 #include "PluginCreate.h"
 
-void pluginCreatePositionXInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onMoveInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 0);
+void pluginCreatePositionXInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 0);
 }
-void pluginCreatePositionYInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onMoveInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 1);
+void pluginCreatePositionYInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 1);
 }
-void pluginCreatePositionZInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onMoveInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 2);
-}
-
-void pluginCreateSizeXInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 0);
-}
-void pluginCreateSizeYInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 1);
-}
-void pluginCreateSizeZInput(Graphics::ElemHwnd sender, PluginCreate * plugin) {
-  plugin->onResizeInput(strTo<float>(((Graphics::TextInputHwnd)sender)->text), 2);
+void pluginCreatePositionZInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 2);
 }
 
-void pluginCreateDoneButton(Graphics::ElemHwnd sender, PluginCreate* plugin) {
-  plugin->onDone();
+void pluginCreateSizeXInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 0);
+}
+void pluginCreateSizeYInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 1);
+}
+void pluginCreateSizeZInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 2);
+}
+
+void pluginCreateDoneButton(Graphics::ElemHwnd sender, void* plugin) {
+  ((PluginCreate*)plugin)->onDone();
 }
 
 void pluginCreateMainButton(Graphics::ElemHwnd elem, void* editor) {
@@ -92,7 +92,7 @@ void PluginCreate::newObject(bool keep) {
 }
 
 void PluginCreate::onAdded() {
-  _config = Graphics::createPanel("objectPluginCreateConfigPanel", fullContainer, 0x00000000);
+  _config = Graphics::createPanel("objectPluginCreateConfigPanel", fullContainer, 0x00000000, NULL);
   Graphics::setElements(_config,"html/addToolbar.xml");
 
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionXInput"))->data = this;
@@ -106,13 +106,13 @@ void PluginCreate::onAdded() {
   
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginCreateDoneButton"))->data = this;
 
-  _toolbarElement = Graphics::createButton("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "+", -1, pluginCreateMainButton, (void*)_editor);
+  _toolbarElement = Graphics::createButton("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "+", -1, pluginCreateMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = Graphics::createPanel("objectPluginObjectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCubeIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", 16, pluginCreateCubeIcon, (void*)this, "cube", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateSphereIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginCreateSphereIcon, (void*)this, "sphere", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCylinderIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginCreateCylinderIcon, (void*)this, "cylinder", "html/icons.ilf"));
+  _ribbonElement = Graphics::createPanel("objectPluginObjectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, NULL);
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCubeIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 16, pluginCreateCubeIcon, "cube", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateSphereIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateSphereIcon, "sphere", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCylinderIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateCylinderIcon, "cylinder", "html/icons.ilf"));
   /*Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
   Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
 }

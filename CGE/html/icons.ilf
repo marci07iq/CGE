@@ -22,6 +22,7 @@ cylinder	10 1 1 1
 paint		0 2 1 1
 colors		1 2 1 1
 sample		2 2 1 1
+fill		3 2 1 1
 
 chisel		8 2 1 1
 

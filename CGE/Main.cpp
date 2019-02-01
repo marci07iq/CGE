@@ -3,9 +3,9 @@
 void createSettings(Graphics::TableHwnd& table) {
   Graphics::deleteElements(table);
   for (auto&& it : keybinds) {
-    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(it.first), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"));
-    Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), it.second.display, 0);
-    Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), it.second, it.first, keybindReply);
+    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(it.first), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"), NULL);
+    Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), NULL, it.second.display, 0);
+    Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), NULL, it.second, it.first, keybindReply);
     Graphics::addElement(row, name);
     Graphics::addElement(row, ctrl);
     Graphics::addElement(table, row);
@@ -144,25 +144,20 @@ void mainWindowSetup(Graphics::WinHwnd win) {
     MainGameCanvas::guiEventManager,
     MainGameCanvas::mouseEntryManager,
     MainGameCanvas::mouseMoveManager,
-  });
+  }, NULL);
   Graphics::addElement((Graphics::PanelHwnd)Graphics::getElementById("objectEditorCanvasContainer"), objectMainCanvasHwnd);
 }
 void initGraphics() {
-  Graphics::setName("editorMenuNewButton", editorMenuNewButton);
-  Graphics::setName("editorMenuOpenButton", editorMenuOpenButton);
-  Graphics::setName("editorMenuSaveButton", editorMenuSaveButton);
-  Graphics::setName("editorMenuSettingsButton", editorMenuSettingsButton);
-  Graphics::setName("editorMenuExitButton", editorMenuExitButton);
+  Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
+  Graphics::setName<ClickCallback>("editorMenuOpenButton", editorMenuOpenButton);
+  Graphics::setName<ClickCallback>("editorMenuSaveButton", editorMenuSaveButton);
+  Graphics::setName<ClickCallback>("editorMenuSettingsButton", editorMenuSettingsButton);
+  Graphics::setName<ClickCallback>("editorMenuExitButton", editorMenuExitButton);
 
-  Graphics::setName("numericalValidator", numericalValidator);
-  Graphics::setName("textValidator", textValidator);
-  Graphics::setName("floatValidator", floatValidator);
+  Graphics::setName<TextValidatorFunc>("numericalValidator", numericalValidator);
+  Graphics::setName<TextValidatorFunc>("textValidator", textValidator);
+  Graphics::setName<TextValidatorFunc>("floatValidator", floatValidator);
 
-  /*Graphics::setName("editorToolAddButton", editorToolAddButton);
-  Graphics::setName("editorToolSelectButton", editorToolSelectButton);
-  Graphics::setName("editorToolBooleanButton", editorToolBooleanButton);
-
-  Graphics::setName("addToolbarCubeButton", addToolbarCubeButton);*/
 
   Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
@@ -189,13 +184,16 @@ int main() {
   mainEditor.init(objectMainCanvasHwnd, (Graphics::TablerowHwnd)Graphics::getElementById("objectEditorToolRibbon"), (Graphics::TableHwnd)Graphics::getElementById("objectEditorToolbar"), (Graphics::PanelHwnd)Graphics::getElementById("objectToolContainer"));
 
   mainEditor.registerPlugin("PluginSelect", createPluginSelect);
-  mainEditor.registerPlugin("PluginBoolean", createPluginBoolean);
-  mainEditor.registerPlugin("PluginObject", createPluginObject);
+
   mainEditor.registerPlugin("PluginCreate", createPluginCreate);
+  mainEditor.registerPlugin("PluginObject", createPluginObject);
+  mainEditor.registerPlugin("PluginBoolean", createPluginBoolean);
+  mainEditor.registerPlugin("PluginColor", createPluginColor);
 
   mainEditor.findStaticPlugin("PluginObject");
   mainEditor.findStaticPlugin("PluginBoolean");
   mainEditor.findStaticPlugin("PluginCreate");
+  mainEditor.findStaticPlugin("PluginColor");
 
   mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
 

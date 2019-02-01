@@ -4,16 +4,16 @@
 
 class PluginCreate;
 
-void pluginCreatePositionXInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-void pluginCreatePositionYInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-void pluginCreatePositionZInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+void pluginCreatePositionXInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreatePositionYInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreatePositionZInput(Graphics::ElemHwnd sender, void * plugin, string& val);
 
-void pluginCreateSizeXInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-void pluginCreateSizeYInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
-void pluginCreateSizeZInput(Graphics::ElemHwnd sender, PluginCreate* plugin);
+void pluginCreateSizeXInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreateSizeYInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreateSizeZInput(Graphics::ElemHwnd sender, void * plugin, string& val);
 
 
-void pluginCreateDoneButton(Graphics::ElemHwnd sender, PluginCreate* plugin);
+void pluginCreateDoneButton(Graphics::ElemHwnd sender, void* plugin);
 
 class PluginCreate : public EditorPlugin {
   public:
@@ -28,15 +28,15 @@ class PluginCreate : public EditorPlugin {
     }
 
     static void staticInit() {
-      Graphics::setName("pluginCreatePositionXInput", pluginCreatePositionXInput);
-      Graphics::setName("pluginCreatePositionYInput", pluginCreatePositionYInput);
-      Graphics::setName("pluginCreatePositionZInput", pluginCreatePositionZInput);
+      Graphics::setName<TextInputFunc>("pluginCreatePositionXInput", pluginCreatePositionXInput);
+      Graphics::setName<TextInputFunc>("pluginCreatePositionYInput", pluginCreatePositionYInput);
+      Graphics::setName<TextInputFunc>("pluginCreatePositionZInput", pluginCreatePositionZInput);
 
-      Graphics::setName("pluginCreateSizeXInput", pluginCreateSizeXInput);
-      Graphics::setName("pluginCreateSizeYInput", pluginCreateSizeYInput);
-      Graphics::setName("pluginCreateSizeZInput", pluginCreateSizeZInput);
+      Graphics::setName<TextInputFunc>("pluginCreateSizeXInput", pluginCreateSizeXInput);
+      Graphics::setName<TextInputFunc>("pluginCreateSizeYInput", pluginCreateSizeYInput);
+      Graphics::setName<TextInputFunc>("pluginCreateSizeZInput", pluginCreateSizeZInput);
 
-      Graphics::setName("pluginCreateDoneButton", pluginCreateDoneButton);
+      Graphics::setName<ClickCallback>("pluginCreateDoneButton", pluginCreateDoneButton);
     }
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);

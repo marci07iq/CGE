@@ -9,8 +9,8 @@ void pluginBooleanUnionButton(Graphics::ElemHwnd sender, void * plugin);
 void pluginBooleanSubtractButton(Graphics::ElemHwnd sender, void * plugin);
 void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, void * plugin);
 
-void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, PluginBoolean * plugin);
-void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, PluginBoolean * plugin);
+void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, void * plugin);
+void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, void * plugin);
 
 class PluginBoolean : public EditorPlugin {
   public:
@@ -22,12 +22,12 @@ class PluginBoolean : public EditorPlugin {
     }
 
     static void staticInit() {
-      Graphics::setName("pluginBooleanSelectLhs", pluginBooleanSelectLhs);
-      Graphics::setName("pluginBooleanSelectRhs", pluginBooleanSelectRhs);
+      Graphics::setName<ClickCallback>("pluginBooleanSelectLhs", pluginBooleanSelectLhs);
+      Graphics::setName<ClickCallback>("pluginBooleanSelectRhs", pluginBooleanSelectRhs);
 
-      Graphics::setName("pluginBooleanUnionButton", pluginBooleanUnionButton);
-      Graphics::setName("pluginBooleanSubtractButton", pluginBooleanSubtractButton);
-      Graphics::setName("pluginBooleanIntersectButton", pluginBooleanIntersectButton);
+      Graphics::setName<ClickCallback>("pluginBooleanUnionButton", pluginBooleanUnionButton);
+      Graphics::setName<ClickCallback>("pluginBooleanSubtractButton", pluginBooleanSubtractButton);
+      Graphics::setName<ClickCallback>("pluginBooleanIntersectButton", pluginBooleanIntersectButton);
     }
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);

@@ -10,11 +10,11 @@ void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, void * plugin) {
   ((PluginBoolean*)plugin)->booleanIntersect();
 }
 
-void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, PluginBoolean * plugin) {
-  plugin->selectType(0);
+void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, void * plugin) {
+  ((PluginBoolean*)plugin)->selectType(0);
 }
-void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, PluginBoolean * plugin) {
-  plugin->selectType(1);
+void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, void * plugin) {
+  ((PluginBoolean*)plugin)->selectType(1);
 }
 
 void pluginBooleanMainButton(Graphics::ElemHwnd elem, void* editor) {
@@ -52,7 +52,7 @@ int PluginBoolean::guiEventManager(gui_event evt, int mx, int my, set<key_locati
 }
 
 void PluginBoolean::onAdded() {
-  _config = Graphics::createPanel("objectPluginBooleanConfigPanel", fullContainer, 0x00000000);
+  _config = Graphics::createPanel("objectPluginBooleanConfigPanel", fullContainer, 0x00000000, NULL);
   Graphics::setElements(_config, "html/booleanToolbar.xml");
 
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSelectLhs"))->data = this;
@@ -62,13 +62,13 @@ void PluginBoolean::onAdded() {
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSubtractButton"))->data = this;
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanIntersectButton"))->data = this;*/
 
-  _toolbarElement = Graphics::createButton("objectPluginBooleanMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "*", -1, pluginBooleanMainButton, (void*)_editor);
+  _toolbarElement = Graphics::createButton("objectPluginBooleanMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "*", -1, pluginBooleanMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = Graphics::createPanel("objectPluginBooleanIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanUnionButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "+", -1, pluginBooleanUnionButton, (void*)this, "union", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanSubtractButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "-", -1, pluginBooleanSubtractButton, (void*)this, "subtract", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanIntersectButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "*", -1, pluginBooleanIntersectButton, (void*)this, "intersect", "html/icons.ilf"));
+  _ribbonElement = Graphics::createPanel("objectPluginBooleanIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, NULL);
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanUnionButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "+", -1, pluginBooleanUnionButton, "union", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanSubtractButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "-", -1, pluginBooleanSubtractButton, "subtract", "html/icons.ilf"));
+  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanIntersectButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "*", -1, pluginBooleanIntersectButton, "intersect", "html/icons.ilf"));
   /*Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
   Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
 }
