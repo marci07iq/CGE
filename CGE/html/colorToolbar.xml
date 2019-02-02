@@ -45,12 +45,11 @@
 		</location>Select color</label>	
 		<div
 			id = "objectPluginColorCanvasContainer"
-			callback = "pluginColorCanvasContainer"
 		>
 			<location>
 				<bot
-					rel="1.0"
-					abs="-260.0"
+					rel="0.0"
+					abs="0.0"
 				></bot>
 				<top
 					rel="1.0"

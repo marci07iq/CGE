@@ -18,7 +18,7 @@ void Object::drawEdges() {
 
 }
 
-bool Object::intersectRay(fVec3 from, fVec3 dir, float & at) {
+bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
   return false;
 }
 
@@ -44,7 +44,7 @@ void Object_Raw::upload() {
   compile();
 
   float* vert = new float[3 * 3 * _mesh.faces()];
-  float* col = new float[3 * 3 * _mesh.faces()];
+  float* col = new float[3 * 4 * _mesh.faces()];
   float* light = new float[3 * _mesh.faces()];
 
   for (int i = 0; i < _mesh.faces(); i++) {
@@ -57,9 +57,9 @@ void Object_Raw::upload() {
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 2)).norm(),
       vec3<double>(1, 2, 3).norm());
 
-    insertColor(col, 9 * i + 0, _mesh._color[i]);
-    insertColor(col, 9 * i + 3, _mesh._color[i]);
-    insertColor(col, 9 * i + 6, _mesh._color[i]);
+    insertColor(col, 12 * i + 0, _mesh._color[i]);
+    insertColor(col, 12 * i + 4, _mesh._color[i]);
+    insertColor(col, 12 * i + 8, _mesh._color[i]);
   }
 
   glGenBuffers(1, &_obj_pos_vbo);
@@ -68,7 +68,7 @@ void Object_Raw::upload() {
 
   glGenBuffers(1, &_obj_col_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_col_vbo);
-  glBufferData(GL_ARRAY_BUFFER, _mesh.faces() * 3 * 3 * sizeof(float), col, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, _mesh.faces() * 4 * 3 * sizeof(float), col, GL_STATIC_DRAW);
   
   glGenBuffers(1, &_obj_lig_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_lig_vbo);
@@ -81,13 +81,13 @@ void Object_Raw::upload() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_col_vbo);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
   glEnableVertexAttribArray(2);
   glBindBuffer(GL_ARRAY_BUFFER, _obj_lig_vbo);
   glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, NULL);
 
   delete[_mesh.faces() * 3 * 3] vert;
-  delete[_mesh.faces() * 3 * 3] col;
+  delete[_mesh.faces() * 4 * 3] col;
   delete[_mesh.faces() * 3] light;
 
   //Edges
@@ -202,8 +202,8 @@ void Object_Raw::setCube(fVec3 radius, fVec3 center) {
     _mesh.setColor(0xffff00ff);
 }
 
-bool Object_Raw::intersectRay(fVec3 from, fVec3 dir, float & at) {
-  return _mesh.intersectRay(from, dir, at);
+bool Object_Raw::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
+  return _mesh.intersectRay(from, dir, at, faceId);
 }
 
 void Object_Raw::applyTransform(Eigen::Matrix4d trans) {

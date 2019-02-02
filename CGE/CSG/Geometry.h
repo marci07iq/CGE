@@ -14,7 +14,7 @@ struct Mesh {
 
   fVec3 vertex(int face, int side);
 
-  bool intersectRay(fVec3 from, fVec3 dir, float & at);
+  bool intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId);
 
   void setColor(colorargb to);
 

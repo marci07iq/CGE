@@ -155,7 +155,7 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   //modview.read(worldM);
 
   camview.setIdentity();
-  camview.project(CONS_PI / 2, (bx - ax)*1.0f / (by - ay), 256, 0.01);
+  camview.project(CONS_PI / 3, (bx - ax)*1.0f / (by - ay), 256, 0.01);
   //camview.ortho(ax, bx, ay, by, 256, 0.01);
   //camview.transpose();
   camview.read(view.projection);

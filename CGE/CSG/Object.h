@@ -26,7 +26,7 @@ public:
   virtual void draw();
   virtual void drawEdges();
 
-  virtual bool intersectRay(fVec3 from, fVec3 dir, float& at);
+  virtual bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);
 };
 
 class Object_Raw : public Object {
@@ -61,7 +61,7 @@ public:
 
   void setColor(colorargb to);
 
-  bool intersectRay(fVec3 from, fVec3 dir, float& at);
+  bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);
 
   void applyTransform(Eigen::Matrix4d trans);
 };

@@ -33,7 +33,7 @@ fVec3 Mesh::vertex(int face, int side) {
   return fVec3(pos_3(0), pos_3(1), pos_3(2));
 }
 
-bool Mesh::intersectRay(fVec3 from, fVec3 dir, float & at) {
+bool Mesh::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
   bool intersectAny = false;
   for (int i = 0; i < faces(); i++) {
     fVec3 va = vertex(i, 0);
@@ -50,7 +50,10 @@ bool Mesh::intersectRay(fVec3 from, fVec3 dir, float & at) {
       dot(crs(vc - vb, pos - vb), n) > 0 &&
       dot(crs(va - vc, pos - vc), n) > 0) {
       intersectAny = true;
-      at = min(at, inter);
+      if (inter < at) {
+        at = inter;
+        faceId = i;
+      }
     }
 
   }

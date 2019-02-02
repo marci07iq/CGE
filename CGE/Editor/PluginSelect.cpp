@@ -65,7 +65,8 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
 
   for (auto&& it : _editor->objs) {
     float nDist = INFINITY;
-    if (it->intersectRay(_editor->view.cameraEye, raydir, nDist)) {
+    int nFace;
+    if (it->intersectRay(_editor->view.cameraEye, raydir, nDist, nFace)) {
       if (0 < nDist && nDist < dist) {
         dist = nDist;
         highlightedObject = it;

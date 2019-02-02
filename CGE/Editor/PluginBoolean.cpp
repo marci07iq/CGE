@@ -167,6 +167,9 @@ void PluginBoolean::selectType(int group) {
   _partSelectors[_activeSelector]->onDeactivated();
   _partSelectors[group]->onActivated();
   _activeSelector = group;
+
+  ((Graphics::ButtonHwnd)(_config->getElementById("objectPluginBooleanSelectLhs")))->stuck = (group == 0);
+  ((Graphics::ButtonHwnd)(_config->getElementById("objectPluginBooleanSelectRhs")))->stuck = (group == 1);
 }
 
 EditorPlugin * createPluginBoolean(Editor * e, bool staticInit) {

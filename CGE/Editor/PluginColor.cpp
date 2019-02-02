@@ -34,6 +34,25 @@ void pluginColorMainButton(Graphics::ElemHwnd elem, void* editor) {
 }
 
 int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+  _editor->beginObjectDraw();
+  for (auto&& it : _editor->objs) {
+    if (it == highlightedObject) {
+      _editor->drawObject(it, 0x30ffffff, 1);
+    } else {
+      _editor->drawObject(it);
+    }
+  }
+  _editor->endObjectDraw();
+
+  _editor->beginEdgeDraw();
+  for (auto&& it : _editor->objs) {
+    if (it == highlightedObject) {
+      _editor->drawEdge(it, 0xff303030);
+    } else {
+      _editor->drawEdge(it, 0xff000000);  
+    }
+  }
+  _editor->endEdgeDraw();
   return 0;
 }
 int PluginColor::resizeManager(int x, int y) {
@@ -43,20 +62,76 @@ int PluginColor::mouseEntryManager(int state) {
   return 0;
 }
 int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+  GLdouble pos3D_ax = 0, pos3D_ay = 0, pos3D_az = 0;
+
+  //cout << 2.0*(x -  _editor->view.viewport[0])/ _editor->view.viewport[2]-1 << " " << 2.0*(y - _editor->view.viewport[1]) / _editor->view.viewport[3] - 1 << endl;
+
+  // get 3D coordinates based on window coordinates
+  gluUnProject(x, y, 0,
+    _editor->view.model_view, _editor->view.projection, _editor->view.viewport,
+    &pos3D_ax, &pos3D_ay, &pos3D_az);
+
+  vec3<double> raydir = vec3<double>{ pos3D_ax, pos3D_ay, pos3D_az } -_editor->view.cameraEye;
+
+  float dist = INFINITY;
+  shared_ptr<Object> oldhighlight = highlightedObject;
+  highlightedObject = NULL;
+
+  for (auto&& it : _editor->objs) {
+    float nDist = INFINITY;
+    int nFace = -1;
+    if (it->intersectRay(_editor->view.cameraEye, raydir, nDist, nFace)) {
+      if (0 < nDist && nDist < dist) {
+        dist = nDist;
+        highlightedObject = it;
+        selectedFace = nFace;
+      }
+    }
+  }
+
+  if (oldhighlight != highlightedObject) {
+    return 1;
+  }
   return 0;
 }
 int PluginColor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+  if (in && evt._type == evt.evt_down && evt._key._type == evt._key.type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+    if (highlightedObject != NULL) {
+      if (_mode == DrawMode_Fill) {
+        highlightedObject->_mesh.setColor(_color);
+        highlightedObject->upload();
+      }
+      if (_mode == DrawMode_Paint) {
+        highlightedObject->_mesh._color[selectedFace] = _color;
+        highlightedObject->upload();
+      }
+      if (_mode == DrawMode_Pick) {
+        _color = highlightedObject->_mesh._color[selectedFace];
+        HSV__col = HSV__rgb2hsv(_color);
+      }
+    }
+    return 1;
+  }
   return 0;
 }
 
 void PluginColor::paintColor() {
   _mode = DrawMode_Paint;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreatePaintIcon")))->stuck = true;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateFillIcon")))->stuck = false;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateSampleIcon")))->stuck = false;
 }
 void PluginColor::fillColor() {
   _mode = DrawMode_Fill;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreatePaintIcon")))->stuck = false;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateFillIcon")))->stuck = true;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateSampleIcon")))->stuck = false;
 }
 void PluginColor::sampleColor() {
   _mode = DrawMode_Pick;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreatePaintIcon")))->stuck = false;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateFillIcon")))->stuck = false;
+  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginCreateSampleIcon")))->stuck = true;
 }
 
 void PluginColor::onAdded() {
@@ -96,9 +171,8 @@ void PluginColor::onDeactivated() {
 
 int PluginColor::HSV__renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down) {
   //draw color wheel
-  float wheelRadius = min(bx-ax, by-ay)*HSV__radiusMult;
-  
-  fVec2 center = fVec2((bx+ax)/2.0, (by+ay)/2.0);
+  float wheelRadius = min(bx - ax, by - ay)*HSV__radiusMult;
+  fVec2 center = fVec2((bx + ax) / 2.0, by - (bx - ax) / 2.0);
 
   float delta = 15;
 
@@ -185,8 +259,8 @@ int PluginColor::HSV__mouseEntryManager(Canvas* me, int state) {
 
 }
 int PluginColor::HSV__mouseMoveManager(Canvas* me, int x, int y, int ox, int oy, set<key_location>& down, bool in) {
-  fVec2 center = fVec2((me->cbx + me->cax) / 2.0, (me->cby + me->cay) / 2.0);
   float wheelRadius = min(me->cbx - me->cax, me->cby - me->cay)*HSV__radiusMult;
+  fVec2 center = fVec2((me->cbx + me->cax) / 2.0, me->cby - (me->cbx - me->cax) / 2.0);
 
   if (HSV__rotating) {
     HSV__col.x = 180.0 / CONS_PI * fmodf(atan2(x - center.x, y - center.y) + CONS_TWO_PI, CONS_TWO_PI);
@@ -207,17 +281,16 @@ int PluginColor::HSV__mouseMoveManager(Canvas* me, int x, int y, int ox, int oy,
     _color = HSV__hsv2rgb(HSV__col, (_color & 0xff000000) >> 24);
   }
   if (HSV__alpha) {
-    int new_alpha = 255*min(max((x - center.x + 1.1 * wheelRadius) / (1.8 * wheelRadius), 0.), 1.);
+    int new_alpha = 255*min(max((x - center.x) / (1.8 * wheelRadius) + 0.5, 0.), 1.);
     _color = new_alpha << 24 | (_color & 0xffffff);
   }
   return 1;
 }
 int PluginColor::HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down, bool in) {
   if(evt._key._type == evt._key.type_mouse&& evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if(evt._type == evt.evt_down) {
+    if(in && evt._type == evt.evt_down) {
       float wheelRadius = min(me->cbx - me->cax, me->cby - me->cay)*HSV__radiusMult;
-
-      fVec2 center = fVec2((me->cbx + me->cax) / 2.0, (me->cby + me->cay) / 2.0);
+      fVec2 center = fVec2((me->cbx + me->cax) / 2.0, me->cby - (me->cbx - me->cax) / 2.0);
   
       float vecLength = (fVec2(mx, my) - center).length();
 
@@ -232,20 +305,22 @@ int PluginColor::HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my,
       if (band(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius) <= fVec2(mx, my) & fVec2(mx, my) <= center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius))) {
         HSV__alpha = true;
       }
+      return 3;
     }
     if (evt._type == evt.evt_up) {
       HSV__rotating = false;
       HSV__in_tri = false;
       HSV__alpha = false;
     }
+    return 1;
   }
-
-  return 1;
+  return 0;
 }
 
 fVec3 PluginColor::HSV__rgb2hsv(colorargb val) {
   //255RGB -> 360H,255SV
-  fVec3 rgb = fVec3((val && 0xff0000) >> 16, (val && 0xff00) >> 8, (val && 0xff) >> 0);
+  fVec3 rgb = fVec3((val & 0xff0000) >> 16, (val & 0xff00) >> 8, (val & 0xff) >> 0);
+  //cout << rgb << endl;
   double      min, max, delta;
   fVec3 res;
 

@@ -24,6 +24,7 @@
 		<button
 			id = "objectPluginBooleanSelectLhs"
 			callback = "pluginBooleanSelectLhs"
+			activecolor = "#ffdf2020"
 		>
 			<location>
 				<bot
@@ -46,6 +47,7 @@
 		<button
 			id = "objectPluginBooleanSelectRhs"
 			callback = "pluginBooleanSelectRhs"
+			activecolor = "#ff2020df"
 		>
 			<location>
 				<bot
