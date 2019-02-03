@@ -112,6 +112,50 @@
 				></right>
 			</location>Save</button>
 		<button
+			id = "objectEditorMenuImportButton"
+			callback = "editorMenuImportButton"
+		>
+			<location>
+				<bot
+					rel="0.0"
+					abs="0.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="0.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="150.0"
+				></left>
+				<right
+					rel="0.0"
+					abs="200.0"
+				></right>
+			</location>Import</button>
+			<button
+			id = "objectEditorMenuExportButton"
+			callback = "editorMenuExportButton"
+		>
+			<location>
+				<bot
+					rel="0.0"
+					abs="0.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="0.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="200.0"
+				></left>
+				<right
+					rel="0.0"
+					abs="250.0"
+				></right>
+			</location>Export</button>
+		<button
 			id = "objectEditorMenuSettingsButton"
 			callback = "editorMenuSettingsButton"
 		>

@@ -18,7 +18,7 @@ void pluginCreateDoneButton(Graphics::ElemHwnd sender, void* plugin);
 class PluginCreate : public EditorPlugin {
   public:
 
-    shared_ptr<Object_Raw> _temp;
+    shared_ptr<Object> _temp;
 
     Transpose _temp_movement;
 

@@ -88,7 +88,7 @@ void PluginCreate::newObject(bool keep) {
 
     _editor->objs.push_back(_temp);
   }
-  _temp = make_shared<Object_Raw>();
+  _temp = make_shared<Object>();
 }
 
 void PluginCreate::onAdded() {

@@ -49,36 +49,38 @@ void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, 
   _toolbar = sidebar;
   _config = config;
 
-  shared_ptr<Object_Raw> o1 = make_shared<Object_Raw>();
+  shared_ptr<Object> o1 = make_shared<Object>();
   o1->setCube({1,1,1},{0,0,0});
-  o1->setColor(0xffff0000);
+  o1->setColor(0xff808080);
+  o1->upload();
+  objs.push_back(o1);
 
   /*o1->upload();
-  objs.push_back(o1);*/
+  objs.push_back(o1);
 
-  shared_ptr<Object_Raw> o2 = make_shared<Object_Raw>();
+  /*shared_ptr<Object> o2 = make_shared<Object>();
   o2->setCube({ 2,0.5,0.2 }, { 0,0,0 });
   o2->setColor(0xff00ff00);
 
   /*o2->upload();
-  objs.push_back(o2);*/
+  objs.push_back(o2);
 
-  shared_ptr<Object_Raw> o4 = make_shared<Object_Raw>();
+  shared_ptr<Object> o4 = make_shared<Object>();
   Mesh::booleanSubtract({&o1->_mesh}, { &o2->_mesh }, o4->_mesh);
   o4->upload();
   objs.push_back(o4);
 
-  shared_ptr<Object_Raw> o3 = make_shared<Object_Raw>();
+  shared_ptr<Object> o3 = make_shared<Object>();
   o3->setCube({ 0.2,1,2 }, { 0,1,0 });
   o3->setColor(0xff0000ff);
 
   o3->upload();
   objs.push_back(o3);
 
-  shared_ptr<Object_Raw> o5 = make_shared<Object_Raw>();
+  shared_ptr<Object> o5 = make_shared<Object>();
   o5->_mesh.readPly("../_TRASH/Model.ply");
   o5->upload();
-  objs.push_back(o5);
+  objs.push_back(o5);*/
 
   staticInit();
 }

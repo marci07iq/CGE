@@ -5,6 +5,10 @@ new			0 0 1 1
 save		1 0 1 1
 open		2 0 1 1
 close		3 0 1 1
+maximize	4 0 1 1
+minimize	5 0 1 1
+import		6 0 1 1
+export		7 0 1 1
 
 selectall	8 0 1 1
 deselect	9 0 1 1

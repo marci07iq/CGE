@@ -2,8 +2,8 @@
 
 //#include <igl/read_triangle_mesh.h>
 //#include <igl/readOFF.h>
-#include <igl/readPLY.h>
-#include <igl/writePLY.h>
+//#include <igl/readPLY.h>
+//#include <igl/writePLY.h>
 //#include <igl/readMESH.h>
 
 #include <igl/copyleft/cgal/CSGTree.h>
@@ -159,28 +159,29 @@ void Mesh::applyTransform(Eigen::Matrix4d trans) {
   }
 }
 
-void Mesh::readPly(const string filename) {
-  Eigen::MatrixXd N, UV;
-  Eigen::Matrix<uint8_t, -1, -1> VC, FC;
+void Mesh::readPly(istream& f) {
+  vector<ply_vertex_pos> _poss;
+  vector<colorargb> _vcols;
+  vector<ply_face_coords> _faces;
 
-  if (!igl::readPLY(filename, _V, _F, N, UV, VC, FC)) {
-    cout << "Mesh read failed." << endl;
+  read_ply(f, _poss, _vcols, _faces);
+
+  _V.resize(_poss.size(), 3);
+  _F.resize(_faces.size(), 3);
+  _color.resize(_faces.size(), 0xffff00ff);
+
+  for (size_t v = 0; v < _poss.size(); v++) {
+    _V.block<1,3>(v, 0) << _poss[v].x, _poss[v].y, _poss[v].z;
   }
 
-  if (_F.cols() != 3) {
-    cout << "Only triangles supported. sry" << endl;
+  for (size_t f = 0; f < _faces.size(); f++) {
+    _F.block<1, 3>(f, 0) << _faces[f].i, _faces[f].j, _faces[f].k;
+    if (_vcols.size()) {
+      _color[f] = _vcols[_faces[f].i];
+    }
   }
 
-
-  colorargb base;
-  if (VC.rows() != 0) {
-    cout << "Currenty only face colored meshes are supported, but we will try." << endl;
-    base = 0xff000000 + 0x10000 * VC(0, 0) + 0x100 * VC(0, 1) + 0x1 * VC(0, 2);
-  }
-
-  _color.resize(_F.rows(), base);
-
-  if (FC.rows() == _F.rows()) {
+  /*if (FC.rows() == _F.rows()) {
     for (size_t f = 0; f < _F.rows(); f++) {
       _color[f] = 0xff000000 + 0x10000 * FC(f, 0) + 0x100 * FC(f, 1) + 0x1 * FC(f, 2);
     }
@@ -188,55 +189,33 @@ void Mesh::readPly(const string filename) {
     for (size_t f = 0; f < _F.rows(); f++) {
       _color[f] = 0xff000000 + 0x10000 * VC(_F(f, 0), 0) + 0x100 * VC(_F(f, 0), 1) + 0x1 * VC(_F(f, 0), 2);
     }
-  }
+  }*/
 }
 
-void Mesh::writePly(const string filename, bool saveFaceColor) {
-  Eigen::MatrixXd N, UV;
-  Eigen::Matrix<uint8_t, -1, -1> VC, FC;
+void Mesh::writePly(ostream& f, bool saveFaceColor, bool ascii) {
+  vector<ply_vertex_pos> _poss;
+  vector<colorargb> _vcols;
+  vector<ply_face_coords> _faces;
 
-  if(!saveFaceColor) {
-    VC.resize(_F.rows() * 3, 3);
+  _poss.resize(_F.rows() * 3);
+  _vcols.resize(_F.rows() * 3);
     
-    Eigen::MatrixXd V;
-    V.resize(_F.rows() * 3, 3);
+  _faces.resize(_F.rows());
+   
 
-    Eigen::MatrixXi F;
-    F.resize(_F.rows(), 3);
-    
-    for (size_t f = 0; f < _F.rows(); f++) {
-      colorargb tmp = _color[f];
-      VC(3 * f + 0, 0) = (tmp & 0xff0000) >> 16;
-      VC(3 * f + 0, 1) = (tmp & 0x00ff00) >> 8;
-      VC(3 * f + 0, 2) = (tmp & 0x0000ff) >> 0;
+  for (size_t f = 0; f < _F.rows(); f++) {
+    colorargb tmp = _color[f];
 
-      VC(3 * f + 1, 0) = (tmp & 0xff0000) >> 16;
-      VC(3 * f + 1, 1) = (tmp & 0x00ff00) >> 8;
-      VC(3 * f + 1, 2) = (tmp & 0x0000ff) >> 0;
+    _vcols[3 * f + 0] =
+    _vcols[3 * f + 1] =
+    _vcols[3 * f + 2] = tmp;
 
-      VC(3 * f + 2, 0) = (tmp & 0xff0000) >> 16;
-      VC(3 * f + 2, 1) = (tmp & 0x00ff00) >> 8;
-      VC(3 * f + 2, 2) = (tmp & 0x0000ff) >> 0;
+    _poss[3 * f + 0] = { float(_V(_F(f, 0), 0)), float(_V(_F(f, 0), 1)) , float(_V(_F(f, 0), 2)) };
+    _poss[3 * f + 1] = { float(_V(_F(f, 1), 0)), float(_V(_F(f, 1), 1)) , float(_V(_F(f, 1), 2)) };
+    _poss[3 * f + 2] = { float(_V(_F(f, 2), 0)), float(_V(_F(f, 2), 1)) , float(_V(_F(f, 2), 2)) };
 
-      V.block<1, 3>(3 * f + 0, 0) = _V.block<1, 3>(_F(f, 0), 0);
-      V.block<1, 3>(3 * f + 1, 0) = _V.block<1, 3>(_F(f, 1), 0);
-      V.block<1, 3>(3 * f + 2, 0) = _V.block<1, 3>(_F(f, 2), 0);
-
-      F.block<1, 3>(f, 0) << 3*f, 3*f+1, 3*f+2;
-    }
-
-    igl::writePLY(filename, V, F, N, UV, VC, FC, false);
-  } else {
-    FC.resize(_F.rows(), 3);
-    
-    for (size_t f = 0; f < _F.rows(); f++) {
-      colorargb tmp = _color[f];
-      FC(f, 0) = (tmp & 0xff0000) >> 16;
-      FC(f, 1) = (tmp & 0x00ff00) >> 8;
-      FC(f, 2) = (tmp & 0x0000ff) >> 0;
-    }
-    igl::writePLY(filename, _V, _F, N, UV, VC, FC, false);
+    _faces[f] = {uint32_t(3*f), uint32_t(3*f+1), uint32_t(3*f+2)};
   }
 
-  
+  write_ply(f, _poss, _vcols, _faces, !ascii);
 }

@@ -4,11 +4,19 @@
 
 class Object {
 public:
-  virtual string getType() {
-    return "Object";
-  }
+  bool _toDelete = false;
 
-  bool _toDelete;
+  GLuint _obj_vao = 0;
+  GLuint _obj_pos_vbo = 0;
+  GLuint _obj_col_vbo = 0;
+  GLuint _obj_lig_vbo = 0;
+
+  GLuint _edge_vao = 0;
+  GLuint _edge_a_vbo = 0;
+  GLuint _edge_b_vbo = 0;
+  GLuint _edge_c_vbo = 0;
+  GLuint _edge_d_vbo = 0;
+  GLuint _edge_t_vbo = 0;
 
   //Object* _up;
 
@@ -16,23 +24,34 @@ public:
 
   //Constructor
   Object();
+  void setCube(fVec3 radius, fVec3 center);
 
   //VAO build
-  virtual void compile();
-  virtual void upload();
-  virtual void clean();
+  void compile();
+  void upload();
+  void clean();
 
   //Render
-  virtual void draw();
-  virtual void drawEdges();
+  void draw();
+  void drawEdges();
 
-  virtual bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);
+  //IO
+  void set(const DataElement* from);
+  const void get(DataElement* to);
+
+  //Modify
+  void setColor(colorargb to);
+  void applyTransform(Eigen::Matrix4d trans);
+
+  //Query
+  bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);
+
 };
 
-class Object_Raw : public Object {
+/*class Object : public Object {
 public:
   virtual string getType() {
-    return "Object_Raw";
+    return "Object";
   }
 
   GLuint _obj_vao = 0;
@@ -47,7 +66,7 @@ public:
   GLuint _edge_d_vbo = 0;
   GLuint _edge_t_vbo = 0;
 
-  Object_Raw();
+  Object();
 
   void compile();
   void upload();
@@ -64,7 +83,7 @@ public:
   bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);
 
   void applyTransform(Eigen::Matrix4d trans);
-};
+};*/
 
 /*class Object_CSG {
 public:

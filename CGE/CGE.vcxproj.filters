@@ -183,6 +183,9 @@
     <ClCompile Include="Editor\PluginColor.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
+    <ClCompile Include="CSG\Ply.cpp">
+      <Filter>Source Files\CSG</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Programming\NGin\Network\Compress.h">
@@ -376,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="Editor\PluginColor.h">
       <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="CSG\Ply.h">
+      <Filter>Source Files\CSG</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

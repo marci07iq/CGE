@@ -17,6 +17,8 @@ class PluginColor : public EditorPlugin {
     shared_ptr<Object> highlightedObject;
     int selectedFace = -1;
 
+    bool painting = false;
+
     PluginColor(Editor* e) : EditorPlugin(e) {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }

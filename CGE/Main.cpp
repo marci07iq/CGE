@@ -17,16 +17,39 @@ void editorMenuNewButton(Graphics::ElemHwnd sender, void* data) {
 }
 void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
   cout << "OPEN" << endl;
-  string file = openFileSelector("Select file", {{"Polygon File (*.ply)","*.ply"},{ "Any file (*.*)","*.*" } });
+  string file = openFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } });
   if (file.length()) {
-    shared_ptr<Object_Raw> newObj = make_shared<Object_Raw>();
-    newObj->_mesh.readPly(file);
-    newObj->upload();
-    mainEditor.objs.push_back(newObj);
+    DataElement* data = new DataElement();
+    loadFromFile(data, file);
+    for(auto&& it : data->_children) {
+      shared_ptr<Object> newObj = make_shared<Object>();
+      newObj->set(it);
+      newObj->upload();
+      mainEditor.objs.push_back(newObj);
+    }
+    delete data;
+  } else {
+    cout << "Cancelled" << endl;
   }
 }
 void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
   cout << "SAVE" << endl;
+  string file = saveFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } });
+  if (file.length()) {
+    DataElement* fileData = new DataElement();
+    for (auto&& it : mainEditor.objs) {
+      DataElement* filePart = new DataElement();
+      it->get(filePart);
+      fileData->addChild(filePart);
+    }
+    saveToFile(fileData, file);
+    
+  } else {
+    cout << "Cancelled" << endl;
+  }
+}
+void editorMenuExportButton(Graphics::ElemHwnd sender, void* data) {
+  cout << "EXPORT" << endl;
   string file = saveFileSelector("Select file", { { "Polygon File (*.ply)","*.ply" } });
   if (file.length()) {
     Mesh compact;
@@ -35,7 +58,23 @@ void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
       meshPtrs.push_back(&(it->_mesh));
     }
     compactOperation(meshPtrs, compact);
-    compact.writePly(file, false);
+    ofstream outFile(file, ios::binary);
+    compact.writePly(outFile, false, true);
+  } else {
+    cout << "Cancelled" << endl;
+  }
+}
+void editorMenuImportButton(Graphics::ElemHwnd sender, void* data) {
+  cout << "IMPORT" << endl;
+  string file = openFileSelector("Select file", { { "Polygon File (*.ply)","*.ply" },{ "Any file (*.*)","*.*" } });
+  if (file.length()) {
+    shared_ptr<Object> newObj = make_shared<Object>();
+    ifstream inFile(file, ios::binary);
+    newObj->_mesh.readPly(inFile);
+    newObj->upload();
+    mainEditor.objs.push_back(newObj);
+  } else {
+    cout << "Cancelled" << endl;
   }
 }
 void settingsWindowSetup(Graphics::WinHwnd win) {
@@ -151,6 +190,8 @@ void initGraphics() {
   Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
   Graphics::setName<ClickCallback>("editorMenuOpenButton", editorMenuOpenButton);
   Graphics::setName<ClickCallback>("editorMenuSaveButton", editorMenuSaveButton);
+  Graphics::setName<ClickCallback>("editorMenuExportButton", editorMenuExportButton);
+  Graphics::setName<ClickCallback>("editorMenuImportButton", editorMenuImportButton);
   Graphics::setName<ClickCallback>("editorMenuSettingsButton", editorMenuSettingsButton);
   Graphics::setName<ClickCallback>("editorMenuExitButton", editorMenuExitButton);
 

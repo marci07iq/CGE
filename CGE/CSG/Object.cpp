@@ -4,42 +4,14 @@ Object::Object() {
 
 }
 
-void Object::compile() {
-
-}
-void Object::upload() {
-
-}
-
-void Object::draw() {
-
-}
-void Object::drawEdges() {
-
-}
-
-bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
-  return false;
-}
-
-void Object::clean() {
-
-}
-
-
-
-Object_Raw::Object_Raw() {
-
-}
-
-void Object_Raw::setColor(colorargb to) {
+void Object::setColor(colorargb to) {
   _mesh.setColor(to);
 }
 
-void Object_Raw::compile() {
+void Object::compile() {
   
 }
-void Object_Raw::upload() {
+void Object::upload() {
   clean();
   compile();
 
@@ -161,18 +133,39 @@ void Object_Raw::upload() {
   delete[_o._edges.size() * 2 * 1] vert_r;*/
 }
 
-void Object_Raw::draw() {
+void Object::draw() {
   if (_obj_vao != 0) {
     glBindVertexArray(_obj_vao);
     glDrawArrays(GL_TRIANGLES, 0, _mesh.faces() * 3);
   }
 }
-void Object_Raw::drawEdges() {
+void Object::drawEdges() {
   /*glBindVertexArray(_edge_vao);
   glDrawArrays(GL_LINES, 0, _o._edges.size() * 2);*/
 }
 
-void Object_Raw::setCube(fVec3 radius, fVec3 center) {
+//IO
+
+void Object::set(const DataElement * from) {
+  std::stringbuf ss;
+  ss.sputn(reinterpret_cast<const char*>(from->_core->_data), from->_core->_len);
+  istream inPart(&ss);
+  _mesh.readPly(inPart);
+}
+
+const void Object::get(DataElement * to) {
+  std::stringbuf ss;
+  ostream outPart(&ss);
+  _mesh.writePly(outPart, false, false);
+
+  string str = ss.str();
+
+  delete to->_core;
+  to->_core = new DataPair(str.length());
+  memcpy(to->_core->_data, str.c_str(), str.length());
+}
+
+void Object::setCube(fVec3 radius, fVec3 center) {
   _mesh._V = Eigen::Matrix<double, 8,3>();
   _mesh._V <<
     center.x - radius.x, center.y - radius.y, center.z - radius.z,
@@ -202,16 +195,16 @@ void Object_Raw::setCube(fVec3 radius, fVec3 center) {
     _mesh.setColor(0xffff00ff);
 }
 
-bool Object_Raw::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
+bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
   return _mesh.intersectRay(from, dir, at, faceId);
 }
 
-void Object_Raw::applyTransform(Eigen::Matrix4d trans) {
+void Object::applyTransform(Eigen::Matrix4d trans) {
   _mesh.applyTransform(trans);
   upload();
 }
 
-void Object_Raw::clean() {
+void Object::clean() {
   if (_obj_pos_vbo) {
     glDeleteBuffers(1, &_obj_pos_vbo);
     _obj_pos_vbo = 0;

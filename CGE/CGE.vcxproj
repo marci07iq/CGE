@@ -168,6 +168,7 @@
     <ClCompile Include="..\NGin\GUI\Texture.cpp" />
     <ClCompile Include="CSG\Geometry.cpp" />
     <ClCompile Include="CSG\Object.cpp" />
+    <ClCompile Include="CSG\Ply.cpp" />
     <ClCompile Include="Editor\Editor.cpp" />
     <ClCompile Include="Editor\Framework.cpp" />
     <ClCompile Include="Editor\PluginBoolean.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="..\NGin\GUI\Texture.h" />
     <ClInclude Include="CSG\Geometry.h" />
     <ClInclude Include="CSG\Object.h" />
+    <ClInclude Include="CSG\Ply.h" />
     <ClInclude Include="Defs.h" />
     <ClInclude Include="Editor\Editor.h" />
     <ClInclude Include="Editor\Framework.h" />

@@ -94,7 +94,7 @@ void PluginBoolean::onDeactivated() {
 }
 
 void PluginBoolean::booleanUnion() {
-  shared_ptr<Object_Raw> newObj = make_shared<Object_Raw>();
+  shared_ptr<Object> newObj = make_shared<Object>();
   
   list<Mesh*> lhs;
   for (auto&& it : _partSelectors[0]->selectedObjects) {
@@ -117,7 +117,7 @@ void PluginBoolean::booleanUnion() {
   _editor->objs.push_back(newObj);
 }
 void PluginBoolean::booleanSubtract() {
-  shared_ptr<Object_Raw> newObj = make_shared<Object_Raw>();
+  shared_ptr<Object> newObj = make_shared<Object>();
 
   list<Mesh*> lhs;
   for (auto&& it : _partSelectors[0]->selectedObjects) {
@@ -140,7 +140,7 @@ void PluginBoolean::booleanSubtract() {
   _editor->objs.push_back(newObj);
 }
 void PluginBoolean::booleanIntersect() {
-  shared_ptr<Object_Raw> newObj = make_shared<Object_Raw>();
+  shared_ptr<Object> newObj = make_shared<Object>();
 
   list<Mesh*> lhs;
   for (auto&& it : _partSelectors[0]->selectedObjects) {

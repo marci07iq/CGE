@@ -89,26 +89,37 @@ int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location
     }
   }
 
+  if (highlightedObject!=NULL && _mode == DrawMode_Paint && painting) {
+    highlightedObject->_mesh._color[selectedFace] = _color;
+    highlightedObject->upload();
+    return 3;
+  }
+
   if (oldhighlight != highlightedObject) {
     return 1;
   }
+
+
   return 0;
 }
 int PluginColor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
-  if (in && evt._type == evt.evt_down && evt._key._type == evt._key.type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if (highlightedObject != NULL) {
+  if (in && evt._key._type == evt._key.type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+    if (evt._type == evt.evt_down && highlightedObject != NULL) {
       if (_mode == DrawMode_Fill) {
         highlightedObject->_mesh.setColor(_color);
-        highlightedObject->upload();
-      }
-      if (_mode == DrawMode_Paint) {
-        highlightedObject->_mesh._color[selectedFace] = _color;
         highlightedObject->upload();
       }
       if (_mode == DrawMode_Pick) {
         _color = highlightedObject->_mesh._color[selectedFace];
         HSV__col = HSV__rgb2hsv(_color);
       }
+      if (_mode == DrawMode_Paint) {
+        painting = true;
+        mouseMoveManager(mx, my, mx, my, down, in);
+      }
+    }
+    if (evt._type == evt.evt_up) {
+      painting = false;
     }
     return 1;
   }
@@ -305,6 +316,7 @@ int PluginColor::HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my,
       if (band(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius) <= fVec2(mx, my) & fVec2(mx, my) <= center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius))) {
         HSV__alpha = true;
       }
+      HSV__mouseMoveManager(me, mx, my, mx, my, down, in);
       return 3;
     }
     if (evt._type == evt.evt_up) {

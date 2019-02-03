@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Defs.h"
+#include "Ply.h"
 
 struct Mesh {
   Eigen::MatrixXd _V;
@@ -24,8 +24,8 @@ struct Mesh {
 
   void applyTransform(Eigen::Matrix4d trans);
  
-  void readPly(const string filename);
-  void writePly(const string filename, bool saveFaceColor = true);
+  void readPly(istream& f);
+  void writePly(ostream& f, bool saveFaceColor, bool ascii);
 };
 
 void compactOperation(list<Mesh*> parts, Mesh& res);

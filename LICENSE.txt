@@ -19,7 +19,21 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#############################################################################
+########################### TINYPLY ###################################
+/*
+ * tinyply 2.2 (https://github.com/ddiakopoulos/tinyply)
+ *
+ * A single-header, zero-dependency (except the C++ STL) public domain implementation 
+ * of the PLY mesh file format. Requires C++11; errors are handled through exceptions.
+ *
+ * This software is in the public domain. Where that dedication is not
+ * recognized, you are granted a perpetual, irrevocable license to copy,
+ * distribute, and modify this file as you see fit.
+ *
+ * Authored by Dimitri Diakopoulos (http://www.dimitridiakopoulos.com)
+ */
+
+################### 3RD PARTY (NOT DISTRIBUTED) ##########################
 Libraries used:
 
 NGin https://github.com/marci07iq/NGin
@@ -27,8 +41,8 @@ Download separately
 
 LibIGL https://github.com/libigl/libigl
 Download separately (commit e699d257fe860d4fd82709835e72438bd0cd1533 used)
-Modified code files, list of modifications included in IGL/
 
 LibIGL dependancies (Eigen, CGal, and thus GMP, Boost) must also be installed separately.
 Follow LibIGL instructions.
 Paths to appropriate include folders and .lib/.dll files must be specified in project properies.
+
