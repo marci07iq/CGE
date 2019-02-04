@@ -11,6 +11,7 @@ class PluginColor : public EditorPlugin {
       DrawMode_Fill,
       DrawMode_Pick
     };
+
     DrawMode _mode;
     colorargb _color;
 

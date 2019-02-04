@@ -40,6 +40,18 @@ void pluginCreateCylinderIcon(Graphics::ElemHwnd elem, void* plugin) {
 }
 
 
+void PluginCreate::staticInit() {
+  Graphics::setName<TextInputFunc>("pluginCreatePositionXInput", pluginCreatePositionXInput);
+  Graphics::setName<TextInputFunc>("pluginCreatePositionYInput", pluginCreatePositionYInput);
+  Graphics::setName<TextInputFunc>("pluginCreatePositionZInput", pluginCreatePositionZInput);
+
+  Graphics::setName<TextInputFunc>("pluginCreateSizeXInput", pluginCreateSizeXInput);
+  Graphics::setName<TextInputFunc>("pluginCreateSizeYInput", pluginCreateSizeYInput);
+  Graphics::setName<TextInputFunc>("pluginCreateSizeZInput", pluginCreateSizeZInput);
+
+  Graphics::setName<ClickCallback>("pluginCreateDoneButton", pluginCreateDoneButton);
+}
+
 int PluginCreate::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
@@ -81,7 +93,7 @@ void PluginCreate::newObject(bool keep) {
     double transMatrix[16];
     //_temp_movement.transpose();
     _temp_movement.read(transMatrix);
-    _temp_movement.setIdentity();
+    //_temp_movement.setIdentity();
 
     Eigen::Matrix4d mat = Eigen::Map<Eigen::Matrix4d>(transMatrix);
     _temp->applyTransform(mat);
@@ -143,6 +155,17 @@ void PluginCreate::createCube() {
 void PluginCreate::createSphere() {
   newObject(false);
   hideConfig();
+}
+
+void PluginCreate::onMoveInput(float value, int axis) {
+  //_temp->_mesh._transform(axis, 3) = value;
+  //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
+  _temp_movement.matrix[3][axis] = value;
+}
+void PluginCreate::onResizeInput(float value, int axis) {
+  //_temp->_mesh._transform(axis, 3) = value;
+  //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
+  _temp_movement.matrix[axis][axis] = value;
 }
 
 EditorPlugin * createPluginCreate(Editor * e, bool staticInit) {

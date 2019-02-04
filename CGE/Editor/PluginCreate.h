@@ -27,17 +27,7 @@ class PluginCreate : public EditorPlugin {
       _temp = NULL;
     }
 
-    static void staticInit() {
-      Graphics::setName<TextInputFunc>("pluginCreatePositionXInput", pluginCreatePositionXInput);
-      Graphics::setName<TextInputFunc>("pluginCreatePositionYInput", pluginCreatePositionYInput);
-      Graphics::setName<TextInputFunc>("pluginCreatePositionZInput", pluginCreatePositionZInput);
-
-      Graphics::setName<TextInputFunc>("pluginCreateSizeXInput", pluginCreateSizeXInput);
-      Graphics::setName<TextInputFunc>("pluginCreateSizeYInput", pluginCreateSizeYInput);
-      Graphics::setName<TextInputFunc>("pluginCreateSizeZInput", pluginCreateSizeZInput);
-
-      Graphics::setName<ClickCallback>("pluginCreateDoneButton", pluginCreateDoneButton);
-    }
+    static void staticInit();
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
     int resizeManager(int x, int y);
@@ -63,16 +53,8 @@ class PluginCreate : public EditorPlugin {
       _editor->_config->elements.clear();
     }
 
-    void onMoveInput(float value, int axis) {
-      //_temp->_mesh._transform(axis, 3) = value;
-      //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
-      _temp_movement.matrix[3][axis] = value;
-    }
-    void onResizeInput(float value, int axis) {
-      //_temp->_mesh._transform(axis, 3) = value;
-      //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
-      _temp_movement.matrix[axis][axis] = value;
-    }
+    void onMoveInput(float value, int axis);
+    void onResizeInput(float value, int axis);
   };
 
 EditorPlugin* createPluginCreate(Editor* e, bool staticInit);

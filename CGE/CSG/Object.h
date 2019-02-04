@@ -24,6 +24,9 @@ public:
 
   //Constructor
   Object();
+  Object(Mesh& _from);
+  ~Object();
+
   void setCube(fVec3 radius, fVec3 center);
 
   //VAO build

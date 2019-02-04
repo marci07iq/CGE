@@ -1,0 +1,232 @@
+<body>
+	<div
+		id = "objectPluginObjectMove"
+		bgcolor = "#BF2D2D30"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="0.0"
+			></bot>
+			<top
+				rel="1.0"
+				abs="0.0"
+			></top>
+			<left
+				rel="0.0"
+				abs="0.0"
+			></left>
+			<right
+				rel="0.0"
+				abs="200.0"
+			></right>
+		</location>
+		<label
+			id = "objectPluginObjectMovePositionLabel"
+			align = "0"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-60.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-30.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+		</location>Position</label>
+		<input
+			id = "objectPluginObjectMovePositionXInput"
+			inputfunc = "pluginObjectMovePositionXInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-80.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-60.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+		<input
+			id = "objectPluginObjectMovePositionYInput"
+			inputfunc = "pluginObjectMovePositionYInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-100.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-80.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+		<input
+			id = "objectPluginObjectMovePositionZInput"
+			inputfunc = "pluginObjectMovePositionZInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-120.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-100.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+			
+		<label
+			id = "objectPluginObjectMoveSizeLabel"
+			align = "0"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-180.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-150.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+		</location>Size</label>
+		<input
+			id = "objectPluginObjectMoveSizeXInput"
+			inputfunc = "pluginObjectMoveSizeXInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-200.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-180.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+		<input
+			id = "objectPluginObjectMoveSizeYInput"
+			inputfunc = "pluginObjectMoveSizeYInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-220.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-200.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+		<input
+			id = "objectPluginObjectMoveSizeZInput"
+			inputfunc = "pluginObjectMoveSizeZInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-240.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-220.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>1</input>
+			
+			
+		<button
+			id = "objectPluginObjectMoveDoneButton"
+			callback = "pluginObjectMoveDoneButton"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-300.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-270.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>Done</button>
+	</div>
+</body>

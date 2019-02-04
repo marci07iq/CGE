@@ -4,6 +4,14 @@ Object::Object() {
 
 }
 
+Object::Object(Mesh & _from) {
+  _mesh = _from;
+}
+
+Object::~Object() {
+  clean();
+}
+
 void Object::setColor(colorargb to) {
   _mesh.setColor(to);
 }
