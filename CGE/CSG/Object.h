@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Geometry.h"
+#include "../Renderer/Transpose.h"
+
+//#include "../Renderer/Transpose.h"
 
 class Object {
 public:
@@ -21,6 +23,7 @@ public:
   //Object* _up;
 
   Mesh _mesh;
+  Transform _offset;
 
   //Constructor
   Object();
@@ -28,6 +31,7 @@ public:
   ~Object();
 
   void setCube(fVec3 radius, fVec3 center);
+  void setCylinder(fVec3 radius, fVec3 center);
 
   //VAO build
   void compile();
@@ -44,7 +48,7 @@ public:
 
   //Modify
   void setColor(colorargb to);
-  void applyTransform(Eigen::Matrix4d trans);
+  void bakeTransform();
 
   //Query
   bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);

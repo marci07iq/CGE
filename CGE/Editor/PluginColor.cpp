@@ -13,7 +13,7 @@ namespace pluginColorHSVCanvas {
   int mouseMoveManager(Canvas* me, int x, int y, int ox, int oy, set<key_location>& down) {
     return ((PluginColor*)me->data)->HSV__mouseMoveManager(me, x, y, ox, oy, down, me->isIn(x, y));
   }
-  int guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down) {
+  int guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down) {
     return ((PluginColor*)me->data)->HSV__guiEventManager(me, evt, mx, my, down, me->isIn(mx, my));
   }
 }
@@ -37,9 +37,9 @@ int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (it == highlightedObject) {
-      _editor->drawObject(it, 0x30ffffff, 1);
+      _editor->drawObject(it, it->_offset.matrix, 0x30ffffff, 1);
     } else {
-      _editor->drawObject(it);
+      _editor->drawObject(it, it->_offset.matrix);
     }
   }
   _editor->endObjectDraw();
@@ -47,9 +47,9 @@ int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>
   _editor->beginEdgeDraw();
   for (auto&& it : _editor->objs) {
     if (it == highlightedObject) {
-      _editor->drawEdge(it, 0xff303030);
+      _editor->drawEdge(it, it->_offset.matrix, 0xff303030);
     } else {
-      _editor->drawEdge(it, 0xff000000);  
+      _editor->drawEdge(it, it->_offset.matrix, 0xff000000);
     }
   }
   _editor->endEdgeDraw();
@@ -102,9 +102,10 @@ int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location
 
   return 0;
 }
-int PluginColor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginColor::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
   if (in && evt._key._type == evt._key.type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if (evt._type == evt.evt_down && highlightedObject != NULL) {
+    if (!evt.captured && evt._type == evt.evt_down && highlightedObject != NULL) {
+      evt.captured = true;
       if (_mode == DrawMode_Fill) {
         highlightedObject->_mesh.setColor(_color);
         highlightedObject->upload();
@@ -297,9 +298,9 @@ int PluginColor::HSV__mouseMoveManager(Canvas* me, int x, int y, int ox, int oy,
   }
   return 1;
 }
-int PluginColor::HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginColor::HSV__guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
   if(evt._key._type == evt._key.type_mouse&& evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if(in && evt._type == evt.evt_down) {
+    if(!evt.captured && in && evt._type == evt.evt_down) {
       float wheelRadius = min(me->cbx - me->cax, me->cby - me->cay)*HSV__radiusMult;
       fVec2 center = fVec2((me->cbx + me->cax) / 2.0, me->cby - (me->cbx - me->cax) / 2.0);
   
@@ -307,17 +308,20 @@ int PluginColor::HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my,
 
       if (wheelRadius * HSV__innerMult <= vecLength && vecLength <= wheelRadius) {
         HSV__rotating = true;
+        evt.captured = true;
       }
 
       if (vecLength <= wheelRadius * HSV__triMult) {
         HSV__in_tri = true;
+        evt.captured = true;
       }
 
       if (band(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius) <= fVec2(mx, my) & fVec2(mx, my) <= center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius))) {
         HSV__alpha = true;
+        evt.captured = true;
       }
       HSV__mouseMoveManager(me, mx, my, mx, my, down, in);
-      return 3;
+      return 1;
     }
     if (evt._type == evt.evt_up) {
       HSV__rotating = false;

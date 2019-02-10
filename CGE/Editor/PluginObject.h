@@ -7,7 +7,7 @@ class PluginObject : public EditorPlugin {
   public:
     PluginSelect* selectorPlugin;
 
-    Transpose _temp_movement;
+    Transform _temp_movement;
 
     list<shared_ptr<Object>> _clipboard;
 
@@ -21,7 +21,7 @@ class PluginObject : public EditorPlugin {
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
     int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in);
+    int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
 
     string getClassName() {
       return "PluginBoolean";
@@ -40,7 +40,12 @@ class PluginObject : public EditorPlugin {
     void onDone();
 
     void onMoveInput(float value, int axis);
+
+    fVec3 _scale = fVec3(1, 1, 1);
+    fVec3 _rot = fVec3(0, 0, 0);
     void onResizeInput(float value, int axis);
+    void onRotateInput(float value, int axis);
+    void recalcUpperBlock();
   };
 
 EditorPlugin* createPluginObject(Editor* e, bool staticInit);

@@ -31,7 +31,7 @@ public:
     return 0;
   }
   //virtual void doCarve();
-  virtual int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+  virtual int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
     return 0;
   }
 

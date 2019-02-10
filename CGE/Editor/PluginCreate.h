@@ -20,7 +20,7 @@ class PluginCreate : public EditorPlugin {
 
     shared_ptr<Object> _temp;
 
-    Transpose _temp_movement;
+    Transform _temp_movement;
 
     PluginCreate(Editor* e) : EditorPlugin(e) {
       //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
@@ -33,7 +33,7 @@ class PluginCreate : public EditorPlugin {
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
     int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in);
+    int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
 
     string getClassName() {
       return "PluginCreate";
@@ -49,9 +49,7 @@ class PluginCreate : public EditorPlugin {
 
     void createCube();
     void createSphere();
-    void createCylinder() {
-      _editor->_config->elements.clear();
-    }
+    void createCylinder();
 
     void onMoveInput(float value, int axis);
     void onResizeInput(float value, int axis);

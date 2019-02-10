@@ -22,7 +22,7 @@ namespace MainGameCanvas {
   int mouseMoveManager(Canvas* me, int x, int y, int ox, int oy, set<key_location>& down) {
     return mainEditor.mouseMoveManager(x, y, ox, oy, down, me->isIn(x, y));
   }
-  int guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down) {
+  int guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down) {
     return mainEditor.guiEventManager(evt, mx, my, down, me->isIn(mx, my));
   }
   /*void doCarve() {

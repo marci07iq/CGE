@@ -204,8 +204,7 @@
 					abs="0.0"
 				></right>
 			</location>1</input>
-			
-			
+		
 		<button
 			id = "objectPluginCreateDoneButton"
 			callback = "pluginCreateDoneButton"

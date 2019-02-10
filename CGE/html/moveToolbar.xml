@@ -206,9 +206,9 @@
 			</location>1</input>
 			
 			
-		<button
-			id = "objectPluginObjectMoveDoneButton"
-			callback = "pluginObjectMoveDoneButton"
+		<label
+			id = "objectPluginObjectRotationLabel"
+			align = "0"
 		>
 			<location>
 				<bot
@@ -218,6 +218,99 @@
 				<top
 					rel="1.0"
 					abs="-270.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+		</location>Rotation</label>
+		<input
+			id = "objectPluginObjectRotationTiltInput"
+			inputfunc = "pluginObjectRotationTiltInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-320.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-300.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+		<input
+			id = "objectPluginObjectRotationDirInput"
+			inputfunc = "pluginObjectRotationDirInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-340.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-320.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+		<input
+			id = "objectPluginObjectRotationTurnInput"
+			inputfunc = "pluginObjectRotationTurnInput"
+			validatorfunc = "floatValidator"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-360.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-340.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>0</input>
+			
+			
+		<button
+			id = "objectPluginObjectMoveDoneButton"
+			callback = "pluginObjectMoveDoneButton"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-420.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-390.0"
 				></top>
 				<left
 					rel="0.0"

@@ -383,6 +383,9 @@
     <ClInclude Include="CSG\Ply.h">
       <Filter>Source Files\CSG</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Programming\NGin\rapidxml\manual.html">
@@ -424,5 +427,21 @@
     <None Include="Renderer\Core.frag">
       <Filter>Source Files\Renderer\Shaders</Filter>
     </None>
+    <None Include="Editor\Checkboard.frag">
+      <Filter>Source Files\Editor</Filter>
+    </None>
+    <None Include="Editor\Checkboard.vert">
+      <Filter>Source Files\Editor</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CGE.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CGE.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

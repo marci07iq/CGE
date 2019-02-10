@@ -11,6 +11,9 @@ GLuint Editor::_edgeShader_transform;
 GLuint Editor::_edgeShader_cam_eye;
 GLuint Editor::_edgeShader_color;
 
+Shader Editor::_checkShader;
+GLuint Editor::_checkShader_transform;
+
 Texture Editor::_editorIcons;
 //Plugin types
 map<string, PluginCreator> Editor::_pluginTypes;
@@ -40,6 +43,9 @@ void Editor::staticInit() {
     //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
     _edgeShader_cam_eye = glGetUniformLocation(_edgeShader._pID, "cam_eye");
     _edgeShader_color = glGetUniformLocation(_edgeShader._pID, "color");
+
+    _checkShader.create("Editor/Checkboard");
+    _checkShader_transform = glGetUniformLocation(_checkShader._pID, "transform");
   }
 }
 
@@ -157,7 +163,7 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   //modview.read(worldM);
 
   camview.setIdentity();
-  camview.project(CONS_PI / 3, (bx - ax)*1.0f / (by - ay), 256, 0.01);
+  camview.project(CONS_PI / 3, (bx - ax)*1.0f / (by - ay), viewOffset.r*256, viewOffset.r*0.01);
   //camview.ortho(ax, bx, ay, by, 256, 0.01);
   //camview.transpose();
   camview.read(view.projection);
@@ -171,26 +177,74 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
     res |= _currentPlugin->renderManager(ax, ay, bx, by, down);
   }
 
+  GLuint quadVbo_pos;
+  GLuint quadVbo_uv;
+  GLuint quadVao;
+
+  float scale = pow(10, round(log10(viewOffset.r / 5)));
+
+  float base[18] = {
+  -50 * scale, -50 * scale, 0,
+  -50 * scale,  50 * scale, 0,
+   50 * scale,  50 * scale, 0,
+   50 * scale,  50 * scale, 0,
+   50 * scale, -50 * scale, 0,
+  -50 * scale, -50 * scale, 0 };
+  float uv[12] = {
+  -50, -50,
+  -50,  50,
+   50,  50,
+   50,  50,
+   50, -50,
+  -50, -50 };
+
+  glGenBuffers(1, &quadVbo_pos);
+  glBindBuffer(GL_ARRAY_BUFFER, quadVbo_pos);
+  glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(float), base, GL_STATIC_DRAW);
+
+  glGenBuffers(1, &quadVbo_uv);
+  glBindBuffer(GL_ARRAY_BUFFER, quadVbo_uv);
+  glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), uv, GL_STATIC_DRAW);
+
+  glGenVertexArrays(1, &quadVao);
+  glBindVertexArray(quadVao);
+
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, quadVbo_pos);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+  glEnableVertexAttribArray(1);
+  glBindBuffer(GL_ARRAY_BUFFER, quadVbo_uv);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+  _checkShader.bind();
+
+  if (_checkShader_transform != -1) {
+    float readMatrix[16];
+    camview.read(readMatrix);
+
+    glUniformMatrix4fv(_checkShader_transform, 1, false, readMatrix);
+  }
+
+  glBindVertexArray(quadVao);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+
+  _checkShader.unbind();
+
+  glDeleteBuffers(1, &quadVbo_pos);
+  glDeleteBuffers(1, &quadVbo_uv);
+  glDeleteVertexArrays(1, &quadVao);
+
   Graphics::resetViewport();
 
   return res;
 
 }
 
-void Editor::beginObjectDraw(Transpose objectTransform) {
+void Editor::beginObjectDraw() {
   _baseShader.bind();
-
-  Transpose objview;
-  objview.matrix = camview.matrix * objectTransform.matrix;
-  float readMatrix[16];
-  objview.read(readMatrix);
-
-  if (_baseShader_transform != -1) {
-    glUniformMatrix4fv(_baseShader_transform, 1, false, readMatrix);
-  }
-
 }
-void Editor::drawObject(shared_ptr<Object> what, colorargb mix, float resAlpha) {
+void Editor::drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix, float resAlpha) {
   glUniform4f(_baseShader_mix_color,
     ((mix >> 16) & 0xff) / 255.0,
     ((mix >> 8) & 0xff) / 255.0,
@@ -200,6 +254,10 @@ void Editor::drawObject(shared_ptr<Object> what, colorargb mix, float resAlpha) 
   glUniform1f(_baseShader_res_alpha,
     resAlpha);
 
+  Matrix4f fullTransform = camview.matrix * objectTransform;
+
+  glUniformMatrix4fv(_baseShader_transform, 1, true, fullTransform._vals);
+
   what->draw();
 }
 void Editor::endObjectDraw() {
@@ -208,12 +266,6 @@ void Editor::endObjectDraw() {
 
 void Editor::beginEdgeDraw() {
   _edgeShader.bind();
-
-  if (_edgeShader_transform != -1) {
-    float readcamera[16];
-    camview.read(readcamera);
-    glUniformMatrix4fv(_edgeShader_transform, 1, false, readcamera);
-  }
 
   /*if (_edgeShader_transform2 != -1) {
     glUniformMatrix4fv(_edgeShader_transform2, 1, false, cameraM);
@@ -227,12 +279,16 @@ void Editor::beginEdgeDraw() {
   glUniform4f(_edgeShader_color, 0, 0, 0, 1);
   }*/
 }
-void Editor::drawEdge(shared_ptr<Object> what, colorargb edge) {
+void Editor::drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb edge) {
   glUniform4f(_edgeShader_color,
     ((edge >> 16) & 0xff) / 255.0,
     ((edge >> 8) & 0xff) / 255.0,
     ((edge >> 0) & 0xff) / 255.0,
     ((edge >> 24) & 0xff) / 255.0);
+
+  Matrix4f fullTransform = camview.matrix * objectTransform;
+
+  glUniformMatrix4fv(_edgeShader_transform, 1, true, fullTransform._vals);
 
   what->drawEdges();
 }
@@ -306,7 +362,7 @@ int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& do
   return res;
 }
 
-int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int Editor::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
   int res = 0;
   if (_currentPlugin) {
     res |= _currentPlugin->guiEventManager(evt, mx, my, down, in);
@@ -317,15 +373,16 @@ int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& do
 
 
   if (evt._key._type == evt._key.type_mouse) {
-    if (evt._type == evt.evt_down && in) {
+    if (!evt.captured && evt._type == evt.evt_down && in) {
       if (evt._key._keycode == 1) {
         turnDown = true;
+        evt.captured = true;
         return 1;
       }
       if (evt._key._keycode == 0) {
         drawDown = true;
         //polyRays.clear();
-
+        evt.captured = true;
         return 1;
       }
     }
@@ -341,12 +398,14 @@ int Editor::guiEventManager(gui_event evt, int mx, int my, set<key_location>& do
       }
     }
   }
-  if (evt._key._type == evt._key.type_wheel) {
+  if (!evt.captured && evt._key._type == evt._key.type_wheel) {
     viewOffset.r *= 1 - 0.03*evt._key._keycode;
+    viewOffset.r = min(max(viewOffset.r, 0.0001), 10000.0);
+    evt.captured = true;
     return 1;
   }
   if (evt._key._type == evt._key.type_key) {
-    if (evt._type == evt.evt_pressed) {
+    if (!evt.captured && evt._type == evt.evt_pressed) {
       if (evt._key._keycode == 'c') {
         //doCarve();
         //polyRays.clear();

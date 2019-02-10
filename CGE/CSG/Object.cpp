@@ -202,13 +202,61 @@ void Object::setCube(fVec3 radius, fVec3 center) {
 
     _mesh.setColor(0xffff00ff);
 }
+void Object::setCylinder(fVec3 radius, fVec3 center) {
+  const static int parts = 20;
+  
+  _mesh._V = Eigen::Matrix<double, 2 * parts + 2, 3>();
+  _mesh._F = Eigen::Matrix<int, 4 * parts, 3>();
 
-bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
-  return _mesh.intersectRay(from, dir, at, faceId);
+  _mesh._V.block<1, 3>(2 * parts, 0) << center.x, center.y, center.z - radius.z;
+  _mesh._V.block<1, 3>(2 * parts + 1, 0) << center.x, center.y, center.z + radius.z;
+
+  for (int i = 0; i < parts; i++) {
+    fVec3 lowPos = center + radius * fVec3( cos(i * CONS_TWO_PI / parts), sin(i * CONS_TWO_PI / parts),-1 );
+    _mesh._V.block<1, 3>(i, 0) << lowPos.x, lowPos.y, lowPos.z;
+    fVec3 highPos = center + radius * fVec3(cos(i * CONS_TWO_PI / parts), sin(i * CONS_TWO_PI / parts), 1 );
+    _mesh._V.block<1, 3>(i + parts, 0) << highPos.x, highPos.y, highPos.z;
+
+    _mesh._F.block<1, 3>(i + 0 * parts, 0) << i, 2 * parts, (i + 1) % parts;
+    _mesh._F.block<1, 3>(i + 1 * parts, 0) << (i + 1) % parts, i + parts, i;
+    _mesh._F.block<1, 3>(i + 2 * parts, 0) << i + parts, (i + 1) % parts, (i + 1) % parts + parts;
+    _mesh._F.block<1, 3>(i + 3 * parts, 0) << (i + 1) % parts + parts, 2 * parts + 1, i + parts;
+  }
+
+  _mesh.setColor(0xffff00ff);
 }
 
-void Object::applyTransform(Eigen::Matrix4d trans) {
-  _mesh.applyTransform(trans);
+bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
+  Eigen::Matrix4f inv = Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(_offset.matrix._vals).inverse();
+  float oDirLen = dir.length();
+
+  fVec3 from_t = fVec3 (
+    from.x * inv(0,0) + from.y * inv(0,1) + from.z * inv(0,2) + inv(0,3),
+    from.x * inv(1,0) + from.y * inv(1,1) + from.z * inv(1,2) + inv(1,3),
+    from.x * inv(2,0) + from.y * inv(2,1) + from.z * inv(2,2) + inv(2,3)
+  );
+
+  fVec3 dir_t = fVec3(
+    dir.x * inv(0,0) + dir.y * inv(0,1) + dir.z * inv(0,2),
+    dir.x * inv(1,0) + dir.y * inv(1,1) + dir.z * inv(1,2),
+    dir.x * inv(2,0) + dir.y * inv(2,1) + dir.z * inv(2,2)
+  );
+
+  float rat = oDirLen / dir.length();
+
+  float lat = at * rat;
+  int res = _mesh.intersectRay(from_t, dir_t, lat, faceId);
+  float nat = lat / rat;
+  if (nat < at) {
+    at = nat;
+  }
+
+  return res;
+}
+
+void Object::bakeTransform() {
+  _mesh.applyTransform(Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(_offset.matrix._vals).cast<double>());
+  _offset.setIdentity();
   upload();
 }
 

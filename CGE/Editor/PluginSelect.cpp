@@ -15,9 +15,9 @@ int PluginSelect::renderSelection(int ax, int ay, int bx, int by, set<key_locati
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (selectedObjects.count(it) || it == highlightedObject) {
-      _editor->drawObject(it, 0x30ffffff, 1);
+      _editor->drawObject(it, it->_offset.matrix, 0x30ffffff, 1);
     } else {
-      _editor->drawObject(it, 0x00ffffff, 1);
+      _editor->drawObject(it, it->_offset.matrix, 0x00ffffff, 1);
     }
   }
   _editor->endObjectDraw();
@@ -26,15 +26,15 @@ int PluginSelect::renderSelection(int ax, int ay, int bx, int by, set<key_locati
   for (auto&& it : _editor->objs) {
     if (selectedObjects.count(it)) {
       if (it == highlightedObject) {
-        _editor->drawEdge(it, 0xffff3030);
+        _editor->drawEdge(it, it->_offset.matrix, 0xffff3030);
       } else {
-        _editor->drawEdge(it, 0xffff0000);
+        _editor->drawEdge(it, it->_offset.matrix, 0xffff0000);
       }
     } else {
       if (it == highlightedObject) {
-        _editor->drawEdge(it, 0xff404040);
+        _editor->drawEdge(it, it->_offset.matrix, 0xff404040);
       } else {
-        _editor->drawEdge(it, 0xff000000);
+        _editor->drawEdge(it, it->_offset.matrix, 0xff000000);
       }
     }
   }
@@ -79,15 +79,17 @@ int PluginSelect::mouseMoveManager(int x, int y, int ox, int oy, set<key_locatio
   }
   return 0;
 }
-int PluginSelect::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginSelect::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
 
   if (evt._key._type == evt._key.type_mouse) {
-    if (evt._type == evt.evt_pressed && in) {
+    if (!evt.captured && evt._type == evt.evt_pressed && in) {
       if (evt._key._keycode == 0) {
         if (!down.count(key_location(key(GLFW_KEY_LEFT_SHIFT, evt._key.type_key)))) {
+          evt.captured = true;
           selectedObjects.clear();
         }
         if (highlightedObject) {
+          evt.captured = true;
           selectedObjects.insert(highlightedObject);
         }
         /*polyRays.push_front(rayori);*/

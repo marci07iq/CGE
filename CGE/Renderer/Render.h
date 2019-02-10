@@ -19,5 +19,5 @@ namespace MainGameCanvas {
   int resizeManager(Canvas* me, int x, int y);
   int mouseEntryManager(Canvas* me, int state);
   int mouseMoveManager(Canvas* me, int x, int y, int ox, int oy, set<key_location>& down);
-  int guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down);
+  int guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down);
 }

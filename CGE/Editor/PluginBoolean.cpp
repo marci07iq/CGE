@@ -30,7 +30,7 @@ int PluginBoolean::renderManager(int ax, int ay, int bx, int by, set<key_locatio
     { 0xbfff3f3f , 0xbfff3f5f , 0xffffff00 }
   };
   for (auto&& it : _editor->objs) {
-    _editor->drawObject(it, cols
+    _editor->drawObject(it, it->_offset.matrix, cols
       [((_partSelectors[0]->highlightedObject == it && _activeSelector == 0) ? 2 : (_partSelectors[0]->selectedObjects.count(it) ? 1 : 0))]
       [((_partSelectors[1]->highlightedObject == it && _activeSelector == 1) ? 2 : (_partSelectors[1]->selectedObjects.count(it) ? 1 : 0))],
       1);
@@ -47,7 +47,7 @@ int PluginBoolean::mouseEntryManager(int state) {
 int PluginBoolean::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
   return _partSelectors[_activeSelector]->mouseMoveManager(x, y, ox, oy, down, in);
 }
-int PluginBoolean::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginBoolean::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
   return _partSelectors[_activeSelector]->guiEventManager(evt, mx, my, down, in);
 }
 

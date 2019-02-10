@@ -12,6 +12,18 @@ void createSettings(Graphics::TableHwnd& table) {
   }
 }
 
+void openFile(string file) {
+  DataElement* data = new DataElement();
+  loadFromFile(data, file);
+  for (auto&& it : data->_children) {
+    shared_ptr<Object> newObj = make_shared<Object>();
+    newObj->set(it);
+    newObj->upload();
+    mainEditor.objs.push_back(newObj);
+  }
+  delete data;
+}
+
 void editorMenuNewButton(Graphics::ElemHwnd sender, void* data) {
   cout << "NEW" << endl;
 }
@@ -19,22 +31,15 @@ void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
   cout << "OPEN" << endl;
   string file = openFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } });
   if (file.length()) {
-    DataElement* data = new DataElement();
-    loadFromFile(data, file);
-    for(auto&& it : data->_children) {
-      shared_ptr<Object> newObj = make_shared<Object>();
-      newObj->set(it);
-      newObj->upload();
-      mainEditor.objs.push_back(newObj);
-    }
-    delete data;
+    openFile(file);
   } else {
     cout << "Cancelled" << endl;
   }
 }
+
 void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
   cout << "SAVE" << endl;
-  string file = saveFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } });
+  string file = saveFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } }, "cmf");
   if (file.length()) {
     DataElement* fileData = new DataElement();
     for (auto&& it : mainEditor.objs) {
@@ -173,6 +178,9 @@ void mainWindowSetup(Graphics::WinHwnd win) {
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
   Gll::gllInit("../NGin/GUI/GLL_Res/");
@@ -212,8 +220,8 @@ void initGraphics() {
   Graphics::cleanQueues();
 }
 
-int main() {
-  setlocale(LC_ALL, "");
+int main(int argc, char *argv[]) {
+  setlocale(LC_ALL, "en_GB.UTF-8");
   srand(time(NULL));
   ran1(time(NULL));
 
@@ -237,6 +245,11 @@ int main() {
   mainEditor.findStaticPlugin("PluginColor");
 
   mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
+
+  if (argc > 1) {
+    cout << "Opening file " << argv[1] << endl;
+    openFile(string(argv[1]));
+  }
 
   Graphics::requestRedraw();
   Graphics::mainLoop();

@@ -20,6 +20,16 @@ void pluginObjectMoveSizeZInput(Graphics::ElemHwnd sender, void * plugin, string
   ((PluginObject*)plugin)->onResizeInput(strTo<float>(val), 2);
 }
 
+void pluginObjectRotationTiltInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginObject*)plugin)->onRotateInput(strTo<float>(val), 0);
+}
+void pluginObjectRotationDirInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginObject*)plugin)->onRotateInput(strTo<float>(val), 1);
+}
+void pluginObjectRotationTurnInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
+  ((PluginObject*)plugin)->onRotateInput(strTo<float>(val), 2);
+}
+
 void pluginObjectMoveDoneButton(Graphics::ElemHwnd sender, void* plugin) {
   ((PluginObject*)plugin)->onDone();
 }
@@ -54,6 +64,10 @@ void PluginObject::staticInit() {
   Graphics::setName<TextInputFunc>("pluginObjectMoveSizeYInput", pluginObjectMoveSizeYInput);
   Graphics::setName<TextInputFunc>("pluginObjectMoveSizeZInput", pluginObjectMoveSizeZInput);
 
+  Graphics::setName<TextInputFunc>("pluginObjectRotationTiltInput", pluginObjectRotationTiltInput);
+  Graphics::setName<TextInputFunc>("pluginObjectRotationDirInput", pluginObjectRotationDirInput);
+  Graphics::setName<TextInputFunc>("pluginObjectRotationTurnInput", pluginObjectRotationTurnInput);
+
   Graphics::setName<ClickCallback>("pluginObjectMoveDoneButton", pluginObjectMoveDoneButton);
 }
 
@@ -61,21 +75,20 @@ int PluginObject::renderManager(int ax, int ay, int bx, int by, set<key_location
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (selectorPlugin->selectedObjects.count(it)) {
-      _editor->drawObject(it, 0x80ff0000, 1);
+      _editor->drawObject(it, it->_offset.matrix, 0x80ff0000, 1);
     } else {
       if (selectorPlugin->highlightedObject == it) {
-        _editor->drawObject(it, 0x30ffffff, 1);
+        _editor->drawObject(it, it->_offset.matrix, 0x30ffffff, 1);
       } else {
-        _editor->drawObject(it, 0x00ff0000, 1);
+        _editor->drawObject(it, it->_offset.matrix, 0x00ff0000, 1);
       }
     }
   }
-  _editor->endObjectDraw();
-
-  _editor->beginObjectDraw(_temp_movement);
+  //_editor->setObjectTransform(_temp_movement);
   for (auto&& it : _editor->objs) {
     if (selectorPlugin->selectedObjects.count(it)) {
-      _editor->drawObject(it, 0x8000ff00, 1);
+      Matrix4f vals = it->_offset.matrix * _temp_movement.matrix;
+      _editor->drawObject(it, vals, 0x8000ff00, 1);
     }
   }
   _editor->endObjectDraw();
@@ -90,7 +103,7 @@ int PluginObject::mouseEntryManager(int state) {
 int PluginObject::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
   return selectorPlugin->mouseMoveManager(x, y, ox, oy, down, in);
 }
-int PluginObject::guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginObject::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
   return selectorPlugin->guiEventManager(evt, mx, my, down, in);
 }
 
@@ -106,6 +119,10 @@ void PluginObject::onAdded() {
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectMoveSizeYInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectMoveSizeZInput"))->data = this;
 
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectRotationTiltInput"))->data = this;
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectRotationDirInput"))->data = this;
+  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectRotationTurnInput"))->data = this;
+  
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginObjectMoveDoneButton"))->data = this;
 
   _toolbarElement = Graphics::createButton("objectPluginObjectMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "O", -1, pluginObjectMainButton);
@@ -163,15 +180,9 @@ void PluginObject::onMoveIcon() {
 }
 
 void PluginObject::onDone() {
-  double transMatrix[16];
-  //_temp_movement.transpose();
-  _temp_movement.read(transMatrix);
-  //_temp_movement.setIdentity();
-
-  Eigen::Matrix4d mat = Eigen::Map<Eigen::Matrix4d>(transMatrix);
-
   for (auto&& it : selectorPlugin->selectedObjects) {
-    it->applyTransform(mat);
+    it->_offset.applyTransform(_temp_movement);
+    it->upload();
   }
 
   selectorPlugin->selectedObjects.clear();
@@ -180,12 +191,56 @@ void PluginObject::onDone() {
 void PluginObject::onMoveInput(float value, int axis) {
   //_temp->_mesh._transform(axis, 3) = value;
   //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
-  _temp_movement.matrix[3][axis] = value;
+  _temp_movement.matrix.at(axis, 3) = value;
 }
 void PluginObject::onResizeInput(float value, int axis) {
   //_temp->_mesh._transform(axis, 3) = value;
   //_temp->upload(); //The extra matrix should be sent to the videocard. Oh well
-  _temp_movement.matrix[axis][axis] = value;
+  _scale[axis] = value;
+  recalcUpperBlock();
+}
+void PluginObject::onRotateInput(float value, int axis) {
+  _rot[axis] = value;
+  recalcUpperBlock();
+}
+
+void PluginObject::recalcUpperBlock() {
+  Transform t;
+  t.scale(_scale);
+
+  fVec3 axis = {
+  cos(_rot[1] / 180 * CONS_PI)*sin(_rot[0] / 180 * CONS_PI),
+  sin(_rot[1] / 180 * CONS_PI)*sin(_rot[0] / 180 * CONS_PI),
+  cos(_rot[0] / 180 * CONS_PI) };
+  
+  float cosTurn = cos(_rot[2] / 180 * CONS_PI);
+  float sinTurn = sin(_rot[2] / 180 * CONS_PI);
+
+  Transform rots;
+  float withf[16] = {
+    axis.x * axis.x * (1 - cosTurn) + cosTurn,
+    axis.x * axis.y * (1 - cosTurn) - axis.z * sinTurn,
+    axis.x * axis.z * (1 - cosTurn) + axis.y * sinTurn,
+    0,
+
+    axis.y * axis.x * (1 - cosTurn) + axis.z * sinTurn,
+    axis.y * axis.y * (1 - cosTurn) + cosTurn,
+    axis.y * axis.z * (1 - cosTurn) - axis.x * sinTurn,
+    0,
+
+    axis.z * axis.x * (1 - cosTurn) - axis.y * sinTurn,
+    axis.z * axis.y * (1 - cosTurn) + axis.x * sinTurn,
+    axis.z * axis.z * (1 - cosTurn) + cosTurn,
+    0,
+    0,0,0,1};
+  rots.matrix.set(withf);
+  t.matrix = rots.matrix * t.matrix;
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      _temp_movement.matrix.at(i, j) = t.matrix.at(i, j);
+    }
+  }
 }
 
 EditorPlugin * createPluginObject(Editor * e, bool staticInit) {

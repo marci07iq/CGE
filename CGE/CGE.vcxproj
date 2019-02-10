@@ -246,6 +246,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Renderer\Render.h" />
     <ClInclude Include="Renderer\Transpose.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Programming\NGin\GUI\GLL_Res\LegDraw.frag" />
@@ -256,11 +257,19 @@
     <None Include="..\..\..\..\Programming\NGin\Maths\BigNumberLibrary\Cbnl.inl" />
     <None Include="..\..\..\..\Programming\NGin\Maths\BigNumberLibrary\Cbnl64.inl" />
     <None Include="..\..\..\..\Programming\NGin\rapidxml\manual.html" />
+    <None Include="Editor\Checkboard.frag" />
+    <None Include="Editor\Checkboard.vert" />
     <None Include="Renderer\Core.frag" />
     <None Include="Renderer\Core.vert" />
     <None Include="Renderer\Edges.frag" />
     <None Include="Renderer\Edges.geom" />
     <None Include="Renderer\Edges.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CGE.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CGE.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

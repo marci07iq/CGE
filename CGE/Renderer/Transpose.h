@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../CSG/Object.h"
+#include "../CSG/Geometry.h"
 
-class Transpose {
+class Transform {
 public:
-  glm::mat4x4 matrix;
+  Matrix4<float> matrix;
 
   void setIdentity();
   void scale(fVec3 scale);
-  void transform(fVec3 transform);
+  void translate(fVec3 translate);
 
   void createLook(mVec3 from, sVec3 dir);
   void project(float fov, float aspectRatio, float zFar, float zNear);
@@ -18,5 +18,10 @@ public:
   void read(float* to);
   void read(double* to);
   void transpose();
-  Transpose();
+
+  void applyTransform(Transform& other) {
+    matrix = other.matrix * matrix;
+  }
+
+  Transform();
 };

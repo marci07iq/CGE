@@ -32,7 +32,7 @@ class PluginColor : public EditorPlugin {
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
     int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in);
+    int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
 
     string getClassName() {
       return "PluginColor";
@@ -51,7 +51,7 @@ class PluginColor : public EditorPlugin {
     int HSV__resizeManager    (Canvas* me, int x, int y);
     int HSV__mouseEntryManager(Canvas* me, int state);
     int HSV__mouseMoveManager (Canvas* me, int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int HSV__guiEventManager(Canvas* me, gui_event evt, int mx, int my, set<key_location>& down, bool in);
+    int HSV__guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down, bool in);
     fVec3 HSV__col;
 
     bool HSV__rotating;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Renderer/Transpose.h"
+#include "../CSG/Object.h"
 
 class EditorPlugin;
 class Editor;
@@ -22,6 +22,9 @@ public:
   static GLuint _edgeShader_cam_eye;
   static GLuint _edgeShader_color;
 
+  static Shader _checkShader;
+  static GLuint _checkShader_transform;
+
   //Plugin types
   static map<string, PluginCreator> _pluginTypes;
   static void registerPlugin(string name, PluginCreator creator);
@@ -42,10 +45,10 @@ public:
 
   OpenGLData view;
 
-  Transpose modview;
+  Transform modview;
   //float worldM[16];
 
-  Transpose camview;
+  Transform camview;
   //float cameraM[16];
 
   bool drawDown;
@@ -74,11 +77,11 @@ public:
 
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
 
-  void beginObjectDraw(Transpose objectTransform = Transpose());
-  void drawObject(shared_ptr<Object> what, colorargb mix = 0x00000000, float resAlpha = 1);
+  void beginObjectDraw();
+  void drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix = 0x00000000, float resAlpha = 1);
   void endObjectDraw();
   void beginEdgeDraw();
-  void drawEdge(shared_ptr<Object> what, colorargb edge = 0xff000000);
+  void drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb edge = 0xff000000);
   void endEdgeDraw();
 
   void removeObject(shared_ptr<Object> obj) {
@@ -89,7 +92,7 @@ public:
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);
   int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-  int guiEventManager(gui_event evt, int mx, int my, set<key_location>& down, bool in);
+  int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
 };
 
 enum Icons {
