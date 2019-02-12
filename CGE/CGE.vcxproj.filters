@@ -433,6 +433,15 @@
     <None Include="Editor\Checkboard.vert">
       <Filter>Source Files\Editor</Filter>
     </None>
+    <None Include="Renderer\SimpleLine.frag">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\SimpleLine.geom">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Renderer\SimpleLine.vert">
+      <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CGE.rc">

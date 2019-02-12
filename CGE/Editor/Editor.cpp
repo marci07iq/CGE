@@ -14,6 +14,14 @@ GLuint Editor::_edgeShader_color;
 Shader Editor::_checkShader;
 GLuint Editor::_checkShader_transform;
 
+Shader Editor::_lineShader;
+GLuint Editor::_lineShader_transform;
+GLuint Editor::_lineShader_cam_eye;
+
+GLuint Editor::_coordinate_vao;
+GLuint Editor::_coordinate_vbo_pos;
+GLuint Editor::_coordinate_vbo_col;
+
 Texture Editor::_editorIcons;
 //Plugin types
 map<string, PluginCreator> Editor::_pluginTypes;
@@ -46,6 +54,46 @@ void Editor::staticInit() {
 
     _checkShader.create("Editor/Checkboard");
     _checkShader_transform = glGetUniformLocation(_checkShader._pID, "transform");
+
+    _lineShader.create("Renderer/SimpleLine", 7);
+    _lineShader_transform = glGetUniformLocation(_lineShader._pID, "transform");
+    _lineShader_cam_eye = glGetUniformLocation(_lineShader._pID, "cam_eye");
+
+    float pos[18] = {
+      0, 0, 0,
+      1, 0, 0,
+      0, 0, 0,
+      0, 1, 0,
+      0, 0, 0,
+      0, 0, 1,
+    };
+    float col[24] = {
+      1, 0, 0, 1,
+      1, 0, 0, 1,
+      0, 1, 0, 1,
+      0, 1, 0, 1,
+      0, 0, 1, 1,
+      0, 0, 1, 1,
+    };
+
+    glGenBuffers(1, &_coordinate_vbo_pos);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_pos);
+    glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(float), pos, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &_coordinate_vbo_col);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_col);
+    glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), col, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &_coordinate_vao);
+    glBindVertexArray(_coordinate_vao);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_pos);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_col);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
   }
 }
 
@@ -177,6 +225,15 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
     res |= _currentPlugin->renderManager(ax, ay, bx, by, down);
   }
 
+  drawCoordinateSystem(ax, ay, bx, by);
+
+  Graphics::resetViewport();
+
+  return res;
+
+}
+void Editor::drawCoordinateSystem(int ax, int ay, int bx, int by) {
+  //Draw squares
   GLuint quadVbo_pos;
   GLuint quadVbo_uv;
   GLuint quadVao;
@@ -184,19 +241,19 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   float scale = pow(10, round(log10(viewOffset.r / 5)));
 
   float base[18] = {
-  -50 * scale, -50 * scale, 0,
-  -50 * scale,  50 * scale, 0,
-   50 * scale,  50 * scale, 0,
-   50 * scale,  50 * scale, 0,
-   50 * scale, -50 * scale, 0,
-  -50 * scale, -50 * scale, 0 };
+    -50 * scale, -50 * scale, 0,
+    -50 * scale,  50 * scale, 0,
+    50 * scale,  50 * scale, 0,
+    50 * scale,  50 * scale, 0,
+    50 * scale, -50 * scale, 0,
+    -50 * scale, -50 * scale, 0 };
   float uv[12] = {
-  -50, -50,
-  -50,  50,
-   50,  50,
-   50,  50,
-   50, -50,
-  -50, -50 };
+    -50, -50,
+    -50,  50,
+    50,  50,
+    50,  50,
+    50, -50,
+    -50, -50 };
 
   glGenBuffers(1, &quadVbo_pos);
   glBindBuffer(GL_ARRAY_BUFFER, quadVbo_pos);
@@ -235,10 +292,33 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   glDeleteBuffers(1, &quadVbo_uv);
   glDeleteVertexArrays(1, &quadVao);
 
-  Graphics::resetViewport();
+  //Draw mini image
+  glDepthRange(0.01, 10);
+  glClear(GL_DEPTH_BUFFER_BIT);
+  glDisable(GL_DEPTH_TEST);
 
-  return res;
+  glViewport(ax*0.2+bx*0.8, ay, (bx - ax)/5.0, (by - ay)/5.0);
 
+  _lineShader.bind();
+
+  Transform miniView;
+
+  float miniView_f[16];
+
+  fVec3 miniCamEye = viewOffset.toCartesian().norm() * 3;
+
+  miniView.createLook(miniCamEye, -viewOffset.toCartesian().norm());
+  miniView.project(CONS_PI / 3, (bx - ax)*1.0f / (by - ay), 10, 0.01);
+  //miniView.ortho(-2, 2, 2*(by-ay)*1.0/(bx-ax), -2 * (by - ay)*1.0 / (bx - ax), 10, 0.01);
+  miniView.read(miniView_f);
+
+  glUniform3f(_lineShader_cam_eye, miniCamEye.x, miniCamEye.y, miniCamEye.z);
+  glUniformMatrix4fv(_lineShader_transform, 1, false, miniView_f);
+
+  glBindVertexArray(_coordinate_vao);
+  glDrawArrays(GL_LINES, 0, 6);
+
+  _lineShader.unbind();
 }
 
 void Editor::beginObjectDraw() {

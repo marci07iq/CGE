@@ -15,6 +15,9 @@ void createSettings(Graphics::TableHwnd& table) {
 void openFile(string file) {
   DataElement* data = new DataElement();
   loadFromFile(data, file);
+  int version = -1;
+  vSFunc<int>(version, data);
+  cout << "File version: " << version << endl;
   for (auto&& it : data->_children) {
     shared_ptr<Object> newObj = make_shared<Object>();
     newObj->set(it);
@@ -42,6 +45,7 @@ void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
   string file = saveFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } }, "cmf");
   if (file.length()) {
     DataElement* fileData = new DataElement();
+    vGFunc(CGE_FILE_CMF_VERSION, fileData);
     for (auto&& it : mainEditor.objs) {
       DataElement* filePart = new DataElement();
       it->get(filePart);
@@ -177,9 +181,6 @@ void mainWindowSetup(Graphics::WinHwnd win) {
 
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 

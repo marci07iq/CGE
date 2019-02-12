@@ -25,6 +25,14 @@ public:
   static Shader _checkShader;
   static GLuint _checkShader_transform;
 
+  static Shader _lineShader;
+  static GLuint _lineShader_transform;
+  static GLuint _lineShader_cam_eye;
+
+  static GLuint _coordinate_vao;
+  static GLuint _coordinate_vbo_pos;
+  static GLuint _coordinate_vbo_col;
+
   //Plugin types
   static map<string, PluginCreator> _pluginTypes;
   static void registerPlugin(string name, PluginCreator creator);
@@ -74,8 +82,8 @@ public:
   void registerSidebar(Graphics::ElemHwnd elem);
   void removeSidebar(Graphics::ElemHwnd elem);
 
-
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
+  void drawCoordinateSystem(int ax, int ay, int bx, int by);
 
   void beginObjectDraw();
   void drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix = 0x00000000, float resAlpha = 1);

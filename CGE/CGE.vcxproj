@@ -264,6 +264,9 @@
     <None Include="Renderer\Edges.frag" />
     <None Include="Renderer\Edges.geom" />
     <None Include="Renderer\Edges.vert" />
+    <None Include="Renderer\SimpleLine.frag" />
+    <None Include="Renderer\SimpleLine.geom" />
+    <None Include="Renderer\SimpleLine.vert" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CGE.rc" />

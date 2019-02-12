@@ -213,10 +213,16 @@ void PluginObject::recalcUpperBlock() {
   sin(_rot[1] / 180 * CONS_PI)*sin(_rot[0] / 180 * CONS_PI),
   cos(_rot[0] / 180 * CONS_PI) };
   
+  float cosTilt = cos(_rot[0] / 180 * CONS_PI);
+  float sinTilt = sin(_rot[0] / 180 * CONS_PI);
+
+  float cosDir = cos(_rot[1] / 180 * CONS_PI);
+  float sinDir = sin(_rot[1] / 180 * CONS_PI);
+
   float cosTurn = cos(_rot[2] / 180 * CONS_PI);
   float sinTurn = sin(_rot[2] / 180 * CONS_PI);
 
-  Transform rots;
+  /*Transform rots;
   float withf[16] = {
     axis.x * axis.x * (1 - cosTurn) + cosTurn,
     axis.x * axis.y * (1 - cosTurn) - axis.z * sinTurn,
@@ -232,9 +238,64 @@ void PluginObject::recalcUpperBlock() {
     axis.z * axis.y * (1 - cosTurn) + axis.x * sinTurn,
     axis.z * axis.z * (1 - cosTurn) + cosTurn,
     0,
-    0,0,0,1};
+    0,0,0,1};*/
+
+  Transform rots;
+
+  float withf[16] = {
+    cosDir*cosTilt*cosTurn - sinDir*sinTurn,
+    (-cosTurn)*sinDir - cosDir*cosTilt*sinTurn,
+    (-cosDir)*sinTilt,
+    0,
+
+    cosTilt*cosTurn*sinDir + cosDir*sinTurn,
+    cosDir*cosTurn - cosTilt*sinDir*sinTurn,
+    (-sinDir)*sinTilt,
+    0,
+
+    cosTurn*sinTilt,
+    (-sinTilt)*sinTurn,
+    cosTilt,
+    0,
+
+    0,0,0,1
+  };
   rots.matrix.set(withf);
   t.matrix = rots.matrix * t.matrix;
+
+  /*{
+    float withf[16] = {
+      cosTurn, -sinTurn, 0, 0,
+      sinTurn, cosTurn, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    };
+    rots.matrix.set(withf);
+  }
+  t.matrix = rots.matrix * t.matrix;
+
+  {
+   float withf[16] = {
+      cosTilt, 0, -sinTilt, 0,
+      0, 1, 0, 0,
+      sinTilt, 0, cosTilt, 0,
+      0, 0, 0, 1
+    };
+    rots.matrix.set(withf);
+  }
+  t.matrix = rots.matrix * t.matrix;
+
+  {
+   float withf[16] = {
+      cosDir, -sinDir, 0, 0,
+      sinDir, cosDir, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    };
+    rots.matrix.set(withf);
+  }
+  t.matrix = rots.matrix * t.matrix;*/
+
 
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {

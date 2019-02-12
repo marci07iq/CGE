@@ -11,3 +11,5 @@
 #include "../NGin/GUI/Graphics.h"
 #include "../NGin/Maths/Point.h"
 //#include "../NGin/Network/Network.h"
+
+const int CGE_FILE_CMF_VERSION = 1;

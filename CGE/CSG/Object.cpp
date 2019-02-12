@@ -157,6 +157,11 @@ void Object::drawEdges() {
 void Object::set(const DataElement * from) {
   std::stringbuf ss;
   ss.sputn(reinterpret_cast<const char*>(from->_core->_data), from->_core->_len);
+  
+  assert(from->_children.size() > 0);
+  assert(from->_children[0]->_core->_len == 16*sizeof(float));
+  memcpy(_offset.matrix._vals, from->_children[0]->_core->_data, 16 * sizeof(float));
+    
   istream inPart(&ss);
   _mesh.readPly(inPart);
 }
@@ -171,6 +176,13 @@ const void Object::get(DataElement * to) {
   delete to->_core;
   to->_core = new DataPair(str.length());
   memcpy(to->_core->_data, str.c_str(), str.length());
+
+  DataElement* mat = new DataElement();
+  delete mat->_core;
+  mat->_core = new DataPair(16 * sizeof(float));
+  memcpy(mat->_core->_data, _offset.matrix._vals, 16 * sizeof(float));
+  
+  to->addChild(mat);
 }
 
 void Object::setCube(fVec3 radius, fVec3 center) {
