@@ -26,12 +26,14 @@ public:
   static GLuint _checkShader_transform;
 
   static Shader _lineShader;
-  static GLuint _lineShader_transform;
+  static GLuint _lineShader_modview;
+  static GLuint _lineShader_camview;
   static GLuint _lineShader_cam_eye;
 
   static GLuint _coordinate_vao;
   static GLuint _coordinate_vbo_pos;
   static GLuint _coordinate_vbo_col;
+  static GLuint _coordinate_vbo_rad;
 
   //Plugin types
   static map<string, PluginCreator> _pluginTypes;
@@ -84,10 +86,12 @@ public:
 
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
   void drawCoordinateSystem(int ax, int ay, int bx, int by);
+  void drawXYZ(Transform& modview, Transform& camview, fVec3& eye);
 
   void beginObjectDraw();
   void drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix = 0x00000000, float resAlpha = 1);
   void endObjectDraw();
+  
   void beginEdgeDraw();
   void drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb edge = 0xff000000);
   void endEdgeDraw();

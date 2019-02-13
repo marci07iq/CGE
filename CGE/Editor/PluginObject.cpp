@@ -30,6 +30,10 @@ void pluginObjectRotationTurnInput(Graphics::ElemHwnd sender, void * plugin, str
   ((PluginObject*)plugin)->onRotateInput(strTo<float>(val), 2);
 }
 
+void pluginObjectMoveModeButton(Graphics::ElemHwnd sender, void* plugin) {
+  ((PluginObject*)plugin)->cycleMode();
+}
+
 void pluginObjectMoveDoneButton(Graphics::ElemHwnd sender, void* plugin) {
   ((PluginObject*)plugin)->onDone();
 }
@@ -68,7 +72,39 @@ void PluginObject::staticInit() {
   Graphics::setName<TextInputFunc>("pluginObjectRotationDirInput", pluginObjectRotationDirInput);
   Graphics::setName<TextInputFunc>("pluginObjectRotationTurnInput", pluginObjectRotationTurnInput);
 
+  Graphics::setName<ClickCallback>("pluginObjectMoveModeButton", pluginObjectMoveModeButton);
   Graphics::setName<ClickCallback>("pluginObjectMoveDoneButton", pluginObjectMoveDoneButton);
+}
+
+void PluginObject::drawVirtualObject(shared_ptr<Object>& it) {
+  //_editor->setObjectTransform(_temp_movement);
+  Matrix4f obj;
+
+  Transform ref_trans;
+  ref_trans.scale(fVec3(10));
+  switch (_offsetMode) {
+    case PluginObject::OffsetModeLockLocal:
+      obj = it->_offset.matrix * _temp_movement.matrix;
+      ref_trans.matrix = it->_offset.matrix * ref_trans.matrix;
+      break;
+    case PluginObject::OffsetModeLockAbs:
+      obj = it->_offset.matrix;
+      ref_trans.matrix = it->_offset.matrix * _temp_movement.matrix * ref_trans.matrix;
+      break;
+    case PluginObject::OffsetModeLockRelative:
+      obj = it->_offset.matrix * _temp_movement.matrix;
+      ref_trans.matrix = it->_offset.matrix * _temp_movement.matrix * ref_trans.matrix;
+      break;
+      default:
+        obj = it->_offset.matrix;
+        ref_trans.matrix = it->_offset.matrix * ref_trans.matrix;
+  }
+
+  _editor->beginObjectDraw();
+  _editor->drawObject(it, obj, 0x8000ff00, 1);
+  _editor->endObjectDraw();
+
+  _editor->drawXYZ(ref_trans, _editor->camview, _editor->viewCenter + _editor->viewOffset.toCartesian());
 }
 
 int PluginObject::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
@@ -84,14 +120,14 @@ int PluginObject::renderManager(int ax, int ay, int bx, int by, set<key_location
       }
     }
   }
-  //_editor->setObjectTransform(_temp_movement);
+  _editor->endObjectDraw();
+
   for (auto&& it : _editor->objs) {
     if (selectorPlugin->selectedObjects.count(it)) {
-      Matrix4f vals = it->_offset.matrix * _temp_movement.matrix;
-      _editor->drawObject(it, vals, 0x8000ff00, 1);
+      drawVirtualObject(it);
     }
   }
-  _editor->endObjectDraw();
+
   return 0;
 }
 int PluginObject::resizeManager(int x, int y) {
@@ -123,7 +159,10 @@ void PluginObject::onAdded() {
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectRotationDirInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginObjectRotationTurnInput"))->data = this;
   
+  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginObjectMoveModeButton"))->data = this;
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginObjectMoveDoneButton"))->data = this;
+
+  cycleMode();
 
   _toolbarElement = Graphics::createButton("objectPluginObjectMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "O", -1, pluginObjectMainButton);
   _editor->registerSidebar(_toolbarElement);
@@ -179,10 +218,50 @@ void PluginObject::onMoveIcon() {
   
 }
 
+void PluginObject::cycleMode() {
+  Graphics::ButtonHwnd modeButton = (Graphics::ButtonHwnd)(_config->getElementById("objectPluginObjectMoveModeButton"));
+  
+  switch (_offsetMode) {
+    case PluginObject::OffsetModeLockRelative:
+      _offsetMode = PluginObject::OffsetModeLockLocal;
+      modeButton->text = "Lock local";
+      break;
+    case PluginObject::OffsetModeLockLocal:
+      _offsetMode = PluginObject::OffsetModeLockAbs;
+      modeButton->text = "Lock abs";
+      break;
+    case PluginObject::OffsetModeLockAbs:
+    default:
+      _offsetMode = PluginObject::OffsetModeLockRelative;
+      modeButton->text = "Lock relative";
+      break;
+  }
+}
+
 void PluginObject::onDone() {
   for (auto&& it : selectorPlugin->selectedObjects) {
-    it->_offset.applyTransform(_temp_movement);
-    it->upload();
+    Transform obj;
+    Matrix4f ref;
+    switch (_offsetMode) {
+      case PluginObject::OffsetModeLockLocal:
+        obj.matrix = _temp_movement.matrix;
+        ref.setIdentity();
+        break;
+      case PluginObject::OffsetModeLockAbs:
+        obj.matrix = _temp_movement.matrix.invert();
+        ref = _temp_movement.matrix;
+        break;
+      case PluginObject::OffsetModeLockRelative:
+        obj.matrix.setIdentity();
+        ref = _temp_movement.matrix;
+        break;
+      default:
+        obj.matrix.setIdentity();
+        ref.setIdentity();
+    }
+
+    it->_offset.matrix = ref * it->_offset.matrix;
+    it->bakeCustomTransform(obj);
   }
 
   selectorPlugin->selectedObjects.clear();

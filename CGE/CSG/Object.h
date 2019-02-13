@@ -49,6 +49,7 @@ public:
   //Modify
   void setColor(colorargb to);
   void bakeTransform();
+  void bakeCustomTransform(Transform& _what);
 
   //Query
   bool intersectRay(fVec3 from, fVec3 dir, float& at, int& faceId);

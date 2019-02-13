@@ -267,8 +267,13 @@ bool Object::intersectRay(fVec3 from, fVec3 dir, float & at, int& faceId) {
 }
 
 void Object::bakeTransform() {
-  _mesh.applyTransform(Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(_offset.matrix._vals).cast<double>());
+  Transform offset = _offset;
   _offset.setIdentity();
+  bakeCustomTransform(offset);
+}
+
+void Object::bakeCustomTransform(Transform& _what) {
+  _mesh.applyTransform(Eigen::Map<Eigen::Matrix<float, 4, 4, Eigen::RowMajor>>(_what.matrix._vals).cast<double>());
   upload();
 }
 

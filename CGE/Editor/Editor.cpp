@@ -15,12 +15,15 @@ Shader Editor::_checkShader;
 GLuint Editor::_checkShader_transform;
 
 Shader Editor::_lineShader;
-GLuint Editor::_lineShader_transform;
+GLuint Editor::_lineShader_modview;
+GLuint Editor::_lineShader_camview;
 GLuint Editor::_lineShader_cam_eye;
+
 
 GLuint Editor::_coordinate_vao;
 GLuint Editor::_coordinate_vbo_pos;
 GLuint Editor::_coordinate_vbo_col;
+GLuint Editor::_coordinate_vbo_rad;
 
 Texture Editor::_editorIcons;
 //Plugin types
@@ -56,7 +59,8 @@ void Editor::staticInit() {
     _checkShader_transform = glGetUniformLocation(_checkShader._pID, "transform");
 
     _lineShader.create("Renderer/SimpleLine", 7);
-    _lineShader_transform = glGetUniformLocation(_lineShader._pID, "transform");
+    _lineShader_modview = glGetUniformLocation(_lineShader._pID, "modview");
+    _lineShader_camview = glGetUniformLocation(_lineShader._pID, "camview");
     _lineShader_cam_eye = glGetUniformLocation(_lineShader._pID, "cam_eye");
 
     float pos[18] = {
@@ -76,6 +80,15 @@ void Editor::staticInit() {
       0, 0, 1, 1,
     };
 
+    float rad[6] = {
+      0.02,
+      0.02,
+      0.02,
+      0.02,
+      0.02,
+      0.02,
+    };
+
     glGenBuffers(1, &_coordinate_vbo_pos);
     glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_pos);
     glBufferData(GL_ARRAY_BUFFER, 18 * sizeof(float), pos, GL_STATIC_DRAW);
@@ -84,6 +97,10 @@ void Editor::staticInit() {
     glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_col);
     glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), col, GL_STATIC_DRAW);
 
+    glGenBuffers(1, &_coordinate_vbo_rad);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_rad);
+    glBufferData(GL_ARRAY_BUFFER,6 * sizeof(float), rad, GL_STATIC_DRAW);
+    
     glGenVertexArrays(1, &_coordinate_vao);
     glBindVertexArray(_coordinate_vao);
 
@@ -94,6 +111,10 @@ void Editor::staticInit() {
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_col);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, _coordinate_vbo_rad);
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, NULL);
   }
 }
 
@@ -292,28 +313,38 @@ void Editor::drawCoordinateSystem(int ax, int ay, int bx, int by) {
   glDeleteBuffers(1, &quadVbo_uv);
   glDeleteVertexArrays(1, &quadVao);
 
-  //Draw mini image
+  //Draw mini XYZ system
   glDepthRange(0.01, 10);
   glClear(GL_DEPTH_BUFFER_BIT);
   glDisable(GL_DEPTH_TEST);
 
   glViewport(ax*0.2+bx*0.8, ay, (bx - ax)/5.0, (by - ay)/5.0);
 
-  _lineShader.bind();
-
   Transform miniView;
-
-  float miniView_f[16];
 
   fVec3 miniCamEye = viewOffset.toCartesian().norm() * 3;
 
   miniView.createLook(miniCamEye, -viewOffset.toCartesian().norm());
   miniView.project(CONS_PI / 3, (bx - ax)*1.0f / (by - ay), 10, 0.01);
   //miniView.ortho(-2, 2, 2*(by-ay)*1.0/(bx-ax), -2 * (by - ay)*1.0 / (bx - ax), 10, 0.01);
-  miniView.read(miniView_f);
 
-  glUniform3f(_lineShader_cam_eye, miniCamEye.x, miniCamEye.y, miniCamEye.z);
-  glUniformMatrix4fv(_lineShader_transform, 1, false, miniView_f);
+  Transform unit;
+  drawXYZ(unit, miniView, miniCamEye);
+}
+void Editor::drawXYZ(Transform& modview, Transform& camview, fVec3& eye) {
+  float mod_matrix_f[16];
+  modview.read(mod_matrix_f);
+
+  float cam_matrix_f[16];
+  camview.read(cam_matrix_f);
+
+
+  _lineShader.bind();
+
+  glUniform3f(_lineShader_cam_eye, eye.x, eye.y, eye.z);
+  glUniformMatrix4fv(_lineShader_modview, 1, false, mod_matrix_f);
+  glUniformMatrix4fv(_lineShader_camview, 1, false, cam_matrix_f);
+
 
   glBindVertexArray(_coordinate_vao);
   glDrawArrays(GL_LINES, 0, 6);

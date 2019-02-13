@@ -5,6 +5,14 @@
 
 class PluginObject : public EditorPlugin {
   public:
+    enum OffsetMode {
+      OffsetModeLockUndef,
+      OffsetModeLockRelative,
+      OffsetModeLockLocal,
+      OffsetModeLockAbs,
+    };
+    OffsetMode _offsetMode = OffsetModeLockUndef;
+
     PluginSelect* selectorPlugin;
 
     Transform _temp_movement;
@@ -16,6 +24,8 @@ class PluginObject : public EditorPlugin {
     }
 
     static void staticInit();
+
+    void drawVirtualObject(shared_ptr<Object>& it);
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
     int resizeManager(int x, int y);
@@ -37,6 +47,7 @@ class PluginObject : public EditorPlugin {
     void onCutIcon();
     void onMoveIcon();
 
+    void cycleMode();
     void onDone();
 
     void onMoveInput(float value, int axis);

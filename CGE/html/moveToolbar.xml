@@ -298,10 +298,9 @@
 				></right>
 			</location>0</input>
 			
-			
 		<button
-			id = "objectPluginObjectMoveDoneButton"
-			callback = "pluginObjectMoveDoneButton"
+			id = "objectPluginObjectMoveModeButton"
+			callback = "pluginObjectMoveModeButton"
 		>
 			<location>
 				<bot
@@ -311,6 +310,29 @@
 				<top
 					rel="1.0"
 					abs="-390.0"
+				></top>
+				<left
+					rel="0.0"
+					abs="10.0"
+				></left>
+				<right
+					rel="1.0"
+					abs="0.0"
+				></right>
+			</location>PLACE_HOLDER</button>
+			
+		<button
+			id = "objectPluginObjectMoveDoneButton"
+			callback = "pluginObjectMoveDoneButton"
+		>
+			<location>
+				<bot
+					rel="1.0"
+					abs="-460.0"
+				></bot>
+				<top
+					rel="1.0"
+					abs="-430.0"
 				></top>
 				<left
 					rel="0.0"
