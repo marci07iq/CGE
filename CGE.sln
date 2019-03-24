@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28711.60
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CGE", "CGE\CGE.vcxproj", "{AF9AABA1-6136-4D9C-A632-E995ABD86732}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WandMaster", "WandMaster\WandMaster.vcxproj", "{5067BB96-7D99-4219-81C8-A0A52B20FAF0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Animator", "Animator\Animator.vcxproj", "{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +25,27 @@ Global
 		{AF9AABA1-6136-4D9C-A632-E995ABD86732}.Release|x64.Build.0 = Release|x64
 		{AF9AABA1-6136-4D9C-A632-E995ABD86732}.Release|x86.ActiveCfg = Release|Win32
 		{AF9AABA1-6136-4D9C-A632-E995ABD86732}.Release|x86.Build.0 = Release|Win32
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Debug|x64.ActiveCfg = Debug|x64
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Debug|x64.Build.0 = Debug|x64
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Debug|x86.ActiveCfg = Debug|Win32
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Debug|x86.Build.0 = Debug|Win32
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Release|x64.ActiveCfg = Release|x64
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Release|x64.Build.0 = Release|x64
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Release|x86.ActiveCfg = Release|Win32
+		{5067BB96-7D99-4219-81C8-A0A52B20FAF0}.Release|x86.Build.0 = Release|Win32
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Debug|x64.ActiveCfg = Debug|x64
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Debug|x64.Build.0 = Debug|x64
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Debug|x86.ActiveCfg = Debug|Win32
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Debug|x86.Build.0 = Debug|Win32
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Release|x64.ActiveCfg = Release|x64
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Release|x64.Build.0 = Release|x64
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Release|x86.ActiveCfg = Release|Win32
+		{AA3BAA21-C407-4A23-ABA3-3452263C7CDF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1BE1D981-F581-49A5-9761-F449FFA99766}
 	EndGlobalSection
 EndGlobal

@@ -5,13 +5,20 @@
 
 class PluginObject : public EditorPlugin {
   public:
-    enum OffsetMode {
+    enum OffsetLockMode {
       OffsetModeLockUndef,
       OffsetModeLockRelative,
       OffsetModeLockLocal,
       OffsetModeLockAbs,
     };
-    OffsetMode _offsetMode = OffsetModeLockUndef;
+    OffsetLockMode _offsetLockMode = OffsetModeLockUndef;
+
+    enum OffsetRefMode {
+      OffsetModeRefUndef,
+      OffsetModeRefRelative,
+      OffsetModeRefAbsolute,
+    };
+    OffsetRefMode _offsetRefMode = OffsetModeRefUndef;
 
     PluginSelect* selectorPlugin;
 
@@ -48,6 +55,7 @@ class PluginObject : public EditorPlugin {
     void onMoveIcon();
 
     void cycleMode();
+    void cycleRef();
     void onDone();
 
     void onMoveInput(float value, int axis);

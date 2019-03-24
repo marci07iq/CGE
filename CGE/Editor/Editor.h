@@ -89,17 +89,19 @@ public:
   void drawXYZ(Transform& modview, Transform& camview, fVec3& eye);
 
   void beginObjectDraw();
-  void drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix = 0x00000000, float resAlpha = 1);
+  void drawObject(shared_ptr<Object> what, Matrix4f objectTransform, colorargb mix = 0x00000000, float resAlpha = 1);
   void endObjectDraw();
   
   void beginEdgeDraw();
-  void drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb edge = 0xff000000);
+  void drawEdge(shared_ptr<Object> what, Matrix4f objectTransform, colorargb edge = 0xff000000);
   void endEdgeDraw();
 
   void removeObject(shared_ptr<Object> obj) {
     objs.remove(obj);
     obj->_toDelete = true;
   }
+
+  float getScale();
 
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);

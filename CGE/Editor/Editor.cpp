@@ -246,7 +246,10 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
     res |= _currentPlugin->renderManager(ax, ay, bx, by, down);
   }
 
-  drawCoordinateSystem(ax, ay, bx, by);
+  if (!(res & 2)) {
+    drawCoordinateSystem(ax, ay, bx, by);
+  }
+
 
   Graphics::resetViewport();
 
@@ -259,7 +262,7 @@ void Editor::drawCoordinateSystem(int ax, int ay, int bx, int by) {
   GLuint quadVbo_uv;
   GLuint quadVao;
 
-  float scale = pow(10, round(log10(viewOffset.r / 5)));
+  float scale = getScale();
 
   float base[18] = {
     -50 * scale, -50 * scale, 0,
@@ -355,7 +358,7 @@ void Editor::drawXYZ(Transform& modview, Transform& camview, fVec3& eye) {
 void Editor::beginObjectDraw() {
   _baseShader.bind();
 }
-void Editor::drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb mix, float resAlpha) {
+void Editor::drawObject(shared_ptr<Object> what, Matrix4f objectTransform, colorargb mix, float resAlpha) {
   glUniform4f(_baseShader_mix_color,
     ((mix >> 16) & 0xff) / 255.0,
     ((mix >> 8) & 0xff) / 255.0,
@@ -365,7 +368,7 @@ void Editor::drawObject(shared_ptr<Object> what, Matrix4f& objectTransform, colo
   glUniform1f(_baseShader_res_alpha,
     resAlpha);
 
-  Matrix4f fullTransform = camview.matrix * objectTransform;
+  Matrix4f fullTransform = objectTransform;
 
   glUniformMatrix4fv(_baseShader_transform, 1, true, fullTransform._vals);
 
@@ -390,7 +393,7 @@ void Editor::beginEdgeDraw() {
   glUniform4f(_edgeShader_color, 0, 0, 0, 1);
   }*/
 }
-void Editor::drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colorargb edge) {
+void Editor::drawEdge(shared_ptr<Object> what, Matrix4f objectTransform, colorargb edge) {
   glUniform4f(_edgeShader_color,
     ((edge >> 16) & 0xff) / 255.0,
     ((edge >> 8) & 0xff) / 255.0,
@@ -405,6 +408,10 @@ void Editor::drawEdge(shared_ptr<Object> what, Matrix4f& objectTransform, colora
 }
 void Editor::endEdgeDraw() {
   _edgeShader.unbind();
+}
+
+float Editor::getScale() {
+  return pow(10, round(log10(viewOffset.r / 5)));
 }
 
 int Editor::resizeManager(int x, int y) {

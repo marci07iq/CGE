@@ -20,6 +20,29 @@
 				abs="0.0"
 			></right>
 	</location></div>
+	<labelbind
+		id = "objectEditorScaleBinder"
+		align = "1"
+		textcolor = "#ffff00ff"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="0.0"
+			></bot>
+			<top
+				rel="0.0"
+				abs="30.0"
+			></top>
+			<left
+				rel="1"
+				abs="-100"
+			></left>
+			<right
+				rel="1"
+				abs="0.0"
+			></right>
+		</location>ERROR</labelbind>
 	<div
 		id = "objectEditorMenubar" 
 		bgcolor = "#FF2D2D30"

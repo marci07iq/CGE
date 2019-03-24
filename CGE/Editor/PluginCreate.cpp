@@ -55,17 +55,17 @@ void PluginCreate::staticInit() {
 int PluginCreate::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
-    _editor->drawObject(it, it->_offset.matrix, 0x7fffffff);
+    _editor->drawObject(it, _editor->camview.matrix * it->_offset.matrix, 0x7fffffff);
   }
-  if(_temp != NULL) {
+  if (_temp != NULL) {
     //_editor->setObjectTransform(_temp_movement);
-    _editor->drawObject(_temp, _temp_movement.matrix);
+    _editor->drawObject(_temp, _editor->camview.matrix * _temp_movement.matrix);
   }
   _editor->endObjectDraw();
 
   _editor->beginEdgeDraw();
   for (auto&& it : _editor->objs) {
-    _editor->drawEdge(it, it->_offset.matrix);
+    _editor->drawEdge(it, _editor->camview.matrix * it->_offset.matrix);
   }
   _editor->endEdgeDraw();
   return 0;
@@ -99,17 +99,17 @@ void PluginCreate::newObject(bool keep) {
 
 void PluginCreate::onAdded() {
   _config = Graphics::createPanel("objectPluginCreateConfigPanel", fullContainer, 0x00000000, NULL);
-  Graphics::setElements(_config,"html/addToolbar.xml");
+  Graphics::setElements(_config, "html/addToolbar.xml");
 
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionXInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionYInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionZInput"))->data = this;
-  
+
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeXInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeYInput"))->data = this;
   ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeZInput"))->data = this;
 
-  
+
   ((Graphics::ButtonHwnd)_config->getElementById("objectPluginCreateDoneButton"))->data = this;
 
   _toolbarElement = Graphics::createButton("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "+", -1, pluginCreateMainButton);

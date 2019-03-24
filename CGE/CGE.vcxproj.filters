@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -30,6 +26,9 @@
     </Filter>
     <Filter Include="Source Files\Renderer\Shaders">
       <UniqueIdentifier>{fca4099b-f83c-40d8-866f-197aa241cb8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Templates">
+      <UniqueIdentifier>{a23761bb-86d3-406c-a028-79e03e185e4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +158,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="..\NGin\GUI\Texture.cpp">
-      <Filter>NGin</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Framework.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
@@ -185,6 +181,12 @@
     </ClCompile>
     <ClCompile Include="CSG\Ply.cpp">
       <Filter>Source Files\CSG</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\PluginBuilding.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\NGin\GUI\Texture.cpp">
+      <Filter>NGin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +358,6 @@
     <ClInclude Include="Main.h">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\NGin\GUI\Texture.h">
-      <Filter>NGin</Filter>
-    </ClInclude>
     <ClInclude Include="Editor\Framework.h">
       <Filter>Source Files\Editor</Filter>
     </ClInclude>
@@ -383,8 +382,14 @@
     <ClInclude Include="CSG\Ply.h">
       <Filter>Source Files\CSG</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\PluginBuilding.h">
+      <Filter>Source Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\NGin\GUI\Texture.h">
+      <Filter>NGin</Filter>
+    </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -441,6 +446,12 @@
     </None>
     <None Include="Renderer\SimpleLine.vert">
       <Filter>Source Files\Renderer\Shaders</Filter>
+    </None>
+    <None Include="Editor\Checkboard_2D.frag">
+      <Filter>Source Files\Editor</Filter>
+    </None>
+    <None Include="Editor\Checkboard_2D.vert">
+      <Filter>Source Files\Editor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

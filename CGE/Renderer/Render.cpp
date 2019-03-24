@@ -10,8 +10,8 @@ set<Object*> selectedObjects;
 Object* highlightedObject;
 
 namespace MainGameCanvas {
-  int renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down) {
-    return mainEditor.renderManager(ax, ay, bx, by, down);
+  void renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down) {
+    mainEditor.renderManager(ax, ay, bx, by, down);
   }
   int resizeManager(Canvas* me, int x, int y) {
     return mainEditor.resizeManager(x, y);

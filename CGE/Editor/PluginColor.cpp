@@ -1,8 +1,8 @@
 #include "PluginColor.h"
 
 namespace pluginColorHSVCanvas {
-  int renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down) {
-    return ((PluginColor*)me->data)->HSV__renderManager(me, ax, ay, bx, by, down);
+  void renderManager(Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down) {
+    ((PluginColor*)me->data)->HSV__renderManager(me, ax, ay, bx, by, down);
   }
   int resizeManager(Canvas* me, int x, int y) {
     return ((PluginColor*)me->data)->HSV__resizeManager(me, x, y);
@@ -37,9 +37,9 @@ int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (it == highlightedObject) {
-      _editor->drawObject(it, it->_offset.matrix, 0x30ffffff, 1);
+      _editor->drawObject(it, _editor->camview.matrix *it->_offset.matrix, 0x30ffffff, 1);
     } else {
-      _editor->drawObject(it, it->_offset.matrix);
+      _editor->drawObject(it, _editor->camview.matrix *it->_offset.matrix);
     }
   }
   _editor->endObjectDraw();
@@ -47,9 +47,9 @@ int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>
   _editor->beginEdgeDraw();
   for (auto&& it : _editor->objs) {
     if (it == highlightedObject) {
-      _editor->drawEdge(it, it->_offset.matrix, 0xff303030);
+      _editor->drawEdge(it, _editor->camview.matrix * it->_offset.matrix, 0xff303030);
     } else {
-      _editor->drawEdge(it, it->_offset.matrix, 0xff000000);
+      _editor->drawEdge(it, _editor->camview.matrix * it->_offset.matrix, 0xff000000);
     }
   }
   _editor->endEdgeDraw();

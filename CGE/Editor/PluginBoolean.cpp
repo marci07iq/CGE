@@ -30,7 +30,7 @@ int PluginBoolean::renderManager(int ax, int ay, int bx, int by, set<key_locatio
     { 0xbfff3f3f , 0xbfff3f5f , 0xffffff00 }
   };
   for (auto&& it : _editor->objs) {
-    _editor->drawObject(it, it->_offset.matrix, cols
+    _editor->drawObject(it, _editor->camview.matrix * it->_offset.matrix, cols
       [((_partSelectors[0]->highlightedObject == it && _activeSelector == 0) ? 2 : (_partSelectors[0]->selectedObjects.count(it) ? 1 : 0))]
       [((_partSelectors[1]->highlightedObject == it && _activeSelector == 1) ? 2 : (_partSelectors[1]->selectedObjects.count(it) ? 1 : 0))],
       1);

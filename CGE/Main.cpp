@@ -184,7 +184,7 @@ void mainWindowSetup(Graphics::WinHwnd win) {
 
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
-  Gll::gllInit("../NGin/GUI/GLL_Res/");
+  Gll::gllInit("../../../NGin/GUI/GLL_Res/");
 
   objectMainCanvasHwnd = Graphics::createCanvas("objectEditorCanvas", fullContainer, IWindowManagers{
     MainGameCanvas::renderManager,
@@ -193,7 +193,17 @@ void mainWindowSetup(Graphics::WinHwnd win) {
     MainGameCanvas::mouseEntryManager,
     MainGameCanvas::mouseMoveManager,
   }, NULL);
+
+  Graphics::LabelBindHwnd objectEditorScaleBinder = (Graphics::LabelBindHwnd)(Graphics::getElementById("objectEditorScaleBinder"));
+  objectEditorScaleBinder->text = new TextBind<
+    TextBindFunc<float, Editor*>
+  >("1 : %",
+    TextBindFunc<float, Editor*>(&(Editor::getScale), &mainEditor)
+    );
+
   Graphics::addElement((Graphics::PanelHwnd)Graphics::getElementById("objectEditorCanvasContainer"), objectMainCanvasHwnd);
+
+  win->autoRedraw = false;
 }
 void initGraphics() {
   Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
@@ -239,11 +249,13 @@ int main(int argc, char *argv[]) {
   mainEditor.registerPlugin("PluginObject", createPluginObject);
   mainEditor.registerPlugin("PluginBoolean", createPluginBoolean);
   mainEditor.registerPlugin("PluginColor", createPluginColor);
+  mainEditor.registerPlugin("PluginBuilding", createPluginBuilding);
 
   mainEditor.findStaticPlugin("PluginObject");
   mainEditor.findStaticPlugin("PluginBoolean");
   mainEditor.findStaticPlugin("PluginCreate");
   mainEditor.findStaticPlugin("PluginColor");
+  mainEditor.findStaticPlugin("PluginBuilding");
 
   mainEditor.activateStaticPlugin(mainEditor.findStaticPlugin("PluginObject"));
 
