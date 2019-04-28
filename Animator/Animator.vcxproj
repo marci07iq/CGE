@@ -76,10 +76,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -88,10 +90,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,12 +106,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -118,26 +124,45 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FilterColor.cpp" />
-    <ClCompile Include="Filter.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Main.h" />
-    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Encode\Decode.cpp" />
+    <ClCompile Include="Encode\Encode.cpp" />
+    <ClCompile Include="Filters\CameraMatrix\FilterCameraMatrix.cpp" />
+    <ClCompile Include="Filters\Color\FilterColor.cpp" />
+    <ClCompile Include="Filters\Filter.cpp" />
+    <ClCompile Include="Filters\FilterResource.cpp" />
+    <ClCompile Include="Filters\Texture\FilterTexture.cpp" />
+    <ClCompile Include="Main\Main.cpp" />
+    <ClCompile Include="Main\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FilterColor.h" />
-    <ClInclude Include="Defs.h" />
-    <ClInclude Include="Filter.h" />
-    <ClInclude Include="Render.h" />
+    <ClInclude Include="Encode\Decode.h" />
+    <ClInclude Include="Encode\Encode.h" />
+    <ClInclude Include="Filters\AllFilters.h" />
+    <ClInclude Include="Filters\CameraMatrix\FilterCameraMatrix.h" />
+    <ClInclude Include="Filters\Color\FilterColor.h" />
+    <ClInclude Include="Filters\Filter.h" />
+    <ClInclude Include="Filters\FilterResource.h" />
+    <ClInclude Include="Filters\Texture\FilterTexture.h" />
+    <ClInclude Include="Main\Defs.h" />
+    <ClInclude Include="Main\Main.h" />
+    <ClInclude Include="Main\Render.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Filters\Shaders\FilterColor.frag" />
+    <None Include="Filters\Shaders\FilterColor.vert" />
+    <None Include="Filters\Shaders\FilterTexture.frag" />
+    <None Include="Filters\Shaders\FilterTexture.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

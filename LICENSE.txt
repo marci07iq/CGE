@@ -1,4 +1,22 @@
-CGE
+################# Animator
+This applies to all files in Animator folder
+Copyright (C) 2019 Marcell Szakály
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+############### CGE
 MIT LICENSE:
 Copyright 2018-2019 Marcell Szakály
 
@@ -19,7 +37,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRA
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-########################### TINYPLY ###################################
+############################ EXTERNAL LIBRARIES #######################
+
+############################# TINYPLY ###################################
 /*
  * tinyply 2.2 (https://github.com/ddiakopoulos/tinyply)
  *
@@ -33,11 +53,12 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
  * Authored by Dimitri Diakopoulos (http://www.dimitridiakopoulos.com)
  */
 
-################### 3RD PARTY (NOT DISTRIBUTED) ##########################
+################## 3RD PARTY (obtain from given links) #######################
 Libraries used:
 
 NGin https://github.com/marci07iq/NGin
-Download separately
+Download separately (this project uses static linked lib version)
+Currently compatible with commit 34aeb3a9ccb2b5fe2076a924cd7a705ad393ca4e
 
 LibIGL https://github.com/libigl/libigl
 Download separately (commit e699d257fe860d4fd82709835e72438bd0cd1533 used)
@@ -46,3 +67,20 @@ LibIGL dependancies (Eigen, CGal, and thus GMP, Boost) must also be installed se
 Follow LibIGL instructions.
 Paths to appropriate include folders and .lib/.dll files must be specified in project properies.
 
+####################### FFMPEG (In Animator project) ####################
+# Using Zeranoe FFmpeg Builds <http://ffmpeg.zeranoe.com/builds/>, v4.1.1
+
+Copyright (C) 2019 Kyle Schwarz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.

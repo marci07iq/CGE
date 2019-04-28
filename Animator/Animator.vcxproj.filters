@@ -15,36 +15,98 @@
     <Filter Include="Source Files\Filters\Color">
       <UniqueIdentifier>{326fd855-4587-4f1f-a982-7dcf8b50c09b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Filters\Shaders">
+      <UniqueIdentifier>{8370b62f-7bf1-4718-98f8-0c6ef05fe0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{e0db3a8e-bae0-45a0-9db3-5b1ab84a4327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Filters\Texture">
+      <UniqueIdentifier>{fa015688-e3a7-4f57-bd7c-2ad68400cbc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Encode">
+      <UniqueIdentifier>{8cfb7d4f-3567-444a-a538-d7c5fbc303d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Filters\CameraMatrix">
+      <UniqueIdentifier>{e74fac6f-cf3d-4f76-91c0-209340f0ec89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Filter.cpp">
+    <ClCompile Include="Filters\Filter.cpp">
       <Filter>Source Files\Filters</Filter>
     </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>Source Files\Filters</Filter>
-    </ClCompile>
-    <ClCompile Include="FilterColor.cpp">
+    <ClCompile Include="Filters\Color\FilterColor.cpp">
       <Filter>Source Files\Filters\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Render.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Main.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\Texture\FilterTexture.cpp">
+      <Filter>Source Files\Filters\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Encode\Encode.cpp">
+      <Filter>Source Files\Encode</Filter>
+    </ClCompile>
+    <ClCompile Include="Encode\Decode.cpp">
+      <Filter>Source Files\Encode</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\CameraMatrix\FilterCameraMatrix.cpp">
+      <Filter>Source Files\Filters\CameraMatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\FilterResource.cpp">
+      <Filter>Source Files\Filters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Filter.h">
+    <ClInclude Include="Filters\Filter.h">
       <Filter>Source Files\Filters</Filter>
     </ClInclude>
-    <ClInclude Include="Render.h">
-      <Filter>Source Files\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="FilterColor.h">
+    <ClInclude Include="Filters\Color\FilterColor.h">
       <Filter>Source Files\Filters\Color</Filter>
     </ClInclude>
+    <ClInclude Include="Main\Main.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Render.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Defs.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\AllFilters.h">
+      <Filter>Source Files\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\Texture\FilterTexture.h">
+      <Filter>Source Files\Filters\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Encode\Encode.h">
+      <Filter>Source Files\Encode</Filter>
+    </ClInclude>
+    <ClInclude Include="Encode\Decode.h">
+      <Filter>Source Files\Encode</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\CameraMatrix\FilterCameraMatrix.h">
+      <Filter>Source Files\Filters\CameraMatrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\FilterResource.h">
+      <Filter>Source Files\Filters</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Filters\Shaders\FilterColor.frag">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
+    <None Include="Filters\Shaders\FilterColor.vert">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
+    <None Include="Filters\Shaders\FilterTexture.frag">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
+    <None Include="Filters\Shaders\FilterTexture.vert">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

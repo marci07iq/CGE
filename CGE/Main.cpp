@@ -184,7 +184,7 @@ void mainWindowSetup(Graphics::WinHwnd win) {
 
   Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
-  Gll::gllInit("../../../NGin/GUI/GLL_Res/");
+  Gll::gllInit("NGin/GUI/GLL_Res/");
 
   objectMainCanvasHwnd = Graphics::createCanvas("objectEditorCanvas", fullContainer, IWindowManagers{
     MainGameCanvas::renderManager,
