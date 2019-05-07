@@ -1,25 +1,25 @@
 #include "PluginBoolean.h"
 
-void pluginBooleanUnionButton(Graphics::ElemHwnd sender, void * plugin) {
-  ((PluginBoolean*)plugin)->booleanUnion();
+void pluginBooleanUnionButton(NGin::Graphics::ElemHwnd sender) {
+  ((PluginBoolean*)sender->data)->booleanUnion();
 }
-void pluginBooleanSubtractButton(Graphics::ElemHwnd sender, void * plugin) {
-  ((PluginBoolean*)plugin)->booleanSubtract();
+void pluginBooleanSubtractButton(NGin::Graphics::ElemHwnd sender) {
+  ((PluginBoolean*)sender->data)->booleanSubtract();
 }
-void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, void * plugin) {
-  ((PluginBoolean*)plugin)->booleanIntersect();
-}
-
-void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, void * plugin) {
-  ((PluginBoolean*)plugin)->selectType(0);
-}
-void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, void * plugin) {
-  ((PluginBoolean*)plugin)->selectType(1);
+void pluginBooleanIntersectButton(NGin::Graphics::ElemHwnd sender) {
+  ((PluginBoolean*)sender->data)->booleanIntersect();
 }
 
-void pluginBooleanMainButton(Graphics::ElemHwnd elem, void* editor) {
+void pluginBooleanSelectLhs(NGin::Graphics::ElemHwnd sender) {
+  ((PluginBoolean*)sender->data)->selectType(0);
+}
+void pluginBooleanSelectRhs(NGin::Graphics::ElemHwnd sender) {
+  ((PluginBoolean*)sender->data)->selectType(1);
+}
+
+void pluginBooleanMainButton(NGin::Graphics::ElemHwnd elem) {
   //Editor* e = (Editor*)editor;
-  ((Editor*)editor)->activateStaticPlugin(((Editor*)editor)->findStaticPlugin("PluginBoolean"));
+  ((Editor*)elem->data)->activateStaticPlugin(((Editor*)elem->data)->findStaticPlugin("PluginBoolean"));
 }
 
 int PluginBoolean::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
@@ -52,25 +52,25 @@ int PluginBoolean::guiEventManager(gui_event& evt, int mx, int my, set<key_locat
 }
 
 void PluginBoolean::onAdded() {
-  _config = Graphics::createPanel("objectPluginBooleanConfigPanel", fullContainer, 0x00000000, NULL);
-  Graphics::setElements(_config, "html/booleanToolbar.xml");
+  _config = NGin::Graphics::createGUI_T<Panel>("objectPluginBooleanConfigPanel", fullContainer, 0x00000000, nullptr);
+  NGin::Graphics::setElements(_config, "html/booleanToolbar.xml");
 
-  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSelectLhs"))->data = this;
-  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSelectRhs"))->data = this;
+  _config->getElementById("objectPluginBooleanSelectLhs")->data = this;
+  _config->getElementById("objectPluginBooleanSelectRhs")->data = this;
   
-  /*((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanUnionButton"))->data = this;
-  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSubtractButton"))->data = this;
-  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanIntersectButton"))->data = this;*/
+  /*((NGin::Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanUnionButton"))->data = this;
+  ((NGin::Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanSubtractButton"))->data = this;
+  ((NGin::Graphics::ButtonHwnd)_config->getElementById("objectPluginBooleanIntersectButton"))->data = this;*/
 
-  _toolbarElement = Graphics::createButton("objectPluginBooleanMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "*", -1, pluginBooleanMainButton);
+  _toolbarElement = NGin::Graphics::createGUI_T<Button>("objectPluginBooleanMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "*", -1, pluginBooleanMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = Graphics::createPanel("objectPluginBooleanIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, NULL);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanUnionButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "+", -1, pluginBooleanUnionButton, "union", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanSubtractButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "-", -1, pluginBooleanSubtractButton, "subtract", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBooleanIntersectButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "*", -1, pluginBooleanIntersectButton, "intersect", "html/icons.ilf"));
-  /*Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
+  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginBooleanIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBooleanUnionButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "+", -1, pluginBooleanUnionButton, "union", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBooleanSubtractButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "-", -1, pluginBooleanSubtractButton, "subtract", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBooleanIntersectButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "*", -1, pluginBooleanIntersectButton, "intersect", "html/icons.ilf"));
+  /*NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
+  NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
 }
 void PluginBoolean::onActivated() {
   _editor->registerRibbon(_ribbonElement);
@@ -168,8 +168,8 @@ void PluginBoolean::selectType(int group) {
   _partSelectors[group]->onActivated();
   _activeSelector = group;
 
-  ((Graphics::ButtonHwnd)(_config->getElementById("objectPluginBooleanSelectLhs")))->stuck = (group == 0);
-  ((Graphics::ButtonHwnd)(_config->getElementById("objectPluginBooleanSelectRhs")))->stuck = (group == 1);
+  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginBooleanSelectLhs"))->stuck = (group == 0);
+  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginBooleanSelectRhs"))->stuck = (group == 1);
 }
 
 EditorPlugin * createPluginBoolean(Editor * e, bool staticInit) {

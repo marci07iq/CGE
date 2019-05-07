@@ -30,6 +30,9 @@
     <Filter Include="Source Files\Filters\CameraMatrix">
       <UniqueIdentifier>{e74fac6f-cf3d-4f76-91c0-209340f0ec89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Filters\3D">
+      <UniqueIdentifier>{41fc902a-3fa2-43b3-bca3-1340f5fcadce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Filters\Filter.cpp">
@@ -58,6 +61,15 @@
     </ClCompile>
     <ClCompile Include="Filters\FilterResource.cpp">
       <Filter>Source Files\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PreviewCanvas.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\Shaders\FilterShader.cpp">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\3D\Filter3D.cpp">
+      <Filter>Source Files\Filters\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +105,15 @@
     </ClInclude>
     <ClInclude Include="Filters\FilterResource.h">
       <Filter>Source Files\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PreviewCanvas.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\Shaders\FilterShader.h">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\3D\Filter3D.h">
+      <Filter>Source Files\Filters\3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

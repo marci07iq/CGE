@@ -21,7 +21,7 @@ class PluginColor : public EditorPlugin {
     bool painting = false;
 
     PluginColor(Editor* e) : EditorPlugin(e) {
-      //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+      //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }
 
     static void staticInit() {
@@ -47,11 +47,11 @@ class PluginColor : public EditorPlugin {
     void onDeactivated();
 
     //This would be really nice in an internal namespace. But that cant be done...
-    int HSV__renderManager    (Canvas* me, int ax, int ay, int bx, int by, set<key_location>& down);
-    int HSV__resizeManager    (Canvas* me, int x, int y);
-    int HSV__mouseEntryManager(Canvas* me, int state);
-    int HSV__mouseMoveManager (Canvas* me, int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int HSV__guiEventManager(Canvas* me, gui_event& evt, int mx, int my, set<key_location>& down, bool in);
+    int HSV__renderManager    (NGin::Graphics::CanvasHwnd me, int ax, int ay, int bx, int by, set<key_location>& down);
+    int HSV__resizeManager    (NGin::Graphics::CanvasHwnd me, int x, int y);
+    int HSV__mouseEntryManager(NGin::Graphics::CanvasHwnd me, int state);
+    int HSV__mouseMoveManager (NGin::Graphics::CanvasHwnd me, int x, int y, int ox, int oy, set<key_location>& down, bool in);
+    int HSV__guiEventManager(NGin::Graphics::CanvasHwnd me, gui_event& evt, int mx, int my, set<key_location>& down, bool in);
     fVec3 HSV__col;
 
     bool HSV__rotating;

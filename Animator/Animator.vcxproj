@@ -77,6 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>M_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>M_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>M_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Programming\Libraries\Include;D:\Programming\Libraries\Include\FFmpeg</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>M_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,25 +141,31 @@
   <ItemGroup>
     <ClCompile Include="Encode\Decode.cpp" />
     <ClCompile Include="Encode\Encode.cpp" />
+    <ClCompile Include="Filters\3D\Filter3D.cpp" />
     <ClCompile Include="Filters\CameraMatrix\FilterCameraMatrix.cpp" />
     <ClCompile Include="Filters\Color\FilterColor.cpp" />
     <ClCompile Include="Filters\Filter.cpp" />
     <ClCompile Include="Filters\FilterResource.cpp" />
+    <ClCompile Include="Filters\Shaders\FilterShader.cpp" />
     <ClCompile Include="Filters\Texture\FilterTexture.cpp" />
     <ClCompile Include="Main\Main.cpp" />
+    <ClCompile Include="Main\PreviewCanvas.cpp" />
     <ClCompile Include="Main\Render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Encode\Decode.h" />
     <ClInclude Include="Encode\Encode.h" />
+    <ClInclude Include="Filters\3D\Filter3D.h" />
     <ClInclude Include="Filters\AllFilters.h" />
     <ClInclude Include="Filters\CameraMatrix\FilterCameraMatrix.h" />
     <ClInclude Include="Filters\Color\FilterColor.h" />
     <ClInclude Include="Filters\Filter.h" />
     <ClInclude Include="Filters\FilterResource.h" />
+    <ClInclude Include="Filters\Shaders\FilterShader.h" />
     <ClInclude Include="Filters\Texture\FilterTexture.h" />
     <ClInclude Include="Main\Defs.h" />
     <ClInclude Include="Main\Main.h" />
+    <ClInclude Include="Main\PreviewCanvas.h" />
     <ClInclude Include="Main\Render.h" />
   </ItemGroup>
   <ItemGroup>

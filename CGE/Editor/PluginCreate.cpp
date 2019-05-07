@@ -1,55 +1,54 @@
 #include "PluginCreate.h"
 
-void pluginCreatePositionXInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 0);
+void pluginCreatePositionXInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onMoveInput(strTo<float>(val), 0);
 }
-void pluginCreatePositionYInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 1);
+void pluginCreatePositionYInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onMoveInput(strTo<float>(val), 1);
 }
-void pluginCreatePositionZInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onMoveInput(strTo<float>(val), 2);
-}
-
-void pluginCreateSizeXInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 0);
-}
-void pluginCreateSizeYInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 1);
-}
-void pluginCreateSizeZInput(Graphics::ElemHwnd sender, void * plugin, string& val) {
-  ((PluginCreate*)plugin)->onResizeInput(strTo<float>(val), 2);
+void pluginCreatePositionZInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onMoveInput(strTo<float>(val), 2);
 }
 
-void pluginCreateDoneButton(Graphics::ElemHwnd sender, void* plugin) {
-  ((PluginCreate*)plugin)->onDone();
+void pluginCreateSizeXInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onResizeInput(strTo<float>(val), 0);
+}
+void pluginCreateSizeYInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onResizeInput(strTo<float>(val), 1);
+}
+void pluginCreateSizeZInput(NGin::Graphics::ElemHwnd sender, string& val) {
+  ((PluginCreate*)sender->data)->onResizeInput(strTo<float>(val), 2);
 }
 
-void pluginCreateMainButton(Graphics::ElemHwnd elem, void* editor) {
-  //Editor* e = (Editor*)editor;
-  ((Editor*)editor)->activateStaticPlugin(((Editor*)editor)->findStaticPlugin("PluginCreate"));
+void pluginCreateDoneButton(NGin::Graphics::ElemHwnd sender) {
+  ((PluginCreate*)sender->data)->onDone();
 }
 
-void pluginCreateCubeIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginCreate*)plugin)->createCube();
+void pluginCreateMainButton(NGin::Graphics::ElemHwnd elem) {
+  ((Editor*)elem->data)->activateStaticPlugin(((Editor*)elem->data)->findStaticPlugin("PluginCreate"));
 }
-void pluginCreateSphereIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginCreate*)plugin)->createSphere();
+
+void pluginCreateCubeIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginCreate*)elem->data)->createCube();
 }
-void pluginCreateCylinderIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginCreate*)plugin)->createCylinder();
+void pluginCreateSphereIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginCreate*)elem->data)->createSphere();
+}
+void pluginCreateCylinderIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginCreate*)elem->data)->createCylinder();
 }
 
 
 void PluginCreate::staticInit() {
-  Graphics::setName<TextInputFunc>("pluginCreatePositionXInput", pluginCreatePositionXInput);
-  Graphics::setName<TextInputFunc>("pluginCreatePositionYInput", pluginCreatePositionYInput);
-  Graphics::setName<TextInputFunc>("pluginCreatePositionZInput", pluginCreatePositionZInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreatePositionXInput", pluginCreatePositionXInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreatePositionYInput", pluginCreatePositionYInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreatePositionZInput", pluginCreatePositionZInput);
 
-  Graphics::setName<TextInputFunc>("pluginCreateSizeXInput", pluginCreateSizeXInput);
-  Graphics::setName<TextInputFunc>("pluginCreateSizeYInput", pluginCreateSizeYInput);
-  Graphics::setName<TextInputFunc>("pluginCreateSizeZInput", pluginCreateSizeZInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreateSizeXInput", pluginCreateSizeXInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreateSizeYInput", pluginCreateSizeYInput);
+  NGin::Graphics::setName<TextInputFunc>("pluginCreateSizeZInput", pluginCreateSizeZInput);
 
-  Graphics::setName<ClickCallback>("pluginCreateDoneButton", pluginCreateDoneButton);
+  NGin::Graphics::setName<ClickCallback>("pluginCreateDoneButton", pluginCreateDoneButton);
 }
 
 int PluginCreate::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
@@ -98,29 +97,29 @@ void PluginCreate::newObject(bool keep) {
 }
 
 void PluginCreate::onAdded() {
-  _config = Graphics::createPanel("objectPluginCreateConfigPanel", fullContainer, 0x00000000, NULL);
-  Graphics::setElements(_config, "html/addToolbar.xml");
+  _config = NGin::Graphics::createGUI_T<Panel>("objectPluginCreateConfigPanel", fullContainer, 0x00000000, nullptr);
+  NGin::Graphics::setElements(_config, "html/addToolbar.xml");
 
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionXInput"))->data = this;
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionYInput"))->data = this;
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreatePositionZInput"))->data = this;
+  _config->getElementById("objectPluginCreatePositionXInput")->data = this;
+  _config->getElementById("objectPluginCreatePositionYInput")->data = this;
+  _config->getElementById("objectPluginCreatePositionZInput")->data = this;
 
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeXInput"))->data = this;
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeYInput"))->data = this;
-  ((Graphics::TextInputHwnd)_config->getElementById("objectPluginCreateSizeZInput"))->data = this;
+  _config->getElementById("objectPluginCreateSizeXInput")->data = this;
+  _config->getElementById("objectPluginCreateSizeYInput")->data = this;
+  _config->getElementById("objectPluginCreateSizeZInput")->data = this;
 
 
-  ((Graphics::ButtonHwnd)_config->getElementById("objectPluginCreateDoneButton"))->data = this;
+  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginCreateDoneButton"))->data = this;
 
-  _toolbarElement = Graphics::createButton("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "+", -1, pluginCreateMainButton);
+  _toolbarElement = NGin::Graphics::createGUI_T<Button>("objectPluginCreateMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "+", -1, pluginCreateMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = Graphics::createPanel("objectPluginObjectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, NULL);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCubeIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateCubeIcon, "cube", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateSphereIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateSphereIcon, "sphere", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginCreateCylinderIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateCylinderIcon, "cylinder", "html/icons.ilf"));
-  /*Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
+  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginObjectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 110)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreateCubeIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateCubeIcon, "cube", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreateSphereIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateSphereIcon, "sphere", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreateCylinderIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginCreateCylinderIcon, "cylinder", "html/icons.ilf"));
+  /*NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectCutIcon, (void*)this, "cut", "html/icons.ilf"));
+  NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), "X", -1, pluginObjectMoveIcon, (void*)this, "move", "html/icons.ilf"));*/
 }
 void PluginCreate::onActivated() {
   _editor->registerRibbon(_ribbonElement);

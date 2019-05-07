@@ -43,25 +43,25 @@ void Editor::staticInit() {
   if(first) {
     first = false;
 
-    _baseShader.create("Renderer/Core");
-    _baseShader_transform = glGetUniformLocation(_baseShader._pID, "transform");
-    _baseShader_mix_color = glGetUniformLocation(_baseShader._pID, "mix_color");
-    _baseShader_res_alpha = glGetUniformLocation(_baseShader._pID, "res_alpha");
+    _baseShader = make_shared<Shader_Raw>("Renderer/Core");
+    _baseShader_transform = glGetUniformLocation(_baseShader->_pID, "transform");
+    _baseShader_mix_color = glGetUniformLocation(_baseShader->_pID, "mix_color");
+    _baseShader_res_alpha = glGetUniformLocation(_baseShader->_pID, "res_alpha");
 
 
-    _edgeShader.create("Renderer/Edges", 7);
-    _edgeShader_transform = glGetUniformLocation(_edgeShader._pID, "transform");
+    _edgeShader = make_shared<Shader_Raw>("Renderer/Edges", 7);
+    _edgeShader_transform = glGetUniformLocation(_edgeShader->_pID, "transform");
     //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
-    _edgeShader_cam_eye = glGetUniformLocation(_edgeShader._pID, "cam_eye");
-    _edgeShader_color = glGetUniformLocation(_edgeShader._pID, "color");
+    _edgeShader_cam_eye = glGetUniformLocation(_edgeShader->_pID, "cam_eye");
+    _edgeShader_color = glGetUniformLocation(_edgeShader->_pID, "color");
 
-    _checkShader.create("Editor/Checkboard");
-    _checkShader_transform = glGetUniformLocation(_checkShader._pID, "transform");
+    _checkShader = make_shared<Shader_Raw>("Editor/Checkboard");
+    _checkShader_transform = glGetUniformLocation(_checkShader->_pID, "transform");
 
-    _lineShader.create("Renderer/SimpleLine", 7);
-    _lineShader_modview = glGetUniformLocation(_lineShader._pID, "modview");
-    _lineShader_camview = glGetUniformLocation(_lineShader._pID, "camview");
-    _lineShader_cam_eye = glGetUniformLocation(_lineShader._pID, "cam_eye");
+    _lineShader = make_shared<Shader_Raw>("Renderer/SimpleLine", 7);
+    _lineShader_modview = glGetUniformLocation(_lineShader->_pID, "modview");
+    _lineShader_camview = glGetUniformLocation(_lineShader->_pID, "camview");
+    _lineShader_cam_eye = glGetUniformLocation(_lineShader->_pID, "cam_eye");
 
     float pos[18] = {
       0, 0, 0,
@@ -118,7 +118,7 @@ void Editor::staticInit() {
   }
 }
 
-void Editor::init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, Graphics::TableHwnd sidebar, Graphics::PanelHwnd config) {
+void Editor::init(NGin::Graphics::CanvasHwnd main, NGin::Graphics::TablerowHwnd toolribbon, NGin::Graphics::TableHwnd sidebar, NGin::Graphics::PanelHwnd config) {
   _main = main;
   _toolribbon = toolribbon;
   _toolbar = sidebar;
@@ -187,18 +187,18 @@ EditorPlugin * Editor::createDynamicPlugin(string name) {
   return newPlugin;
 }
 
-void Editor::registerRibbon(Graphics::ElemHwnd elem) {
-  Graphics::addElement(_toolribbon, elem);
+void Editor::registerRibbon(NGin::Graphics::ElemHwnd elem) {
+  NGin::Graphics::addElement(_toolribbon, elem);
 }
-void Editor::removeRibbon(Graphics::ElemHwnd elem) {
+void Editor::removeRibbon(NGin::Graphics::ElemHwnd elem) {
   _toolribbon->data.remove(elem);
   _toolribbon->getRect();
 }
 
-void Editor::registerSidebar(Graphics::ElemHwnd elem) {
-  Graphics::addElement(_toolbar, elem);
+void Editor::registerSidebar(NGin::Graphics::ElemHwnd elem) {
+  NGin::Graphics::addElement(_toolbar, elem);
 }
-void Editor::removeSidebar(Graphics::ElemHwnd elem) {
+void Editor::removeSidebar(NGin::Graphics::ElemHwnd elem) {
   _toolbar->data.remove(elem);
   _toolbar->getRect();
 }
@@ -251,7 +251,7 @@ int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& dow
   }
 
 
-  Graphics::resetViewport();
+  NGin::Graphics::resetViewport();
 
   return res;
 
@@ -298,7 +298,7 @@ void Editor::drawCoordinateSystem(int ax, int ay, int bx, int by) {
   glBindBuffer(GL_ARRAY_BUFFER, quadVbo_uv);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-  _checkShader.bind();
+  _checkShader->bind();
 
   if (_checkShader_transform != -1) {
     float readMatrix[16];
@@ -310,7 +310,7 @@ void Editor::drawCoordinateSystem(int ax, int ay, int bx, int by) {
   glBindVertexArray(quadVao);
   glDrawArrays(GL_TRIANGLES, 0, 6);
 
-  _checkShader.unbind();
+  _checkShader->unbind();
 
   glDeleteBuffers(1, &quadVbo_pos);
   glDeleteBuffers(1, &quadVbo_uv);
@@ -342,7 +342,7 @@ void Editor::drawXYZ(Transform& modview, Transform& camview, fVec3& eye) {
   camview.read(cam_matrix_f);
 
 
-  _lineShader.bind();
+  _lineShader->bind();
 
   glUniform3f(_lineShader_cam_eye, eye.x, eye.y, eye.z);
   glUniformMatrix4fv(_lineShader_modview, 1, false, mod_matrix_f);
@@ -352,11 +352,11 @@ void Editor::drawXYZ(Transform& modview, Transform& camview, fVec3& eye) {
   glBindVertexArray(_coordinate_vao);
   glDrawArrays(GL_LINES, 0, 6);
 
-  _lineShader.unbind();
+  _lineShader->unbind();
 }
 
 void Editor::beginObjectDraw() {
-  _baseShader.bind();
+  _baseShader->bind();
 }
 void Editor::drawObject(shared_ptr<Object> what, Matrix4f objectTransform, colorargb mix, float resAlpha) {
   glUniform4f(_baseShader_mix_color,
@@ -375,11 +375,11 @@ void Editor::drawObject(shared_ptr<Object> what, Matrix4f objectTransform, color
   what->draw();
 }
 void Editor::endObjectDraw() {
-  _baseShader.unbind();
+  _baseShader->unbind();
 }
 
 void Editor::beginEdgeDraw() {
-  _edgeShader.bind();
+  _edgeShader->bind();
 
   /*if (_edgeShader_transform2 != -1) {
     glUniformMatrix4fv(_edgeShader_transform2, 1, false, cameraM);
@@ -407,7 +407,7 @@ void Editor::drawEdge(shared_ptr<Object> what, Matrix4f objectTransform, colorar
   what->drawEdges();
 }
 void Editor::endEdgeDraw() {
-  _edgeShader.unbind();
+  _edgeShader->unbind();
 }
 
 float Editor::getScale() {

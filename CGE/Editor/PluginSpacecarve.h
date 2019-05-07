@@ -2,12 +2,12 @@
 
 #include "Framework.h"
 
-class PluginSpacecarve : public EditorPlugin {
+/*class PluginSpacecarve : public EditorPlugin {
 public:
     
 
   PluginSpacecarve(Editor* e) : EditorPlugin(e) {
-    //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+    //_ribbonElement = NGin::Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
   }
 
   static void staticInit() {
@@ -32,11 +32,11 @@ public:
   void reset() {
       
   }
-};
+};*/
 
-EditorPlugin* createPluginSelect(Editor* e, bool staticInit);
+//EditorPlugin* createPluginSelect(Editor* e, bool staticInit);
 
-namespace OctTree {
+/*namespace OctTree {
   namespace Memory {
     typedef iVec2 address;
     //Blocks are 16 x 1
@@ -137,4 +137,4 @@ namespace OctTree {
     }
   };
 
-};
+};*/

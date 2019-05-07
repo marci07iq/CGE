@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../../../NGin/GUI/Graphics.h"
-#include "../../../../NGin/Maths/Point.h"
+#include <NGin/GUI/Graphics.h>
+#include <NGin/Maths/Point.h>
 
-extern Graphics::WinHwnd objectMainWindowHwnd;
+extern NGin::Graphics::WinHwnd objectEditorWindowHwnd;
+extern NGin::Graphics::WinHwnd objectPreviewWindowHwnd;

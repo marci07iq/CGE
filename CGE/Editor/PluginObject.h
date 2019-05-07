@@ -27,7 +27,7 @@ class PluginObject : public EditorPlugin {
     list<shared_ptr<Object>> _clipboard;
 
     PluginObject(Editor* e) : EditorPlugin(e) {
-      //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+      //_ribbonElement = NGin::Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }
 
     static void staticInit();

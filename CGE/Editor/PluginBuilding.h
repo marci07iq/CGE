@@ -185,9 +185,9 @@ public:
     static bool first = true;
     if (first) {
       first = false;
-      _checkShader_2D.create("Editor/Checkboard_2D");
-      _checkShader_2D_scale = glGetUniformLocation(_checkShader_2D._pID, "scale");
-      _checkShader_2D_offset = glGetUniformLocation(_checkShader_2D._pID, "offset");
+      _checkShader_2D = make_shared<Shader_Raw>("Editor/Checkboard_2D");
+      _checkShader_2D_scale = glGetUniformLocation(_checkShader_2D->_pID, "scale");
+      _checkShader_2D_offset = glGetUniformLocation(_checkShader_2D->_pID, "offset");
     }
   }
 

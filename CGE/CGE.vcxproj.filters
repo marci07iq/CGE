@@ -32,9 +32,6 @@
     <ClCompile Include="Renderer\Render.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Transpose.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Editor\Editor.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
@@ -77,9 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer\Render.h">
-      <Filter>Source Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\Transpose.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Editor\Editor.h">

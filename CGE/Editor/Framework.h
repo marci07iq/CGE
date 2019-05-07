@@ -8,14 +8,14 @@ class EditorPlugin {
 public:
   Editor* _editor;
 
-  Graphics::ElemHwnd _ribbonElement = NULL;
-  Graphics::ElemHwnd _toolbarElement = NULL;
+  NGin::Graphics::ElemHwnd _ribbonElement = NULL;
+  NGin::Graphics::ElemHwnd _toolbarElement = NULL;
   
-  Graphics::PanelHwnd _config = NULL;
+  NGin::Graphics::PanelHwnd _config = NULL;
 
   EditorPlugin(Editor* e) {
     _editor = e;
-    //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+    //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
   }
 
   virtual int renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {

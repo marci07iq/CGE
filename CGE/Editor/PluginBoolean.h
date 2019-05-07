@@ -5,12 +5,12 @@
 
 class PluginBoolean;
 
-void pluginBooleanUnionButton(Graphics::ElemHwnd sender, void * plugin);
-void pluginBooleanSubtractButton(Graphics::ElemHwnd sender, void * plugin);
-void pluginBooleanIntersectButton(Graphics::ElemHwnd sender, void * plugin);
+void pluginBooleanUnionButton(NGin::Graphics::ElemHwnd sender);
+void pluginBooleanSubtractButton(NGin::Graphics::ElemHwnd sender);
+void pluginBooleanIntersectButton(NGin::Graphics::ElemHwnd sender);
 
-void pluginBooleanSelectLhs(Graphics::ElemHwnd sender, void * plugin);
-void pluginBooleanSelectRhs(Graphics::ElemHwnd sender, void * plugin);
+void pluginBooleanSelectLhs(NGin::Graphics::ElemHwnd sender);
+void pluginBooleanSelectRhs(NGin::Graphics::ElemHwnd sender);
 
 class PluginBoolean : public EditorPlugin {
   public:
@@ -18,16 +18,16 @@ class PluginBoolean : public EditorPlugin {
     int _activeSelector;
 
     PluginBoolean(Editor* e) : EditorPlugin(e) {
-      //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+      //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }
 
     static void staticInit() {
-      Graphics::setName<ClickCallback>("pluginBooleanSelectLhs", pluginBooleanSelectLhs);
-      Graphics::setName<ClickCallback>("pluginBooleanSelectRhs", pluginBooleanSelectRhs);
+      NGin::Graphics::setName<ClickCallback>("pluginBooleanSelectLhs", pluginBooleanSelectLhs);
+      NGin::Graphics::setName<ClickCallback>("pluginBooleanSelectRhs", pluginBooleanSelectRhs);
 
-      Graphics::setName<ClickCallback>("pluginBooleanUnionButton", pluginBooleanUnionButton);
-      Graphics::setName<ClickCallback>("pluginBooleanSubtractButton", pluginBooleanSubtractButton);
-      Graphics::setName<ClickCallback>("pluginBooleanIntersectButton", pluginBooleanIntersectButton);
+      NGin::Graphics::setName<ClickCallback>("pluginBooleanUnionButton", pluginBooleanUnionButton);
+      NGin::Graphics::setName<ClickCallback>("pluginBooleanSubtractButton", pluginBooleanSubtractButton);
+      NGin::Graphics::setName<ClickCallback>("pluginBooleanIntersectButton", pluginBooleanIntersectButton);
     }
 
     int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);

@@ -8,7 +8,7 @@ class PluginSelect : public EditorPlugin {
     shared_ptr<Object> highlightedObject;
 
     PluginSelect(Editor* e) : EditorPlugin(e) {
-      //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+      //_ribbonElement = NGin::Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
     }
 
     static void staticInit() {

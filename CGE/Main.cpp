@@ -1,14 +1,14 @@
 #include "Main.h"
 
-void createSettings(Graphics::TableHwnd& table) {
-  Graphics::deleteElements(table);
+void createSettings(NGin::Graphics::TableHwnd& table) {
+  NGin::Graphics::deleteElements(table);
   for (auto&& it : keybinds) {
-    Graphics::PanelHwnd row = Graphics::createPanel("objectKeybindRow" + to_string(it.first), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"), NULL);
-    Graphics::LabelHwnd    name = Graphics::createLabel("objectKeybindLabel" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), NULL, it.second.display, 0);
-    Graphics::ControlHwnd  ctrl = Graphics::createControl("objectKeybindInput" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), NULL, it.second, it.first, keybindReply);
-    Graphics::addElement(row, name);
-    Graphics::addElement(row, ctrl);
-    Graphics::addElement(table, row);
+    NGin::Graphics::PanelHwnd row = NGin::Graphics::createGUI_T<Panel>("objectKeybindRow" + to_string(it.first), LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(1, 0)), getColor("tablerow", "bgcolor"), nullptr);
+    NGin::Graphics::LabelHwnd    name = NGin::Graphics::createGUI_T<Label>("objectKeybindLabel" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0, 25), LinearScale(0.7, -50)), getColor("label", "bgcolor"), getColor("label", "activecolor"), getColor("label", "textcolor"), nullptr, it.second.display, 0);
+    NGin::Graphics::ControlHwnd  ctrl = NGin::Graphics::createGUI_T<ControlSetting>("objectKeybindInput" + to_string(it.first), LocationData(LinearScale(0, 5), LinearScale(0, 25), LinearScale(0.7, -45), LinearScale(1, -5)), getColor("control", "bgcolor"), getColor("control", "activecolor"), getColor("control", "textcolor"), nullptr, it.second, it.first, keybindReply);
+    NGin::Graphics::addElement(row, name);
+    NGin::Graphics::addElement(row, ctrl);
+    NGin::Graphics::addElement(table, row);
   }
 }
 
@@ -27,10 +27,10 @@ void openFile(string file) {
   delete data;
 }
 
-void editorMenuNewButton(Graphics::ElemHwnd sender, void* data) {
+void editorMenuNewButton(NGin::Graphics::ElemHwnd sender) {
   cout << "NEW" << endl;
 }
-void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
+void editorMenuOpenButton(NGin::Graphics::ElemHwnd sender) {
   cout << "OPEN" << endl;
   string file = openFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } });
   if (file.length()) {
@@ -40,7 +40,7 @@ void editorMenuOpenButton(Graphics::ElemHwnd sender, void* data) {
   }
 }
 
-void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
+void editorMenuSaveButton(NGin::Graphics::ElemHwnd sender) {
   cout << "SAVE" << endl;
   string file = saveFileSelector("Select file", { { "CGE model file (*.cmf)","*.cmf" } }, "cmf");
   if (file.length()) {
@@ -57,7 +57,7 @@ void editorMenuSaveButton(Graphics::ElemHwnd sender, void* data) {
     cout << "Cancelled" << endl;
   }
 }
-void editorMenuExportButton(Graphics::ElemHwnd sender, void* data) {
+void editorMenuExportButton(NGin::Graphics::ElemHwnd sender) {
   cout << "EXPORT" << endl;
   string file = saveFileSelector("Select file", { { "Polygon File (*.ply)","*.ply" } });
   if (file.length()) {
@@ -73,7 +73,7 @@ void editorMenuExportButton(Graphics::ElemHwnd sender, void* data) {
     cout << "Cancelled" << endl;
   }
 }
-void editorMenuImportButton(Graphics::ElemHwnd sender, void* data) {
+void editorMenuImportButton(NGin::Graphics::ElemHwnd sender) {
   cout << "IMPORT" << endl;
   string file = openFileSelector("Select file", { { "Polygon File (*.ply)","*.ply" },{ "Any file (*.*)","*.*" } });
   if (file.length()) {
@@ -86,17 +86,22 @@ void editorMenuImportButton(Graphics::ElemHwnd sender, void* data) {
     cout << "Cancelled" << endl;
   }
 }
-void settingsWindowSetup(Graphics::WinHwnd win) {
+void settingsWindowSetup(NGin::Graphics::WinHwnd win) {
+
+  glfwMakeContextCurrent(win->rawHwnd);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   objectSettingsWindowHwnd = win;
-  Graphics::setElements(objectSettingsWindowHwnd->myPanel, "html/mainSettings.xml");
-  Graphics::TableHwnd table = (Graphics::TableHwnd)Graphics::getElementById("objectSettingsMenuTable");
+  NGin::Graphics::setElements(objectSettingsWindowHwnd->myPanel, "html/mainSettings.xml");
+  NGin::Graphics::TableHwnd table = static_pointer_cast<Table, GUIElement>(NGin::Graphics::getElementById("objectSettingsMenuTable"));
   createSettings(table);
 }
-void editorMenuSettingsButton(Graphics::ElemHwnd sender, void* data) {
-  Graphics::CreateMainWindow("Settings", Graphics::defaultWindowManagers, 0, 0, false, 0, 0, false, 0, NULL, settingsWindowSetup);
+void editorMenuSettingsButton(NGin::Graphics::ElemHwnd sender) {
+  NGin::Graphics::CreateMainWindow("Settings", NGin::Graphics::defaultWindowManagers, 0, 0, false, 0, 0, false, 0, NULL, settingsWindowSetup);
 }
-void editorMenuExitButton(Graphics::ElemHwnd sender, void* data) {
-  Graphics::forceShutdown();
+void editorMenuExitButton(NGin::Graphics::ElemHwnd sender) {
+  NGin::Graphics::forceShutdown();
 }
 
 /*
@@ -108,39 +113,39 @@ enum Toolbars {
 };
 Toolbars currentToolbar;
 */
-/*void editorToolAddButton(Graphics::ElemHwnd sender) {
+/*void editorToolAddButton(NGin::Graphics::ElemHwnd sender) {
   if(currentToolbar == Toolbars::AddToolbar) {
     currentToolbar = Toolbars::NoToolbar;
-    Graphics::deleteElements((Panel*)Graphics::getElementById("objectToolContainer"));
+    NGin::Graphics::deleteElements((Panel*)NGin::Graphics::getElementById("objectToolContainer"));
     return;
   }
   currentToolbar = Toolbars::AddToolbar;
-  Graphics::setElements((Panel*)Graphics::getElementById("objectToolContainer"),"html/addToolbar.xml");
+  NGin::Graphics::setElements((Panel*)NGin::Graphics::getElementById("objectToolContainer"),"html/addToolbar.xml");
 }
-void editorToolSelectButton(Graphics::ElemHwnd sender) {
+void editorToolSelectButton(NGin::Graphics::ElemHwnd sender) {
   if (currentToolbar == Toolbars::SelectToolbar) {
     currentToolbar = Toolbars::NoToolbar;
-    Graphics::deleteElements((Panel*)Graphics::getElementById("objectToolContainer"));
+    NGin::Graphics::deleteElements((Panel*)NGin::Graphics::getElementById("objectToolContainer"));
     return;
   }
   currentToolbar = Toolbars::SelectToolbar;
-  Graphics::setElements((Panel*)Graphics::getElementById("objectToolContainer"), "html/objectToolbar.xml");
+  NGin::Graphics::setElements((Panel*)NGin::Graphics::getElementById("objectToolContainer"), "html/objectToolbar.xml");
 }
-void editorToolBooleanButton(Graphics::ElemHwnd sender) {
+void editorToolBooleanButton(NGin::Graphics::ElemHwnd sender) {
   if (currentToolbar == Toolbars::BooleanToolbar) {
     currentToolbar = Toolbars::NoToolbar;
-    Graphics::deleteElements((Panel*)Graphics::getElementById("objectToolContainer"));
+    NGin::Graphics::deleteElements((Panel*)NGin::Graphics::getElementById("objectToolContainer"));
     return;
   }
   currentToolbar = Toolbars::BooleanToolbar;
   string ele = "objectToolContainer";
   string fl = "html/booleanToolbar.xml";
-  Graphics::setElements((Panel*)Graphics::getElementById(ele), fl);
+  NGin::Graphics::setElements((Panel*)NGin::Graphics::getElementById(ele), fl);
 }
 */
 
 //Add toolbar
-/*void addToolbarCubeButton(Graphics::ElemHwnd sender) {
+/*void addToolbarCubeButton(NGin::Graphics::ElemHwnd sender) {
 
 }*/
 
@@ -163,7 +168,7 @@ void glfwErrorCb(int i, const char* c) {
   cout << i << c << endl;
 }
 
-void mainWindowSetup(Graphics::WinHwnd win) {
+void mainWindowSetup(NGin::Graphics::WinHwnd win) {
   objectMainWindowHwnd = win;
   glewExperimental = GL_TRUE;
 
@@ -182,53 +187,55 @@ void mainWindowSetup(Graphics::WinHwnd win) {
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
-  Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
+  glEnable(GL_BLEND);
+
+  NGin::Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
   Gll::gllInit("NGin/GUI/GLL_Res/");
 
-  objectMainCanvasHwnd = Graphics::createCanvas("objectEditorCanvas", fullContainer, IWindowManagers{
+  objectMainCanvasHwnd = NGin::Graphics::createGUI_T<Canvas>("objectEditorCanvas", fullContainer, IWindowManagers{
     MainGameCanvas::renderManager,
     MainGameCanvas::resizeManager,
     MainGameCanvas::guiEventManager,
     MainGameCanvas::mouseEntryManager,
     MainGameCanvas::mouseMoveManager,
-  }, NULL);
+  }, nullptr);
 
-  Graphics::LabelBindHwnd objectEditorScaleBinder = (Graphics::LabelBindHwnd)(Graphics::getElementById("objectEditorScaleBinder"));
+  NGin::Graphics::LabelBindHwnd objectEditorScaleBinder = static_pointer_cast<LabelBind, GUIElement>(NGin::Graphics::getElementById("objectEditorScaleBinder"));
   objectEditorScaleBinder->text = new TextBind<
     TextBindFunc<float, Editor*>
   >("1 : %",
     TextBindFunc<float, Editor*>(&(Editor::getScale), &mainEditor)
     );
 
-  Graphics::addElement((Graphics::PanelHwnd)Graphics::getElementById("objectEditorCanvasContainer"), objectMainCanvasHwnd);
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(NGin::Graphics::getElementById("objectEditorCanvasContainer")), objectMainCanvasHwnd);
 
   win->autoRedraw = false;
 }
 void initGraphics() {
-  Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
-  Graphics::setName<ClickCallback>("editorMenuOpenButton", editorMenuOpenButton);
-  Graphics::setName<ClickCallback>("editorMenuSaveButton", editorMenuSaveButton);
-  Graphics::setName<ClickCallback>("editorMenuExportButton", editorMenuExportButton);
-  Graphics::setName<ClickCallback>("editorMenuImportButton", editorMenuImportButton);
-  Graphics::setName<ClickCallback>("editorMenuSettingsButton", editorMenuSettingsButton);
-  Graphics::setName<ClickCallback>("editorMenuExitButton", editorMenuExitButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuOpenButton", editorMenuOpenButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuSaveButton", editorMenuSaveButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuExportButton", editorMenuExportButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuImportButton", editorMenuImportButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuSettingsButton", editorMenuSettingsButton);
+  NGin::Graphics::setName<ClickCallback>("editorMenuExitButton", editorMenuExitButton);
 
-  Graphics::setName<TextValidatorFunc>("numericalValidator", numericalValidator);
-  Graphics::setName<TextValidatorFunc>("textValidator", textValidator);
-  Graphics::setName<TextValidatorFunc>("floatValidator", floatValidator);
+  NGin::Graphics::setName<TextValidatorFunc>("numericalValidator", numericalValidator);
+  NGin::Graphics::setName<TextValidatorFunc>("textValidator", textValidator);
+  NGin::Graphics::setName<TextValidatorFunc>("floatValidator", floatValidator);
 
 
-  Graphics::initGraphics();
+  NGin::Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 4.3
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
   
-  Graphics::CreateMainWindow("CGE", Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, mainWindowSetup);
+  NGin::Graphics::CreateMainWindow("CGE", NGin::Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, mainWindowSetup);
 
-  Graphics::cleanQueues();
+  NGin::Graphics::cleanQueues();
 }
 
 int main(int argc, char *argv[]) {
@@ -241,7 +248,12 @@ int main(int argc, char *argv[]) {
 
   initGraphics();
  
-  mainEditor.init(objectMainCanvasHwnd, (Graphics::TablerowHwnd)Graphics::getElementById("objectEditorToolRibbon"), (Graphics::TableHwnd)Graphics::getElementById("objectEditorToolbar"), (Graphics::PanelHwnd)Graphics::getElementById("objectToolContainer"));
+  mainEditor.init(
+    objectMainCanvasHwnd,
+    static_pointer_cast<TableRow, GUIElement>(NGin::Graphics::getElementById("objectEditorToolRibbon")),
+    static_pointer_cast<Table, GUIElement>(NGin::Graphics::getElementById("objectEditorToolbar")),
+    static_pointer_cast<Panel, GUIElement>(NGin::Graphics::getElementById("objectToolContainer"))
+  );
 
   mainEditor.registerPlugin("PluginSelect", createPluginSelect);
 
@@ -264,8 +276,8 @@ int main(int argc, char *argv[]) {
     openFile(string(argv[1]));
   }
 
-  Graphics::requestRedraw();
-  Graphics::mainLoop();
+  NGin::Graphics::requestRedraw();
+  NGin::Graphics::mainLoop();
 
   saveKeybinds();
 

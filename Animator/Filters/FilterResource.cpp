@@ -9,7 +9,7 @@ Raw_FrameBuffer::Raw_FrameBuffer(iVec2 size) {
 
 void Raw_FrameBuffer::attachColor(int colorInd, GLenum format, GLenum type) {
   if (_col_attachments.count(colorInd)) {
-    throw 1;
+    throw "Color buffer already attached";
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, _id);
@@ -34,8 +34,8 @@ void Raw_FrameBuffer::attachColor(int colorInd, GLenum format, GLenum type) {
 }
 void Raw_FrameBuffer::attachDepth() {
   // The depth buffer
-  if (_depth_attachment != 0) {
-    throw 1;
+  if (hasDepth()) {
+    throw "Depth buffer already attached";
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, _id);
@@ -47,6 +47,9 @@ void Raw_FrameBuffer::attachDepth() {
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
   _depth_attachment = depthrenderbuffer;
+}
+bool Raw_FrameBuffer::hasDepth() {
+  return _depth_attachment != 0;
 }
 bool Raw_FrameBuffer::valid() {
   glBindFramebuffer(GL_FRAMEBUFFER, _id);
@@ -78,26 +81,14 @@ Filter_Resource::Type Filter_Resource::type() {
 
 //Color
 
-Filter_Resource_ColorBuffer::Filter_Resource_ColorBuffer(FrameBuffer source, int col_att_id) : Filter_Resource() {
+Filter_Resource_RenderBuffer::Filter_Resource_RenderBuffer(FrameBuffer source, vector<int> col_att_ids) : Filter_Resource() {
   _source = source;
-  _col_att_id = col_att_id;
+  _col_att_ids = col_att_ids;
 }
-Filter_Resource::Type Filter_Resource_ColorBuffer::staticType() {
-  return Type_ColorBuffer;
+Filter_Resource::Type Filter_Resource_RenderBuffer::staticType() {
+  return Type_RenderBuffer;
 }
-Filter_Resource::Type Filter_Resource_ColorBuffer::type() {
-  return staticType();
-}
-
-//Depth
-
-Filter_Resource_DepthBuffer::Filter_Resource_DepthBuffer(FrameBuffer source) : Filter_Resource() {
-  _source = source;
-}
-Filter_Resource::Type Filter_Resource_DepthBuffer::staticType() {
-  return Type_DepthBuffer;
-}
-Filter_Resource::Type Filter_Resource_DepthBuffer::type() {
+Filter_Resource::Type Filter_Resource_RenderBuffer::type() {
   return staticType();
 }
 
@@ -137,7 +128,29 @@ Filter_Resource::Type Filter_Resource_Object::type() {
   return staticType();
 }
 
+//VAO
 
+Filter_Resource_VAO::Filter_Resource_VAO() : Filter_Resource() {
+  
+}
+Filter_Resource::Type Filter_Resource_VAO::staticType() {
+  return Type_VAO;
+}
+Filter_Resource::Type Filter_Resource_VAO::type() {
+  return staticType();
+}
+
+//Shader
+
+Filter_Resource_Shader::Filter_Resource_Shader() : Filter_Resource() {
+
+}
+Filter_Resource::Type Filter_Resource_Shader::staticType() {
+  return Type_Shader;
+}
+Filter_Resource::Type Filter_Resource_Shader::type() {
+  return staticType();
+}
 
 //Output
 
@@ -154,17 +167,54 @@ Filter_Resource::Type Filter_Resource_Output::type() const {
 
 //Input
 
-Filter_Resource_Input::Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Filter_Resource::Type type) {
+Filter_Resource_Input::Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray) {
   _filter = filter;
   _internalName = internalName;
   _displayName = displayName;
   _description = description;
   _type = type;
+  _isArray = isArray;
+  cleanBindings();
 }
-void Filter_Resource_Input::bindInput(weak_ptr<Filter_Resource_Output> binding) {
+void Filter_Resource_Input::bindInput(weak_ptr<Filter_Resource_Output> binding, int to, bool before) {
   auto binding_l = binding.lock();
   assert(_type == binding_l->type());
-  _binding = binding;
+
+  if (_isArray) {
+    if (to == -1) {
+      _bindings.push_back(binding);
+    }
+    else if (before) {
+      auto it = _bindings.begin() + to;
+      _bindings.insert(it, binding);
+    } else {
+      _bindings[to] = binding;
+    }
+  } else {
+    assert(to == -1 || to == 0);
+    _bindings[0] = binding;
+  }
+
+  cleanBindings();
+}
+int Filter_Resource_Input::hasBinding() const {
+  if (_isArray) {
+    return _bindings.size() - 1;
+  }
+  return 1;
+}
+void Filter_Resource_Input::cleanBindings() {
+  if (_isArray) {
+    for (int i = 0; i < _bindings.size(); i++) {
+      if (_bindings[i].expired()) {
+        _bindings.erase(_bindings.begin() + i);
+        --i;
+      }
+    }
+    _bindings.push_back(weak_ptr<Filter_Resource_Output>());
+  } else {
+    _bindings.resize(1);
+  }
 }
 Filter_Resource::Type Filter_Resource_Input::type() {
   return _type;

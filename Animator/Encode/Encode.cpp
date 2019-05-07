@@ -66,8 +66,9 @@ class Raw_Encoder_Data {
     int ret;
 
     // send the frame to the encoder
-    if (frame)
-      printf("Send frame %3lld\n", frame->pts);
+    if (frame) {
+      //printf("Send frame %3lld\n", frame->pts);
+    }
 
     ret = avcodec_send_frame(enc_ctx, frame);
     if (ret < 0) {
@@ -77,14 +78,15 @@ class Raw_Encoder_Data {
 
     while (ret >= 0) {
       ret = avcodec_receive_packet(enc_ctx, pkt);
-      if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+      if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
         return;
+      }
       else if (ret < 0) {
         fprintf(stderr, "Error during encoding\n");
         exit(1);
       }
 
-      printf("Write packet %3lld (size=%5d)\n", pkt->pts, pkt->size);
+      //printf("Write packet %3lld (size=%5d)\n", pkt->pts, pkt->size);
       fwrite(pkt->data, 1, pkt->size, outfile);
       av_packet_unref(pkt);
     }
@@ -93,10 +95,12 @@ class Raw_Encoder_Data {
 public:
 
   Raw_Encoder_Data(shared_ptr<Filter_Resource_Output> global, EncodeData encoding) {
+    cout << "Starting encoder" << endl;
+
     _global = global;
     shared_ptr<EditorContext> ed_ctx = _global->_filter.lock()->_ctx.lock();
-    shared_ptr<Filter_Resource_ColorBuffer> colbuf = _global->_res->castTo<Filter_Resource_ColorBuffer>();
-    assert(colbuf->_col_att_id == 0);
+    shared_ptr<Filter_Resource_RenderBuffer> colbuf = _global->_res->castTo<Filter_Resource_RenderBuffer>();
+    assert(colbuf->_col_att_ids[0] == 0);
     _encoding = encoding;
 
     avcodec_register_all();
@@ -185,7 +189,7 @@ public:
 
   void addFrame() {
     shared_ptr<EditorContext> ed_ctx = _global->_filter.lock()->_ctx.lock();
-    shared_ptr<Filter_Resource_ColorBuffer> colbuf = _global->_res->castTo<Filter_Resource_ColorBuffer>();
+    shared_ptr<Filter_Resource_RenderBuffer> colbuf = _global->_res->castTo<Filter_Resource_RenderBuffer>();
     assert(_ready);
 
     glBindFramebuffer(GL_FRAMEBUFFER, colbuf->_source->_id);
@@ -213,6 +217,7 @@ public:
     av_frame_free(&frame);
     av_packet_free(&pkt);
 
+    cout << "Closing video output" << endl;
   }
 };
 

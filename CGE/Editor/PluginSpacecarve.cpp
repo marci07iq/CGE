@@ -1,6 +1,6 @@
 #include "PluginSpacecarve.h"
 
-void PluginSpacecarveResetIcon(Graphics::ElemHwnd elem, void* plugin) {
+/*void PluginSpacecarveResetIcon(NGin::Graphics::ElemHwnd elem, void* plugin) {
   ((PluginSpacecarve*)plugin)->reset();
 }
 
@@ -89,7 +89,7 @@ int PluginSpacecarve::guiEventManager(gui_event& evt, int mx, int my, set<key_lo
           evt.captured = true;
           selectedObjects.insert(highlightedObject);
         }
-        /*polyRays.push_front(rayori);*/
+        //polyRays.push_front(rayori);
         return 1;
       }
     }
@@ -98,9 +98,9 @@ int PluginSpacecarve::guiEventManager(gui_event& evt, int mx, int my, set<key_lo
 }
 
 void PluginSpacecarve::onAdded() {
-  _ribbonElement = Graphics::createPanel("objectPluginSelectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 80)), 0x00000000, NULL);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectAllIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 8, pluginSelectAllIcon, "selectall", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginSelectClearIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 9, pluginSelectClearIcon, "deselect", "html/icons.ilf"));
+  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginSelectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 80)), 0x00000000, NULL);
+  NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginSelectAllIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 8, pluginSelectAllIcon, "selectall", "html/icons.ilf"));
+  NGin::Graphics::addElement((NGin::Graphics::PanelHwnd)_ribbonElement, NGin::Graphics::createGUI_T<IconButton>("objectPluginSelectClearIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 9, pluginSelectClearIcon, "deselect", "html/icons.ilf"));
 }
 
 void PluginSpacecarve::onActivated() {
@@ -118,4 +118,4 @@ EditorPlugin * createPluginSpacecarve(Editor * e, bool staticInit) {
   } else {
     return new PluginSelect(e);
   }
-}
+}*/

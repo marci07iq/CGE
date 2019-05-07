@@ -4,16 +4,16 @@
 
 class PluginCreate;
 
-void pluginCreatePositionXInput(Graphics::ElemHwnd sender, void * plugin, string& val);
-void pluginCreatePositionYInput(Graphics::ElemHwnd sender, void * plugin, string& val);
-void pluginCreatePositionZInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+/*void pluginCreatePositionXInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreatePositionYInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreatePositionZInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
 
-void pluginCreateSizeXInput(Graphics::ElemHwnd sender, void * plugin, string& val);
-void pluginCreateSizeYInput(Graphics::ElemHwnd sender, void * plugin, string& val);
-void pluginCreateSizeZInput(Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreateSizeXInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreateSizeYInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
+void pluginCreateSizeZInput(NGin::Graphics::ElemHwnd sender, void * plugin, string& val);
 
 
-void pluginCreateDoneButton(Graphics::ElemHwnd sender, void* plugin);
+void pluginCreateDoneButton(NGin::Graphics::ElemHwnd sender, void* plugin);*/
 
 class PluginCreate : public EditorPlugin {
   public:
@@ -23,7 +23,7 @@ class PluginCreate : public EditorPlugin {
     Transform _temp_movement;
 
     PluginCreate(Editor* e) : EditorPlugin(e) {
-      //_ribbonElement = Graphics::createPanel("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+      //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
       _temp = NULL;
     }
 

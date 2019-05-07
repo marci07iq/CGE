@@ -1,11 +1,16 @@
 #include "Main.h"
 
-Graphics::WinHwnd objectMainWindowHwnd;
-PreviewCanvas* objectMainPreviewCanvasHwnd;
+NGin::Graphics::WinHwnd objectEditorWindowHwnd;
+NGin::Graphics::WinHwnd objectPreviewWindowHwnd;
+
+shared_ptr<PreviewCanvas> objectMainPreviewCanvasHwnd;
+shared_ptr<FilterGUI> objectMainFilterGuiHwnd;
+
+shared_ptr<EditorContext> ctx;
 
 void frameLoop() {
-  while (Graphics::windows.size()) {
-    Graphics::requestRedraw();
+  while (NGin::Graphics::windows.size()) {
+    NGin::Graphics::requestRedraw();
     this_thread::sleep_for(chrono::milliseconds(33));
   }
 }
@@ -28,8 +33,32 @@ void glfwErrorCb(int i, const char* c) {
   cout << i << " " << c << endl;
 }
 
-void mainWindowSetup(Graphics::WinHwnd win) {
-  objectMainWindowHwnd = win;
+void createPreviewWindow_onSetup(NGin::Graphics::WinHwnd win) {
+  objectPreviewWindowHwnd = win;
+  
+  glfwMakeContextCurrent(win->rawHwnd);
+
+  glEnable(GL_DEBUG_OUTPUT);
+  glDebugMessageCallback(MessageCallback, 0);
+
+  glDisable(GL_DITHER);
+  glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+
+  NGin::Graphics::setElements(objectPreviewWindowHwnd->myPanel, "html/previewScreen.xml");
+  objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", fullContainer, IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel);
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(objectPreviewWindowHwnd->myPanel->getElementById("objectEditorCanvasContainer")), objectMainPreviewCanvasHwnd->shared_from_this());
+  
+
+  win->autoRedraw = false;
+}
+void createPreviewWindow() {
+  NGin::Graphics::CreateMainWindow("Preview", NGin::Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, nullptr, createPreviewWindow_onSetup);
+
+  NGin::Graphics::cleanQueues();
+}
+
+void createEditorWindow_onSetup(NGin::Graphics::WinHwnd win) {
+  objectEditorWindowHwnd = win;
   glewExperimental = GL_TRUE;
 
   glewInit();
@@ -47,39 +76,37 @@ void mainWindowSetup(Graphics::WinHwnd win) {
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
-  Graphics::setElements(objectMainWindowHwnd->myPanel, "html/mainScreen.xml");
 
   Gll::gllInit("NGin/GUI/GLL_Res/");
 
-  objectMainPreviewCanvasHwnd = new PreviewCanvas("objectEditorCanvas", fullContainer, IWindowManagers(), NULL);
-
-  /*Graphics::LabelBindHwnd objectEditorScaleBinder = (Graphics::LabelBindHwnd)(Graphics::getElementById("objectEditorScaleBinder"));
-  objectEditorScaleBinder->text = new TextBind<
-    TextBindFunc<float, Editor*>
-  >("1 : %",
-    TextBindFunc<float, Editor*>(&(Editor::getScale), &mainEditor)
-    );*/
-
-  Graphics::addElement((Graphics::PanelHwnd)Graphics::getElementById("objectEditorCanvasContainer"), objectMainPreviewCanvasHwnd);
+  NGin::Graphics::setElements(objectEditorWindowHwnd->myPanel, "html/mainScreen.xml");
+  objectMainFilterGuiHwnd = make_shared<FilterGUI>("objectEditorCanvas", fullContainer, getColor("filter", "bgcolor"), getColor("filter", "activecolor"), getColor("filter", "textcolor"), ctx);
+  ctx->gui = objectMainFilterGuiHwnd;
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(objectEditorWindowHwnd->myPanel->getElementById("objectEditorFilterGUIContainer")), objectMainFilterGuiHwnd->shared_from_this());
 
   win->autoRedraw = false;
 }
-void initGraphics() {
-  //Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
+void createEditorWindow() {
+  NGin::Graphics::CreateMainWindow("Animator", NGin::Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, createEditorWindow_onSetup);
 
-  Graphics::initGraphics();
+  NGin::Graphics::cleanQueues();
+}
+
+void initGraphics() {
+  //NGin::Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
+  NGin::Graphics::setName<SliderInputFunc>("editorTimelineSlider", editorTimelineSlider);
+  NGin::Graphics::setName<ClickCallback>("editorTimelinePauseButton", editorTimelinePauseButton);
+
+  NGin::Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 4.3
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
 
-  Graphics::CreateMainWindow("CGE", Graphics::defaultWindowManagers, 1080, 768, true, 0, 0, false, 0, NULL, mainWindowSetup);
-
-  Graphics::cleanQueues();
+  createEditorWindow();
+  createPreviewWindow();
 }
-
-shared_ptr<EditorContext> ctx;
 
 int main(int argc, char* argv[]) {
   setlocale(LC_ALL, "en_GB.UTF-8");
@@ -89,9 +116,12 @@ int main(int argc, char* argv[]) {
   loadKeybinds();
   loadColors();
 
+  ctx = make_shared<EditorContext>();
+  ctx->_stream_desc._resolution = fVec2(1920, 1080);
+  ctx->_stream_desc._frameRate = 30;
+
   initGraphics();
 
-  ctx = make_shared<EditorContext>();
   shared_ptr<Filter> globalDummy = make_shared<Filter>(ctx);
 
   shared_ptr<Filter_Resource_Output> resolution = make_shared<Filter_Resource_Output>(globalDummy, "resolution", "Resolution", "Resolution of the output frame", make_shared<Filter_Resource_Object>());
@@ -106,13 +136,14 @@ int main(int argc, char* argv[]) {
   ctx->_filters.push_back(filt);
 
   objectMainPreviewCanvasHwnd->_inputs["result"]->bindInput(filt->_outputs["out"]);
+  objectMainPreviewCanvasHwnd->configure();
 
-  Graphics::requestRedraw();
+  NGin::Graphics::requestRedraw();
 
-  thread frames(frameLoop);
-  Graphics::mainLoop();
-  frames.join();
+  //thread frames(frameLoop);
+  NGin::Graphics::mainLoop();
   objectMainPreviewCanvasHwnd->finishRender();
+  //frames.join();
 
   saveKeybinds();
 

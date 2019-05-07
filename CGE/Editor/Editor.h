@@ -45,11 +45,11 @@ public:
   //list<EditorPlugin*> _pluginStack;
   EditorPlugin* _currentPlugin;
 
-  Graphics::CanvasHwnd _main;
+  NGin::Graphics::CanvasHwnd _main;
 
-  Graphics::TablerowHwnd _toolribbon; //Ribbon bar up top; for small button
-  Graphics::TableHwnd _toolbar; //Sidebar for access to plugins
-  Graphics::PanelHwnd _config; //Large pane next to sidebar
+  NGin::Graphics::TablerowHwnd _toolribbon; //Ribbon bar up top; for small button
+  NGin::Graphics::TableHwnd _toolbar; //Sidebar for access to plugins
+  NGin::Graphics::PanelHwnd _config; //Large pane next to sidebar
 
   list<shared_ptr<Object>> objs;
 
@@ -72,17 +72,17 @@ public:
 
   static void staticInit();;
 
-  void init(Graphics::CanvasHwnd main, Graphics::TablerowHwnd toolribbon, Graphics::TableHwnd sidebar, Graphics::PanelHwnd config);
+  void init(NGin::Graphics::CanvasHwnd main, NGin::Graphics::TablerowHwnd toolribbon, NGin::Graphics::TableHwnd sidebar, NGin::Graphics::PanelHwnd config);
 
   EditorPlugin* findStaticPlugin(string name);
   void activateStaticPlugin(EditorPlugin* plugin);
   EditorPlugin* createDynamicPlugin(string name);
 
-  void registerRibbon(Graphics::ElemHwnd elem);
-  void removeRibbon(Graphics::ElemHwnd elem);
+  void registerRibbon(NGin::Graphics::ElemHwnd elem);
+  void removeRibbon(NGin::Graphics::ElemHwnd elem);
 
-  void registerSidebar(Graphics::ElemHwnd elem);
-  void removeSidebar(Graphics::ElemHwnd elem);
+  void registerSidebar(NGin::Graphics::ElemHwnd elem);
+  void removeSidebar(NGin::Graphics::ElemHwnd elem);
 
   int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
   void drawCoordinateSystem(int ax, int ay, int bx, int by);

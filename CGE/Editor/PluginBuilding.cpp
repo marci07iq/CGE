@@ -4,19 +4,19 @@ Shader PluginBuilding::_checkShader_2D;
 GLuint PluginBuilding::_checkShader_2D_scale;
 GLuint PluginBuilding::_checkShader_2D_offset;
 
-void pluginBuildingWallAddIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginBuilding*)plugin)->setMode(PluginBuilding::WallModeAdd);
+void pluginBuildingWallAddIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginBuilding*)elem->data)->setMode(PluginBuilding::WallModeAdd);
 }
-void pluginBuildingWallModIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginBuilding*)plugin)->setMode(PluginBuilding::WallModeMod);
+void pluginBuildingWallModIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginBuilding*)elem->data)->setMode(PluginBuilding::WallModeMod);
 }
-void pluginBuildingWallDelIcon(Graphics::ElemHwnd elem, void* plugin) {
-  ((PluginBuilding*)plugin)->setMode(PluginBuilding::WallModeDel);
+void pluginBuildingWallDelIcon(NGin::Graphics::ElemHwnd elem) {
+  ((PluginBuilding*)elem->data)->setMode(PluginBuilding::WallModeDel);
 }
 
-void pluginBuildingMainButton(Graphics::ElemHwnd elem, void* editor) {
+void pluginBuildingMainButton(NGin::Graphics::ElemHwnd elem) {
   //Editor* e = (Editor*)editor;
-  ((Editor*)editor)->activateStaticPlugin(((Editor*)editor)->findStaticPlugin("PluginBuilding"));
+  ((Editor*)elem->data)->activateStaticPlugin(((Editor*)elem->data)->findStaticPlugin("PluginBuilding"));
 }
 
 
@@ -72,19 +72,19 @@ int PluginBuilding::guiEventManager(gui_event& evt, int mx, int my, set<key_loca
 }
 
 void PluginBuilding::onAdded() {
-  //_config = Graphics::createPanel("objectPluginColorConfigPanel", LocationData(LinearScale(0, 0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 200)), 0x00000000, NULL);
+  //_config = NGin::Graphics::createGUI_T<Panel>("objectPluginColorConfigPanel", LocationData(LinearScale(0, 0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 200)), 0x00000000, NULL);
   
-  _toolbarElement = Graphics::createIconButton("objectPluginBuildingMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "building", -1, pluginBuildingMainButton, "building", "html/icons.ilf");
+  _toolbarElement = NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "building", -1, pluginBuildingMainButton, "building", "html/icons.ilf");
   _editor->registerSidebar(_toolbarElement);
 
   _building = make_shared<Building::Building>();
   _building->_plugin = this;
   _selectedFloor = _building->createFloor("0", 0, 3);
 
-  _ribbonElement = Graphics::createPanel("objectPluginColorIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 140)), 0x00000000, NULL);
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBuildingWallAddIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallAddIcon, "wall_add", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBuildingWallModIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallModIcon, "wall_mod", "html/icons.ilf"));
-  Graphics::addElement((Graphics::PanelHwnd)_ribbonElement, Graphics::createIconButton("objectPluginBuildingWallDelIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallDelIcon, "wall_del", "html/icons.ilf"));
+  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginColorIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 140)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallAddIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallAddIcon, "wall_add", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallModIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallModIcon, "wall_mod", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallDelIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallDelIcon, "wall_del", "html/icons.ilf"));
 
   setMode(WallModeUnd);
 }
@@ -103,9 +103,9 @@ void PluginBuilding::onDeactivated() {
 void PluginBuilding::setMode(WallMode mode) {
   _mode = mode;
 
-  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginBuildingWallAddIcon")))->stuck = _mode == WallModeAdd;
-  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginBuildingWallModIcon")))->stuck = _mode == WallModeMod;
-  ((Graphics::ButtonHwnd)(_ribbonElement->getElementById("objectPluginBuildingWallDelIcon")))->stuck = _mode == WallModeDel;
+  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallAddIcon")))->stuck = _mode == WallModeAdd;
+  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallModIcon")))->stuck = _mode == WallModeMod;
+  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallDelIcon")))->stuck = _mode == WallModeDel;
 }
 
 
@@ -483,7 +483,7 @@ namespace Building {
   }
 
   int BuildingFloor::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
-    Graphics::resetViewport();
+    NGin::Graphics::resetViewport();
     
     float scale = Render2D_gridSize();
 
@@ -536,11 +536,11 @@ namespace Building {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 
-    PluginBuilding::_checkShader_2D.bind();
+    PluginBuilding::_checkShader_2D->bind();
 
     glUniform2f(PluginBuilding::_checkShader_2D_scale,
-      Graphics::current->width / 2.0 * Render2D_scale,
-      Graphics::current->height / 2.0 * Render2D_scale);
+      NGin::Graphics::current->width / 2.0 * Render2D_scale,
+      NGin::Graphics::current->height / 2.0 * Render2D_scale);
 
     glUniform2f(PluginBuilding::_checkShader_2D_offset,
       Render2D_offset.x,
@@ -549,7 +549,7 @@ namespace Building {
     glBindVertexArray(quadVao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    PluginBuilding::_checkShader_2D.unbind();
+    PluginBuilding::_checkShader_2D->unbind();
 
     glDeleteBuffers(1, &quadVbo_pos);
     glDeleteBuffers(1, &quadVbo_uv);

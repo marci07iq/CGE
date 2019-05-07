@@ -1,0 +1,72 @@
+<body>
+	<div
+		id = "objectEditorCanvasContainer"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="30.0"
+			></bot>
+			<top
+				rel="1.0"
+				abs="0.0"
+			></top>
+			<left
+				rel="0.0"
+				abs="0.0"
+			></left>
+			<right
+				rel="1.0"
+				abs="0.0"
+			></right>
+	</location></div>
+	<button
+		id = "objectEditorTimelinePauseButton"
+		callback = "editorTimelinePauseButton"
+		trigger = "0"
+	>
+	<location>
+		<bot
+			rel="0.0"
+			abs="0.0"
+		></bot>
+		<top
+			rel="0.0"
+			abs="30.0"
+		></top>
+		<left
+			rel="0.0"
+			abs="0.0"
+		></left>
+		<right
+			rel="0.0"
+			abs="30.0"
+		></right>
+	</location>X</button>
+	<slider
+		id = "objectEditorTimelineSlider"
+		minvalue = "0"
+		maxvalue = "2"
+		startvalue = "1"
+		quanta = "0.001"
+		callback = "editorTimelineSlider"
+	>
+		<location>
+			<bot
+				rel="0.0"
+				abs="5.0"
+			></bot>
+			<top
+				rel="0.0"
+				abs="25.0"
+			></top>
+			<left
+				rel="0.0"
+				abs="35.0"
+			></left>
+			<right
+				rel="1.0"
+				abs="-5.0"
+			></right>
+		</location>	</slider>
+</body>

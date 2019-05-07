@@ -30,7 +30,7 @@ struct Mesh {
 
 void compactOperation(list<Mesh*> parts, Mesh& res);
 
-extern Graphics::WinHwnd objectMainWindowHwnd;
-extern Graphics::CanvasHwnd objectMainCanvasHwnd;
+extern NGin::Graphics::WinHwnd objectMainWindowHwnd;
+extern NGin::Graphics::CanvasHwnd objectMainCanvasHwnd;
 
-extern Graphics::WinHwnd objectSettingsWindowHwnd;
+extern NGin::Graphics::WinHwnd objectSettingsWindowHwnd;

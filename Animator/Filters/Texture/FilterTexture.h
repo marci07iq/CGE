@@ -6,16 +6,17 @@ class FilterTexture : public Filter {
   FrameBuffer _img;
   Texture _tex;
 
+public:
   static Shader _texshader;
   static GLint _texshader_uniform_texture;
 
-  void staticInit() {
+  static void staticInit() {
     static bool first = true;
     if (first) {
       first = false;
 
-      _texshader.create("Filters/Shaders/FilterTexture");
-      _texshader_uniform_texture = glGetUniformLocation(_texshader._pID, "uniform_texture");
+      _texshader = make_shared<Shader_Raw>("Filters/Shaders/FilterTexture");
+      _texshader_uniform_texture = glGetUniformLocation(_texshader->_pID, "uniform_texture");
     }
   }
 
@@ -27,7 +28,9 @@ class FilterTexture : public Filter {
     weak_ptr<Filter> me = weak_from_this();
     _params.insert({ "resolution", make_shared<Filter_Resource_Input>(me, "resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object) });
 
-    _outputs.insert({ "out", make_shared<Filter_Resource_Output>(me, "out", "Out", "Output image", make_shared<Filter_Resource_ColorBuffer>(nullptr, -1)) });
+    _outputs.insert({ "out", make_shared<Filter_Resource_Output>(me, "out", "Out", "Output image", make_shared<Filter_Resource_RenderBuffer>(nullptr)) });
+
+    updateSize();
   }
 
   void configure() {
@@ -37,8 +40,8 @@ class FilterTexture : public Filter {
     _img->attachColor(0, GL_RGBA, GL_UNSIGNED_BYTE);
     assert(_img->valid());
 
-    _outputs["out"]->castTo<Filter_Resource_ColorBuffer>()->_source = _img;
-    _outputs["out"]->castTo<Filter_Resource_ColorBuffer>()->_col_att_id = 0;
+    _outputs["out"]->castTo<Filter_Resource_RenderBuffer>()->_source = _img;
+    _outputs["out"]->castTo<Filter_Resource_RenderBuffer>()->_col_att_ids = { 0 };
   }
 
   void calculate(float t) {
@@ -83,14 +86,14 @@ class FilterTexture : public Filter {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_uv);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    _texshader.bind();
+    _texshader->bind();
     _tex.bind(_texshader_uniform_texture, 0);
 
     _img->bind();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
-    _texshader.unbind();
+    _texshader->unbind();
     glDeleteBuffers(1, &vbo_pos);
     glDeleteBuffers(1, &vbo_uv);
     glDeleteVertexArrays(1, &vao);

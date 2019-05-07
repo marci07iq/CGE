@@ -58,7 +58,7 @@ Libraries used:
 
 NGin https://github.com/marci07iq/NGin
 Download separately (this project uses static linked lib version)
-Currently compatible with commit 34aeb3a9ccb2b5fe2076a924cd7a705ad393ca4e
+Currently compatible with commit fc54bbaef206eeb1a9517b1c8659d4f4a4379892
 
 LibIGL https://github.com/libigl/libigl
 Download separately (commit e699d257fe860d4fd82709835e72438bd0cd1533 used)

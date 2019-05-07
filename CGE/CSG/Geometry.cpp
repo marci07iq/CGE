@@ -8,10 +8,10 @@
 
 #include <igl/copyleft/cgal/CSGTree.h>
 
-Graphics::WinHwnd objectMainWindowHwnd;
-Graphics::CanvasHwnd objectMainCanvasHwnd;
+NGin::Graphics::WinHwnd objectMainWindowHwnd;
+NGin::Graphics::CanvasHwnd objectMainCanvasHwnd;
 
-Graphics::WinHwnd objectSettingsWindowHwnd;
+NGin::Graphics::WinHwnd objectSettingsWindowHwnd;
 
 
 Mesh::Mesh() {
