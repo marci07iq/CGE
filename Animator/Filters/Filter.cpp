@@ -183,6 +183,17 @@ void Filter::render_base(iVec2 offset, set<key_location>& down) {
       Gll::gllVertex(pos.x, pos.y);
       Gll::gllVertex(pos.x + 20, pos.y);
       Gll::gllVertex(pos.x + 20, pos.y - 20);
+      
+      auto inp = it.second->_bindings.front().lock();
+      iVec2 inp_pos;
+      if (inp != nullptr && inp->_filter.lock()->findOutput(inp, inp_pos)) {
+        inp_pos -= offset;
+        Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
+        Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
+        Gll::gllVertex(pos.x + 10, pos.y - 5);
+        Gll::gllVertex(pos.x + 10, pos.y - 15);
+      }
+
       pos += iVec2(0, -25);
     }
   }
@@ -203,12 +214,35 @@ void Filter::render_base(iVec2 offset, set<key_location>& down) {
       Gll::gllVertex(pos.x, pos.y);
       Gll::gllVertex(pos.x + 20, pos.y);
       Gll::gllVertex(pos.x + 20, pos.y - 20);
+
+      auto inp = it.second->_bindings.front().lock();
+      iVec2 inp_pos;
+      if (inp != nullptr && inp->_filter.lock()->findOutput(inp, inp_pos)) {
+        inp_pos -= offset;
+        Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
+        Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
+        Gll::gllVertex(pos.x + 10, pos.y - 5);
+        Gll::gllVertex(pos.x + 10, pos.y - 15);
+      }
+
       pos += iVec2(25, 0);
     }
   }
   Gll::gllEnd();
 
   render(offset, down);
+}
+
+bool Filter::findOutput(shared_ptr<Filter_Resource_Output> val, iVec2& pos) {
+  pos = iVec2(cax + cw - 20, cay + ch - 25);
+  for (auto&& it : _outputs) {
+    if (it.second == val) {
+      pos += iVec2(10, -10);
+      return true;
+    }
+    pos += iVec2(0, -25);
+  }
+  return false;
 }
 
 int Filter::mouseEnter(iVec2 offset, int state) {
@@ -236,3 +270,10 @@ iVec2 Filter::getInternalSize() {
 }
 
 #endif
+
+void EditorContext::init() {
+  _globalDummy = make_shared<Filter>(weak_from_this());
+  _exit = make_shared<FilterExitNode>(weak_from_this());
+  _exit->init();
+  _filters.push_back(_exit);
+}

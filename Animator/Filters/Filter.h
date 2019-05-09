@@ -18,14 +18,19 @@ public:
   int frameId(float time);
 };
 
+class FilterExitNode;
 #ifdef M_CLIENT
 class FilterGUI;
 #endif
 
-class EditorContext {
+class EditorContext : public enable_shared_from_this<EditorContext> {
 public:
   StreamData _stream_desc;
   list<shared_ptr<Filter>> _filters;
+  shared_ptr<FilterExitNode> _exit;
+  shared_ptr<Filter> _globalDummy;
+
+  void init();
 #ifdef M_CLIENT
   shared_ptr<FilterGUI> gui;
 #endif
@@ -101,7 +106,45 @@ public:
   int guiEvent_base(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down);
   void render_base(iVec2 offset, set<key_location>& down);
 
+  bool findOutput(shared_ptr<Filter_Resource_Output> val, iVec2& pos);
+
   void updateSize();
   virtual iVec2 getInternalSize();
 #endif
+};
+
+class FilterExitNode : public Filter {
+public:
+  static void staticInit() {
+    static bool first = true;
+    if (first) {
+      first = false;
+
+    }
+  }
+
+  FilterExitNode(weak_ptr<EditorContext> ctx) : Filter(ctx) {
+    staticInit();
+  }
+
+  void init() {
+    weak_ptr<Filter> me = weak_from_this();
+    _params.insert({ "result", make_shared<Filter_Resource_Input>(me, "result", "Result", "Final image", Filter_Resource::Type_RenderBuffer) });
+
+    updateSize();
+
+    cax = 100;
+    cay = 100;
+  }
+
+  void configure() {
+  }
+
+  void calculate(float t) {
+    //_inputs["in"]->getAs<Filter_Resource_RenderBuffer>(t);
+  }
+
+  shared_ptr<Filter_Resource_RenderBuffer> getFrame(float t) {
+    return _params["result"]->getAs<Filter_Resource_RenderBuffer>(t);
+  }
 };

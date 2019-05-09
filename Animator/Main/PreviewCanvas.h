@@ -3,19 +3,14 @@
 #include "../Filters/AllFilters.h"
 #include "../Encode/Encode.h"
 
-class OutputNode : public Filter {
-
-};
-
 class PreviewCanvas : public Canvas {
   shared_ptr<VideoEncoder> _enc;
   bool _playing;
   NGin::Graphics::ElemHwnd _parent;
+  weak_ptr<EditorContext> _ctx;
 
   float _time;
 public:
-
-  map<string, shared_ptr<Filter_Resource_Input>> _inputs;
 
   void staticInit() {
     static bool first = true;
@@ -25,9 +20,10 @@ public:
     }
   }
 
-  PreviewCanvas(string lname, LocationData llocation, IWindowManagers lmanagers, void* ldata, NGin::Graphics::ElemHwnd parent) : Canvas(lname, llocation, lmanagers, ldata) {
+  PreviewCanvas(string lname, LocationData llocation, IWindowManagers lmanagers, void* ldata, NGin::Graphics::ElemHwnd parent, shared_ptr<EditorContext> ctx) : Canvas(lname, llocation, lmanagers, ldata) {
     staticInit();
-    _inputs.insert({ "result", make_shared<Filter_Resource_Input>(weak_ptr<Filter>(), "result", "Result", "The final image", Filter_Resource::Type_RenderBuffer) });
+
+    _ctx = ctx;
 
     _parent = parent;
     _parent->getElementById("objectEditorTimelineSlider")->data = this;

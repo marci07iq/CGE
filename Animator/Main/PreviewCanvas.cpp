@@ -17,7 +17,7 @@ void PreviewCanvas::setViewport(float aspect) {
 void PreviewCanvas::render(set<key_location>& down) {
   //_frameData->_time = _frameData->_frameCount * 1.0 / _frameData->_global->_frameRate;
 
-  shared_ptr<Filter_Resource_RenderBuffer> buffer = _inputs["result"]->getAs<Filter_Resource_RenderBuffer>(_time);
+  shared_ptr<Filter_Resource_RenderBuffer> buffer = _ctx.lock()->_exit->getFrame(_time);
   
   float arr[12] = {
       -1.0f, -1.0f,

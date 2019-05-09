@@ -45,7 +45,7 @@ void createPreviewWindow_onSetup(NGin::Graphics::WinHwnd win) {
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
   NGin::Graphics::setElements(objectPreviewWindowHwnd->myPanel, "html/previewScreen.xml");
-  objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", fullContainer, IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel);
+  objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", fullContainer, IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel, ctx);
   NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(objectPreviewWindowHwnd->myPanel->getElementById("objectEditorCanvasContainer")), objectMainPreviewCanvasHwnd->shared_from_this());
   
 
@@ -119,12 +119,12 @@ int main(int argc, char* argv[]) {
   ctx = make_shared<EditorContext>();
   ctx->_stream_desc._resolution = fVec2(1920, 1080);
   ctx->_stream_desc._frameRate = 30;
+  ctx->init();
 
   initGraphics();
 
-  shared_ptr<Filter> globalDummy = make_shared<Filter>(ctx);
 
-  shared_ptr<Filter_Resource_Output> resolution = make_shared<Filter_Resource_Output>(globalDummy, "resolution", "Resolution", "Resolution of the output frame", make_shared<Filter_Resource_Object>());
+  shared_ptr<Filter_Resource_Output> resolution = make_shared<Filter_Resource_Output>(ctx->_globalDummy, "resolution", "Resolution", "Resolution of the output frame", make_shared<Filter_Resource_Object>());
   resolution->_res->castTo< Filter_Resource_Object>()->set_fVec2(fVec2(1920, 1080));
 
 
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
   filt->configure();
   ctx->_filters.push_back(filt);
 
-  objectMainPreviewCanvasHwnd->_inputs["result"]->bindInput(filt->_outputs["out"]);
+  ctx->_exit->_params["result"]->bindInput(filt->_outputs["out"]);
   objectMainPreviewCanvasHwnd->configure();
 
   NGin::Graphics::requestRedraw();
