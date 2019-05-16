@@ -33,6 +33,9 @@
     <Filter Include="Source Files\Filters\3D">
       <UniqueIdentifier>{41fc902a-3fa2-43b3-bca3-1340f5fcadce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Filters\Literal">
+      <UniqueIdentifier>{f9a1b1f4-a826-4c23-9429-251462aecff7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Filters\Filter.cpp">
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="Filters\3D\Filter3D.cpp">
       <Filter>Source Files\Filters\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\Literal\FilterLiteral.cpp">
+      <Filter>Source Files\Filters\Literal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +120,9 @@
     </ClInclude>
     <ClInclude Include="Filters\3D\Filter3D.h">
       <Filter>Source Files\Filters\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\Literal\FilterLiteral.h">
+      <Filter>Source Files\Filters\Literal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

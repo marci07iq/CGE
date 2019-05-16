@@ -3,7 +3,7 @@
 void PreviewCanvas::setViewport(float aspect) {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_DEPTH_TEST);
-  if (aspect > (cbx - cay) * 1.0 / (cby - cay)) {
+  if (aspect > (cbx - cax) * 1.0 / (cby - cay)) {
     glViewport(cax, (cay + cby)/(2.0) - (cbx - cax) / (2.0*aspect), cbx - cax, (cbx - cax) / aspect);
     glScissor(cax, (cay + cby) / (2.0) - (cbx - cax) / (2.0 * aspect), cbx - cax, (cbx - cax) / aspect);
   } else {
@@ -18,7 +18,9 @@ void PreviewCanvas::render(set<key_location>& down) {
   //_frameData->_time = _frameData->_frameCount * 1.0 / _frameData->_global->_frameRate;
 
   shared_ptr<Filter_Resource_RenderBuffer> buffer = _ctx.lock()->_exit->getFrame(_time);
-  
+  if (buffer == nullptr) return;
+  if (buffer->_source == nullptr) return;
+
   float arr[12] = {
       -1.0f, -1.0f,
       -1.0f, +1.0f,
@@ -78,7 +80,7 @@ void PreviewCanvas::render(set<key_location>& down) {
   glDeleteVertexArrays(1, &vao);
   
   NGin::Graphics::resetViewport();
-
+  
   //_enc->addFrame();
 
   //++(_frameData->_frameCount);

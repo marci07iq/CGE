@@ -56,6 +56,10 @@ public:
     assert(validateType<T>());
     return static_pointer_cast<T, Filter_Resource>(shared_from_this());
   }
+
+  virtual void parseString(const string& s, int& i);
+
+  static void parseString_ignore(const string& s, int& i);
 };
 
 //Types
@@ -84,13 +88,19 @@ public:
   float get_float(float def) const {
     return _val;
   }
+
+  static int parseString_int(const string& s, int& i, bool allowNeg = false);
+  static float parseString_float(const string& s, int& i);
+
+  void parseString(const string& s, int& i);
+  static bool peekType_float(const string& s, const int& i);
 };
 
 class Filter_Resource_String : public Filter_Resource {
 public:
   string _val;
 
-  Filter_Resource_String(string val = 0);
+  Filter_Resource_String(string val = "");
 
   static Type staticType();
 
@@ -99,6 +109,11 @@ public:
   string get_string(string def) const {
     return _val;
   }
+
+  static string parseString_string(const string& s, int& i);
+
+  void parseString(const string& s, int& i);
+  static bool peekType_string(const string& s, const int& i);
 };
 
 class Filter_Resource_Object : public Filter_Resource {
@@ -164,6 +179,12 @@ public:
       setFloat(to_string(i), val._vals[i]);
     }
   }
+
+  static map<string, shared_ptr<Filter_Resource>> parseString_obj(const string& s, int& i);
+  static shared_ptr<Filter_Resource> parseString_arb(const string& s, int& i);
+
+  void parseString(const string& s, int& i);
+  static bool peekType_obj(const string& s, const int& i);
 };
 
 class Filter_Resource_VAO : public Filter_Resource {
@@ -197,11 +218,28 @@ public:
 };
 
 class Filter;
-//Outputs
-class Filter_Resource_Output : public enable_shared_from_this<Filter_Resource_Output>
-{
+
+class Filter_Resource_IO_Base : public enable_shared_from_this<Filter_Resource_IO_Base> {
 public:
-  shared_ptr<Filter_Resource> _res;
+#ifdef M_CLIENT
+  Icon* _icon;
+
+  static const int iconWidth = 24;
+  static const int iconPad = 4;
+  static const iVec2 iconSize; //from top left to bottom right corner
+  static const iVec2 nextV; //next vertically down
+  static const iVec2 nextH; //next horizontally right
+
+  bool active = false;
+
+  enum Restriction {
+    Restriction_Dynamic,
+    Restriction_Static
+    //Only static out can be assigned ot static in
+  };
+
+  Restriction _restriction;
+#endif
 
   weak_ptr<Filter> _filter;
 
@@ -209,7 +247,50 @@ public:
   string _displayName;
   string _description;
 
-  Filter_Resource_Output(weak_ptr<Filter> filter, string internalName, string displayName, string description, shared_ptr<Filter_Resource> res);
+  Filter_Resource_IO_Base(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+  ) {
+    _filter = filter;
+    _internalName = internalName;
+    _displayName = displayName;
+    _description = description;
+    _icon = icon;
+    _restriction = restriction;
+  }
+
+  static bool compatibleRestriction(Restriction out, Restriction in);
+
+#ifdef M_CLIENT
+  static bool isIn(iVec2 localPos);
+
+  int mouseEnter(int state);
+  //Local coordiantes (top left)
+  int mouseMoved(iVec2 mouse_now, iVec2 mouse_old, set<key_location>& down);
+  //Local coordiantes (top left)
+  virtual int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  //screenPos: Local coordiantes (top left)
+  virtual void render(iVec2 screenPos, set<key_location>& down);
+
+  virtual iVec2 next(iVec2 pos);
+#endif
+};
+
+//Outputs
+//All coordinates expected in local frame (upper left)
+class Filter_Resource_Output : public Filter_Resource_IO_Base {
+public:
+
+
+  shared_ptr<Filter_Resource> _res;
+
+
+  Filter_Resource_Output(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, shared_ptr<Filter_Resource> res
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+    );
 
   Filter_Resource::Type type() const;
 
@@ -250,11 +331,21 @@ public:
 
 #undef FILTER_RESOURCE_OUTPUT_GET
 
+#ifdef M_CLIENT
+  //mx, my transformed into object coordinats
+  int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  //at: screen cordiante of top-left corner
+  void render(iVec2 screenPos, set<key_location>& down);
+
+  iVec2 next(iVec2 pos);
+#endif
+
 };
 
 //Inputs
-class Filter_Resource_Input : public enable_shared_from_this<Filter_Resource_Input> {
+class Filter_Resource_Input : public Filter_Resource_IO_Base {
   public:
+
   //Modify with care
   vector<weak_ptr<Filter_Resource_Output>> _bindings;
 
@@ -263,17 +354,17 @@ class Filter_Resource_Input : public enable_shared_from_this<Filter_Resource_Inp
 
   bool _isArray;
 
-  weak_ptr<Filter> _filter;
-
-  string _internalName;
-  string _displayName;
-  string _description;
-
-  Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray = false);
+  Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, Filter_Resource::Type type, bool isArray = false
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+  );
 
   //to insert on the end: -1, any
   //to insert to beginning: 0, true
-  void bindInput(weak_ptr<Filter_Resource_Output> binding, int to = -1, bool before = false);
+  bool checkCompatibility(shared_ptr<Filter_Resource_Output> binding);
+
+  bool tryBindInput(weak_ptr<Filter_Resource_Output> binding, int to = -1, bool before = false);
 
   int hasBinding() const;
   void cleanBindings();
@@ -291,7 +382,9 @@ class Filter_Resource_Input : public enable_shared_from_this<Filter_Resource_Inp
   //Eval and cast
   template <typename T>
   shared_ptr<T> getAs(float t, int id = 0) {
-    return _bindings[id].lock()->getAs<T>(t);
+    shared_ptr<Filter_Resource_Output> binding_l = _bindings[id].lock();
+    if (_bindings[id].expired()) return nullptr;
+    return binding_l->getAs<T>(t);
   }
 
   Filter_Resource::Type type();
@@ -312,4 +405,13 @@ class Filter_Resource_Input : public enable_shared_from_this<Filter_Resource_Inp
   FILTER_RESOURCE_INPUT_GET(Matrix4f, Filter_Resource_Object, Matrix4f());
 
 #undef FILTER_RESOURCE_INPUT_GET
+
+#ifdef M_CLIENT
+  //mx, my transformed into object coordinats
+  int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  //screenPos: screen cordiante of top-left corner
+  void render(iVec2 screenPos, set<key_location>& down);
+
+  iVec2 next(iVec2 pos);
+#endif
 };

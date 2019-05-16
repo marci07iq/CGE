@@ -3,7 +3,7 @@
 #include "../Filter.h"
 
 class FilterCameraMatrix : public Filter {
-  
+public:
   static void staticInit() {
     static bool first = true;
     if (first) {
@@ -19,18 +19,18 @@ class FilterCameraMatrix : public Filter {
 
   void init() {
     weak_ptr<Filter> me = weak_from_this();
-    _inputs.insert({ "resolution", make_shared<Filter_Resource_Input>(me, "resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object) });
+    addInput("resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object, false, getIcon("resolution", ilfPath));
     //Field x, y
 
-    _inputs.insert({ "cam_eye", make_shared<Filter_Resource_Input>(me, "cam_eye", "Eye", "Eye position of the camera", Filter_Resource::Type_Object) });
-    _inputs.insert({ "cam_dir", make_shared<Filter_Resource_Input>(me, "cam_dir", "Direction", "Look direction of camera", Filter_Resource::Type_Object) });
-    _inputs.insert({ "cam_up", make_shared<Filter_Resource_Input>(me, "cam_up", "Up", "Up direction [UNUSED]", Filter_Resource::Type_Object) });
+    addInput("cam_eye", "Eye", "Eye position of the camera", Filter_Resource::Type_Object, false, getIcon("eye", ilfPath));
+    addInput("cam_dir", "Direction", "Look direction of camera", Filter_Resource::Type_Object, false, getIcon("vector", ilfPath));
+    addInput("cam_up", "Up", "Up direction [UNUSED]", Filter_Resource::Type_Object, false, getIcon("up", ilfPath));
     //Fields x, y, z
 
-    _inputs.insert({ "fov", make_shared<Filter_Resource_Input>(me, "fov", "FOV", "Field of view angle", Filter_Resource::Type_Float) });
+    addInput("fov", "FOV", "Field of view angle", Filter_Resource::Type_Float, false, getIcon("fov", ilfPath));
     //In radians
 
-    _outputs.insert({ "mat", make_shared<Filter_Resource_Output>(me, "mat", "Matrix", "The finished camera matrix", make_shared<Filter_Resource_Object>()) });
+    addOutput("mat", "Matrix", "The finished camera matrix", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_Object>(), getIcon("matrix", ilfPath));
     //Fields 0, 1, 2, .. 15
 
     updateSize();

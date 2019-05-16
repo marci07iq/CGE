@@ -9,8 +9,6 @@ public:
     static bool first = true;
     if (first) {
       first = false;
-
-      
     }
   }
 
@@ -21,11 +19,12 @@ public:
 
   void init() {
     weak_ptr<Filter> me = weak_from_this();
-    _params.insert({ "resolution", make_shared<Filter_Resource_Input>(me, "resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object) });
+    addParam("resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object, false, getIcon("resolution", ilfPath));
 
-    _outputs.insert({ "out", make_shared<Filter_Resource_Output>(me, "out", "Out", "Output image", make_shared<Filter_Resource_RenderBuffer>(nullptr)) });
-    _inputs.insert({ "in", make_shared<Filter_Resource_Input>(me, "in", "In", "Image to draw on", Filter_Resource::Type_RenderBuffer) });
-    _inputs.insert({ "cam_mat", make_shared<Filter_Resource_Input>(me, "cam_mat", "Cam Matrix", "Camera matrix", Filter_Resource::Type_RenderBuffer) });
+    addInput("in", "In", "Image to draw on", Filter_Resource::Type_RenderBuffer, getIcon("in", ilfPath));
+    addInput("cam_mat", "Cam Matrix", "Camera matrix", Filter_Resource::Type_RenderBuffer, getIcon("matrix", ilfPath));
+
+    addOutput("out", "Out", "Output image", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_RenderBuffer>(nullptr), getIcon("out", ilfPath));
 
     updateSize();
   }

@@ -18,10 +18,19 @@ public:
   int frameId(float time);
 };
 
+class Filter;
 class FilterExitNode;
 #ifdef M_CLIENT
 class FilterGUI;
 #endif
+
+class EditorContext;
+
+struct FilterDescription {
+  string _display_name;
+  shared_ptr<Filter>(*_constructor)(weak_ptr<EditorContext>);
+  Icon* _icon;
+};
 
 class EditorContext : public enable_shared_from_this<EditorContext> {
 public:
@@ -29,6 +38,10 @@ public:
   list<shared_ptr<Filter>> _filters;
   shared_ptr<FilterExitNode> _exit;
   shared_ptr<Filter> _globalDummy;
+
+  static map<string, FilterDescription> _registeredFilters;
+
+  static void registerFilter(string name, FilterDescription description);
 
   void init();
 #ifdef M_CLIENT
@@ -44,8 +57,13 @@ class IOVideoData : public StreamData {
 #ifdef M_CLIENT
 class FilterGUI : public GUIElement {
 public:
+  //Global coord to low left
   iVec2 dragOffset = iVec2(-100, -100);
   
+  static const int toolbar_width;
+
+  bool dragging = false;
+
   weak_ptr<EditorContext> _editor;
   weak_ptr<Filter_Resource_Output> _draggedConnection;
 
@@ -73,9 +91,10 @@ public:
   map<string, shared_ptr<Filter_Resource_Input>> _params;
 
   int cw, ch; //Width and height
+  //Global coord
   int cax, cay; //Left, bottom
 
-  bool dragging;
+  bool dragging = false;
 
   Filter(weak_ptr<EditorContext> ctx);
 
@@ -85,6 +104,24 @@ public:
   virtual void configure();
 
   virtual void calculate(float t);
+
+  void addInput(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray = false
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+  );
+
+  void addParam(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray = false
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+  );
+  void addOutput(string internalName, string displayName, string description, Filter_Resource_IO_Base::Restriction restriction, shared_ptr<Filter_Resource> res
+#ifdef M_CLIENT
+    , Icon* icon = nullptr
+#endif
+  );
+
 public:
   
 #ifdef M_CLIENT
@@ -128,8 +165,7 @@ public:
   }
 
   void init() {
-    weak_ptr<Filter> me = weak_from_this();
-    _params.insert({ "result", make_shared<Filter_Resource_Input>(me, "result", "Result", "Final image", Filter_Resource::Type_RenderBuffer) });
+    addInput("result", "Result", "Final image", Filter_Resource::Type_RenderBuffer, false, getIcon("finish", ilfPath));
 
     updateSize();
 
@@ -145,6 +181,13 @@ public:
   }
 
   shared_ptr<Filter_Resource_RenderBuffer> getFrame(float t) {
-    return _params["result"]->getAs<Filter_Resource_RenderBuffer>(t);
+    return _inputs["result"]->getAs<Filter_Resource_RenderBuffer>(t);
   }
 };
+
+template<typename T>
+shared_ptr<Filter> createFilter_T(weak_ptr<EditorContext> ctx) {
+  shared_ptr<T> res = make_shared<T>(ctx);
+  res->init();
+  return static_pointer_cast<Filter, T>(res);
+}

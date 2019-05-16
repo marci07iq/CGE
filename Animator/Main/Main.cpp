@@ -36,13 +36,16 @@ void glfwErrorCb(int i, const char* c) {
 void createPreviewWindow_onSetup(NGin::Graphics::WinHwnd win) {
   objectPreviewWindowHwnd = win;
   
-  glfwMakeContextCurrent(win->rawHwnd);
+  //glfwMakeContextCurrent(win->rawHwnd);
 
   glEnable(GL_DEBUG_OUTPUT);
   glDebugMessageCallback(MessageCallback, 0);
 
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   NGin::Graphics::setElements(objectPreviewWindowHwnd->myPanel, "html/previewScreen.xml");
   objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", fullContainer, IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel, ctx);
@@ -76,8 +79,12 @@ void createEditorWindow_onSetup(NGin::Graphics::WinHwnd win) {
   glDisable(GL_DITHER);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
   Gll::gllInit("NGin/GUI/GLL_Res/");
+  new IconLocationFile(ilfPath);
 
   NGin::Graphics::setElements(objectEditorWindowHwnd->myPanel, "html/mainScreen.xml");
   objectMainFilterGuiHwnd = make_shared<FilterGUI>("objectEditorCanvas", fullContainer, getColor("filter", "bgcolor"), getColor("filter", "activecolor"), getColor("filter", "textcolor"), ctx);
@@ -115,27 +122,56 @@ int main(int argc, char* argv[]) {
 
   loadKeybinds();
   loadColors();
-
   ctx = make_shared<EditorContext>();
   ctx->_stream_desc._resolution = fVec2(1920, 1080);
   ctx->_stream_desc._frameRate = 30;
-  ctx->init();
 
   initGraphics();
 
+  EditorContext::registerFilter("Filter3D", FilterDescription{ "3D", &(createFilter_T<Filter3D>), getIcon("3d", ilfPath) });
+  EditorContext::registerFilter("FilterCameraMatrix", FilterDescription{ "Camera matrix", &(createFilter_T<FilterCameraMatrix>), getIcon("camera", ilfPath) });
+  EditorContext::registerFilter("FilterColor", FilterDescription{ "Color", &(createFilter_T<FilterColor>), getIcon("color", ilfPath) });
+  EditorContext::registerFilter("FilterShader", FilterDescription{ "Shader", &(createFilter_T<FilterShader>), getIcon("shader", ilfPath) });
+  EditorContext::registerFilter("FilterTexture", FilterDescription{ "Texture", &(createFilter_T<FilterTexture>), getIcon("texture", ilfPath) });
+  EditorContext::registerFilter("FilterLiteral", FilterDescription{ "Literal", &(createFilter_T<FilterLiteral>), getIcon("out", ilfPath) });
 
-  shared_ptr<Filter_Resource_Output> resolution = make_shared<Filter_Resource_Output>(ctx->_globalDummy, "resolution", "Resolution", "Resolution of the output frame", make_shared<Filter_Resource_Object>());
-  resolution->_res->castTo< Filter_Resource_Object>()->set_fVec2(fVec2(1920, 1080));
 
+  ctx->init();
+  
+  //shared_ptr<Filter_Resource_Output> resolution;
+  
 
-  shared_ptr<FilterColor> filt = make_shared<FilterColor>(ctx);
+  /*{
+    resolution = make_shared<Filter_Resource_Output>(ctx->_globalDummy, "resolution", "Resolution", "Resolution of the output frame", Filter_Resource_IO_Base::Restriction_Static, make_shared<Filter_Resource_Object>());
+    resolution->_res->castTo< Filter_Resource_Object>()->set_fVec2(fVec2(192, 108));
 
-  filt->init();
-  filt->_params["resolution"]->bindInput(resolution);
-  filt->configure();
-  ctx->_filters.push_back(filt);
+    filt = make_shared<FilterColor>(ctx);
 
-  ctx->_exit->_params["result"]->bindInput(filt->_outputs["out"]);
+    filt->init();
+    filt->_params["resolution"]->tryBindInput(resolution);
+    ctx->_filters.push_back(filt);
+  }*/
+
+  /*{
+    shared_ptr<FilterLiteral> filt = make_shared<FilterLiteral>(ctx);
+
+    filt->init();
+    ctx->_filters.push_back(filt);
+  }*/
+
+  /*{
+    //resolution = make_shared<Filter_Resource_Output>(ctx->_globalDummy, "resolution", "Resolution", "Resolution of the output frame", Filter_Resource_IO_Base::Restriction_Static, make_shared<Filter_Resource_Object>());
+    //resolution->_res->castTo< Filter_Resource_Object>()->set_fVec2(fVec2(192, 108));
+
+    shared_ptr<FilterColor> filt = make_shared<FilterColor>(ctx);
+
+    filt->init();
+    //filt->_params["resolution"]->tryBindInput(resolution);
+    ctx->_filters.push_back(filt);
+
+    //ctx->_exit->_inputs["result"]->tryBindInput(filt->_outputs["out"]);
+  }*/
+
   objectMainPreviewCanvasHwnd->configure();
 
   NGin::Graphics::requestRedraw();

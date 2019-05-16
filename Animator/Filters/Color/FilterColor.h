@@ -29,15 +29,15 @@ public:
 
   void init() {
     weak_ptr<Filter> me = weak_from_this();
-    _params.insert({ "resolution", make_shared<Filter_Resource_Input>(me, "resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object) });
+    addParam("resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object, false, getIcon("resolution", ilfPath));
 
-    _outputs.insert({ "out", make_shared<Filter_Resource_Output>(me, "out", "Out", "Output image", make_shared<Filter_Resource_RenderBuffer>(nullptr)) });
+    addOutput("out", "Out", "Output image", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_RenderBuffer>(nullptr), getIcon("out", ilfPath));
 
     updateSize();
   }
 
   void configure() {
-
+    cout << _params["resolution"]->get_fVec2();
     _img = make_shared<Raw_FrameBuffer>(_params["resolution"]->get_fVec2());
     _img->attachColor(0, GL_RGBA, GL_UNSIGNED_BYTE);
     assert(_img->valid());
@@ -47,6 +47,8 @@ public:
   }
 
   void calculate(float t) {
+    if (_img == nullptr) return;
+
     float arr[12] = {
       -1, -1,
       -1, 1,
@@ -78,7 +80,7 @@ public:
     _colshader->bind();
     glUniform4f(_colshader_uniform_color, cols[0], cols[1], cols[2], cols[3]);
 
-    _img->bind();  
+    _img->bind();
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);

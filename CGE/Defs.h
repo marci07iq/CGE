@@ -13,3 +13,5 @@
 
 //Version of CompoundModelFile data
 const int CGE_FILE_CMF_VERSION = 1;
+
+const string ilfPath = "html/icons.ilf";

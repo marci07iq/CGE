@@ -82,7 +82,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;NGin\NGin_x64_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;NGin\NGin_x64_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,7 +116,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;NGin\NGin_x64_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +135,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;FFmpeg\avcodec.lib;FFmpeg\avutil.lib;FFmpeg\swscale.lib;NGin\NGin_x64_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -146,6 +146,7 @@
     <ClCompile Include="Filters\Color\FilterColor.cpp" />
     <ClCompile Include="Filters\Filter.cpp" />
     <ClCompile Include="Filters\FilterResource.cpp" />
+    <ClCompile Include="Filters\Literal\FilterLiteral.cpp" />
     <ClCompile Include="Filters\Shaders\FilterShader.cpp" />
     <ClCompile Include="Filters\Texture\FilterTexture.cpp" />
     <ClCompile Include="Main\Main.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Filters\Color\FilterColor.h" />
     <ClInclude Include="Filters\Filter.h" />
     <ClInclude Include="Filters\FilterResource.h" />
+    <ClInclude Include="Filters\Literal\FilterLiteral.h" />
     <ClInclude Include="Filters\Shaders\FilterShader.h" />
     <ClInclude Include="Filters\Texture\FilterTexture.h" />
     <ClInclude Include="Main\Defs.h" />

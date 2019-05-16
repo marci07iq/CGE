@@ -69,7 +69,6 @@ public:
   void setPlay(bool playing) {
     _playing = playing;
     (static_pointer_cast<Button, GUIElement>(_parent->getElementById("objectEditorTimelinePauseButton")))->text = playing ? "||" : ">";
-    cout << playing << endl;
   }
 
   void render(set<key_location>& down);

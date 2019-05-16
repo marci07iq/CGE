@@ -19,9 +19,9 @@ public:
 
   void init() {
     weak_ptr<Filter> me = weak_from_this();
-    _params.insert({ "path", make_shared<Filter_Resource_Input>(me, "path", "Path", "Path to shader", Filter_Resource::Type_String) });
+    addParam("path", "Path", "Path to shader", Filter_Resource::Type_String, false, getIcon("path", ilfPath));
 
-    _outputs.insert({ "out", make_shared<Filter_Resource_Output>(me, "out", "Out", "Shader object", make_shared<Filter_Resource_Shader>()) });
+    addOutput("out", "Out", "Shader object", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_Shader>(), getIcon("shader", ilfPath));
 
     updateSize();
   }
