@@ -1,20 +1,20 @@
 #include "Framework.h"
 
-Shader Editor::_baseShader;
+NGin::Graphics::Shader Editor::_baseShader;
 GLuint Editor::_baseShader_transform;
 GLuint Editor::_baseShader_mix_color;
 GLuint Editor::_baseShader_res_alpha;
 
-Shader Editor::_edgeShader;
+NGin::Graphics::Shader Editor::_edgeShader;
 GLuint Editor::_edgeShader_transform;
 //GLuint Editor::_edgeShader_transform2;
 GLuint Editor::_edgeShader_cam_eye;
 GLuint Editor::_edgeShader_color;
 
-Shader Editor::_checkShader;
+NGin::Graphics::Shader Editor::_checkShader;
 GLuint Editor::_checkShader_transform;
 
-Shader Editor::_lineShader;
+NGin::Graphics::Shader Editor::_lineShader;
 GLuint Editor::_lineShader_modview;
 GLuint Editor::_lineShader_camview;
 GLuint Editor::_lineShader_cam_eye;
@@ -25,7 +25,7 @@ GLuint Editor::_coordinate_vbo_pos;
 GLuint Editor::_coordinate_vbo_col;
 GLuint Editor::_coordinate_vbo_rad;
 
-Texture Editor::_editorIcons;
+NGin::Graphics::Texture Editor::_editorIcons;
 //Plugin types
 map<string, PluginCreator> Editor::_pluginTypes;
 
@@ -43,22 +43,22 @@ void Editor::staticInit() {
   if(first) {
     first = false;
 
-    _baseShader = make_shared<Shader_Raw>("Renderer/Core");
+    _baseShader = make_shared<NGin::Graphics::Shader_Raw>("Renderer/Core");
     _baseShader_transform = glGetUniformLocation(_baseShader->_pID, "transform");
     _baseShader_mix_color = glGetUniformLocation(_baseShader->_pID, "mix_color");
     _baseShader_res_alpha = glGetUniformLocation(_baseShader->_pID, "res_alpha");
 
 
-    _edgeShader = make_shared<Shader_Raw>("Renderer/Edges", 7);
+    _edgeShader = make_shared<NGin::Graphics::Shader_Raw>("Renderer/Edges", 7);
     _edgeShader_transform = glGetUniformLocation(_edgeShader->_pID, "transform");
     //_edgeShader_transform2 = glGetUniformLocation(_edgeShader._pID, "transform2");
     _edgeShader_cam_eye = glGetUniformLocation(_edgeShader->_pID, "cam_eye");
     _edgeShader_color = glGetUniformLocation(_edgeShader->_pID, "color");
 
-    _checkShader = make_shared<Shader_Raw>("Editor/Checkboard");
+    _checkShader = make_shared<NGin::Graphics::Shader_Raw>("Editor/Checkboard");
     _checkShader_transform = glGetUniformLocation(_checkShader->_pID, "transform");
 
-    _lineShader = make_shared<Shader_Raw>("Renderer/SimpleLine", 7);
+    _lineShader = make_shared<NGin::Graphics::Shader_Raw>("Renderer/SimpleLine", 7);
     _lineShader_modview = glGetUniformLocation(_lineShader->_pID, "modview");
     _lineShader_camview = glGetUniformLocation(_lineShader->_pID, "camview");
     _lineShader_cam_eye = glGetUniformLocation(_lineShader->_pID, "cam_eye");
@@ -214,7 +214,7 @@ bool Editor::popPlugin(EditorPlugin * plugin) {
   return false;
 }*/
 
-int Editor::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+int Editor::renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
   glDepthRange(0.01, 256);
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -436,7 +436,7 @@ int Editor::mouseEntryManager(int state) {
   return res;
 }
 
-int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+int Editor::mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
   int res = 0;
   if (_currentPlugin) {
     res |= _currentPlugin->mouseMoveManager(x, y, ox, oy, down, in);
@@ -480,7 +480,7 @@ int Editor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& do
   return res;
 }
 
-int Editor::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+int Editor::guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
   int res = 0;
   if (_currentPlugin) {
     res |= _currentPlugin->guiEventManager(evt, mx, my, down, in);

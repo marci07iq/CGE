@@ -81,11 +81,14 @@ void Raw_FrameBuffer::bind() {
   glBindFramebuffer(GL_FRAMEBUFFER, _id);
   glViewport(0, 0, _size.x, _size.y);
 
-  glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glCullFace(GL_FRONT_AND_BACK);
+}
+
+void Raw_FrameBuffer::clear() {
+  //glClearColor(0, 0, 0, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 Raw_FrameBuffer::~Raw_FrameBuffer() {
@@ -157,11 +160,17 @@ int Filter_Resource_Float::parseString_int(const string& s, int& i, bool allowNe
 }
 
 float Filter_Resource_Float::parseString_float(const string& s, int& i) {
-  float main = parseString_int(s, i, true);
+  bool negsign = false;
+  if (s[i] == '-') {
+    ++i;
+    negsign = true;
+  }
+
+  float main = parseString_int(s, i, false);
   if (s[i] == '.') {
     int io = ++i;
     float frac = parseString_int(s, i, false);
-    frac *= pow(frac, io - i);
+    frac *= pow(10, io - i);
     main += frac;
   }
   if (s[i] == 'e' || s[i] == 'E') {
@@ -169,6 +178,8 @@ float Filter_Resource_Float::parseString_float(const string& s, int& i) {
     main *= pow(10, exp);
   }
   parseString_ignore(s, i);
+
+  if (negsign) main *= -1;
 
   return main;
 }
@@ -363,7 +374,7 @@ Filter_Resource::Type Filter_Resource_Shader::type() {
 
 Filter_Resource_Output::Filter_Resource_Output(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, shared_ptr<Filter_Resource> res
 #ifdef M_CLIENT
-  , Icon* icon
+  , NGin::Graphics::Icon* icon
 #endif
 ) : Filter_Resource_IO_Base(filter, internalName, displayName, description, restriction
 #ifdef M_CLIENT
@@ -380,7 +391,7 @@ Filter_Resource::Type Filter_Resource_Output::type() const {
 
 Filter_Resource_Input::Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, Filter_Resource::Type type, bool isArray
 #ifdef M_CLIENT
-  , Icon* icon
+  , NGin::Graphics::Icon* icon
 #endif
 ) : Filter_Resource_IO_Base(filter, internalName, displayName, description, restriction
 #ifdef M_CLIENT
@@ -458,28 +469,28 @@ int Filter_Resource_IO_Base::mouseEnter(int state) {
   return oactive xor active; //rerender if changed
 }
 
-int Filter_Resource_IO_Base::mouseMoved(iVec2 mouse_now, iVec2 mouse_old, set<key_location>& down) {
+int Filter_Resource_IO_Base::mouseMoved(iVec2 mouse_now, iVec2 mouse_old, std::set<NGin::Graphics::key_location>& down) {
   bool oactive = active;
   active = isIn(mouse_now);
   return oactive xor active; //if state changed
 }
 
-int Filter_Resource_IO_Base::guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down) {
+int Filter_Resource_IO_Base::guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down) {
   return 0;
 }
 
-void Filter_Resource_IO_Base::render(iVec2 screenPos, set<key_location>& down) {
+void Filter_Resource_IO_Base::render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down) {
   shared_ptr<FilterGUI> gui = _filter.lock()->getGUI_ctx();
-  Gll::gllBegin(Gll::GLL_QUADS);
-  Gll::gllColor((active || _icon == nullptr) ? gui->activeColor : gui->bgColor);
-  Gll::gllVertex(screenPos + iVec2(0, -iconWidth));
-  Gll::gllVertex(screenPos + iVec2(0, 0));
-  Gll::gllVertex(screenPos + iVec2(iconWidth, 0));
-  Gll::gllVertex(screenPos + iVec2(iconWidth, -iconWidth));
-  Gll::gllEnd();
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+  NGin::Gll::gllColor((active || _icon == nullptr) ? gui->activeColor : gui->bgColor);
+  NGin::Gll::gllVertex(screenPos + iVec2(0, -iconWidth));
+  NGin::Gll::gllVertex(screenPos + iVec2(0, 0));
+  NGin::Gll::gllVertex(screenPos + iVec2(iconWidth, 0));
+  NGin::Gll::gllVertex(screenPos + iVec2(iconWidth, -iconWidth));
+  NGin::Gll::gllEnd();
   if (_icon != nullptr) {
-    Gll::gllColor(gui->textColor);
-    Gll::gllIcon(_icon, screenPos.x, screenPos.y - iconWidth, screenPos.x + iconWidth, screenPos.y);
+    NGin::Gll::gllColor(gui->textColor);
+    NGin::Gll::gllIcon(_icon, screenPos.x, screenPos.y - iconWidth, screenPos.x + iconWidth, screenPos.y);
   }
 }
 
@@ -487,12 +498,12 @@ iVec2 Filter_Resource_IO_Base::next(iVec2 pos) {
   return pos;
 }
 
-int Filter_Resource_Output::guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down) {
+int Filter_Resource_Output::guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down) {
   shared_ptr<FilterGUI> gui = _filter.lock()->getGUI_ctx();
   int res = 0;
 
-  if (evt._key._type == key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if (!evt.captured && evt._type == gui_event::evt_down && isIn(mouse_now)) {
+  if (evt._key._type == NGin::Graphics::key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+    if (!evt.captured && evt._type == NGin::Graphics::gui_event::evt_down && isIn(mouse_now)) {
         evt.captured = true;
         gui->_draggedConnection = static_pointer_cast<Filter_Resource_Output, Filter_Resource_IO_Base>(shared_from_this());
         res |= 2;
@@ -500,7 +511,7 @@ int Filter_Resource_Output::guiEvent(gui_event& evt, iVec2 mouse_now, set<key_lo
   }
   return res;
 }
-void Filter_Resource_Output::render(iVec2 screenPos, set<key_location>& down) {
+void Filter_Resource_Output::render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down) {
   Filter_Resource_IO_Base::render(screenPos, down);
 }
 
@@ -509,12 +520,12 @@ iVec2 Filter_Resource_Output::next(iVec2 pos) {
 }
 
 
-int Filter_Resource_Input::guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down) {
+int Filter_Resource_Input::guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down) {
   shared_ptr<FilterGUI> gui = _filter.lock()->getGUI_ctx();
   int res = 0;
 
-  if (evt._key._type == key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
-    if (evt._type == gui_event::evt_up && isIn(mouse_now)) {
+  if (evt._key._type == NGin::Graphics::key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+    if (evt._type == NGin::Graphics::gui_event::evt_up && isIn(mouse_now)) {
       shared_ptr<Filter_Resource_Output> dragged = gui->_draggedConnection.lock();
       if (!gui->_draggedConnection.expired()) {
         if(tryBindInput(dragged)) {
@@ -525,7 +536,7 @@ int Filter_Resource_Input::guiEvent(gui_event& evt, iVec2 mouse_now, set<key_loc
   }
   return res;
 }
-void Filter_Resource_Input::render(iVec2 screenPos, set<key_location>& down) {
+void Filter_Resource_Input::render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down) {
 
   shared_ptr<FilterGUI> gui = _filter.lock()->getGUI_ctx();
 
@@ -534,19 +545,22 @@ void Filter_Resource_Input::render(iVec2 screenPos, set<key_location>& down) {
   if (inp != nullptr && inp->_filter.lock()->findOutput(inp, inp_pos)) {
     inp_pos -= gui->dragOffset;
 
-    Gll::gllBegin(Gll::GLL_QUADS);
-    Gll::gllColor(gui->activeColor);
-    Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
-    Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
-    Gll::gllVertex(screenPos.x + iconWidth / 2, screenPos.y - iconWidth / 2 + 5);
-    Gll::gllVertex(screenPos.x + iconWidth / 2, screenPos.y - iconWidth / 2 - 5);
-    Gll::gllEnd();
+    NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+    NGin::Gll::gllColor(gui->activeColor);
+    NGin::Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
+    NGin::Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
+    NGin::Gll::gllVertex(screenPos.x + iconWidth / 2, screenPos.y - iconWidth / 2 + 5);
+    NGin::Gll::gllVertex(screenPos.x + iconWidth / 2, screenPos.y - iconWidth / 2 - 5);
+    NGin::Gll::gllEnd();
   }
 
   Filter_Resource_IO_Base::render(screenPos, down);
 }
 
 iVec2 Filter_Resource_Input::next(iVec2 pos) {
+  if (_restriction == Restriction_Dynamic) {
+    return pos + nextV * _bindings.size();
+  }
   return pos + nextH * _bindings.size();
 }
 

@@ -9,23 +9,23 @@ typedef EditorPlugin*(*PluginCreator)(Editor*, bool);
 
 class Editor {
 public:
-  static Texture _editorIcons;
+  static NGin::Graphics::Texture _editorIcons;
 
-  static Shader _baseShader;
+  static NGin::Graphics::Shader _baseShader;
   static GLuint _baseShader_transform;
   static GLuint _baseShader_mix_color;
   static GLuint _baseShader_res_alpha;
 
-  static Shader _edgeShader;
+  static NGin::Graphics::Shader _edgeShader;
   static GLuint _edgeShader_transform;
   //static GLuint _edgeShader_transform2;
   static GLuint _edgeShader_cam_eye;
   static GLuint _edgeShader_color;
 
-  static Shader _checkShader;
+  static NGin::Graphics::Shader _checkShader;
   static GLuint _checkShader_transform;
 
-  static Shader _lineShader;
+  static NGin::Graphics::Shader _lineShader;
   static GLuint _lineShader_modview;
   static GLuint _lineShader_camview;
   static GLuint _lineShader_cam_eye;
@@ -47,13 +47,13 @@ public:
 
   NGin::Graphics::CanvasHwnd _main;
 
-  NGin::Graphics::TablerowHwnd _toolribbon; //Ribbon bar up top; for small button
+  NGin::Graphics::TablerowHwnd _toolribbon; //Ribbon bar up top; for small NGin::Graphics::Button
   NGin::Graphics::TableHwnd _toolbar; //Sidebar for access to plugins
   NGin::Graphics::PanelHwnd _config; //Large pane next to sidebar
 
   list<shared_ptr<Object>> objs;
 
-  OpenGLData view;
+  NGin::Graphics::OpenGLData view;
 
   Transform modview;
   //float worldM[16];
@@ -84,7 +84,7 @@ public:
   void registerSidebar(NGin::Graphics::ElemHwnd elem);
   void removeSidebar(NGin::Graphics::ElemHwnd elem);
 
-  int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
+  int renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down);
   void drawCoordinateSystem(int ax, int ay, int bx, int by);
   void drawXYZ(Transform& modview, Transform& camview, fVec3& eye);
 
@@ -105,8 +105,8 @@ public:
 
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);
-  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-  int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
+  int mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in);
+  int guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in);
 };
 
 enum Icons {

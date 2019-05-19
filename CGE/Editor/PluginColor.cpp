@@ -1,7 +1,7 @@
 #include "PluginColor.h"
 
 namespace pluginColorHSVCanvas {
-  void renderManager(NGin::Graphics::CanvasHwnd me, int ax, int ay, int bx, int by, set<key_location>& down) {
+  void renderManager(NGin::Graphics::CanvasHwnd me, int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
     ((PluginColor*)me->data)->HSV__renderManager(me, ax, ay, bx, by, down);
   }
   int resizeManager(NGin::Graphics::CanvasHwnd me, int x, int y) {
@@ -10,10 +10,10 @@ namespace pluginColorHSVCanvas {
   int mouseEntryManager(NGin::Graphics::CanvasHwnd me, int state) {
     return ((PluginColor*)me->data)->HSV__mouseEntryManager(me, state);
   }
-  int mouseMoveManager(NGin::Graphics::CanvasHwnd me, int x, int y, int ox, int oy, set<key_location>& down) {
+  int mouseMoveManager(NGin::Graphics::CanvasHwnd me, int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down) {
     return ((PluginColor*)me->data)->HSV__mouseMoveManager(me, x, y, ox, oy, down, me->isIn(x, y));
   }
-  int guiEventManager(NGin::Graphics::CanvasHwnd me, gui_event& evt, int mx, int my, set<key_location>& down) {
+  int guiEventManager(NGin::Graphics::CanvasHwnd me, NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down) {
     return ((PluginColor*)me->data)->HSV__guiEventManager(me, evt, mx, my, down, me->isIn(mx, my));
   }
 }
@@ -33,7 +33,7 @@ void pluginColorMainButton(NGin::Graphics::ElemHwnd elem) {
   ((Editor*)elem->data)->activateStaticPlugin(((Editor*)elem->data)->findStaticPlugin("PluginColor"));
 }
 
-int PluginColor::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+int PluginColor::renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (it == highlightedObject) {
@@ -61,7 +61,7 @@ int PluginColor::resizeManager(int x, int y) {
 int PluginColor::mouseEntryManager(int state) {
   return 0;
 }
-int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
   GLdouble pos3D_ax = 0, pos3D_ay = 0, pos3D_az = 0;
 
   //cout << 2.0*(x -  _editor->view.viewport[0])/ _editor->view.viewport[2]-1 << " " << 2.0*(y - _editor->view.viewport[1]) / _editor->view.viewport[3] - 1 << endl;
@@ -102,7 +102,7 @@ int PluginColor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location
 
   return 0;
 }
-int PluginColor::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginColor::guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
   if (in && evt._key._type == evt._key.type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
     if (!evt.captured && evt._type == evt.evt_down && highlightedObject != NULL) {
       evt.captured = true;
@@ -129,43 +129,43 @@ int PluginColor::guiEventManager(gui_event& evt, int mx, int my, set<key_locatio
 
 void PluginColor::paintColor() {
   _mode = DrawMode_Paint;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = true;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = false;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = true;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = false;
 }
 void PluginColor::fillColor() {
   _mode = DrawMode_Fill;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = false;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = true;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = true;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = false;
 }
 void PluginColor::sampleColor() {
   _mode = DrawMode_Pick;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = false;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = false;
-  static_pointer_cast<Button, GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = true;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreatePaintIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateFillIcon"))->stuck = false;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_ribbonElement->getElementById("objectPluginCreateSampleIcon"))->stuck = true;
 }
 
 void PluginColor::onAdded() {
-  _config = NGin::Graphics::createGUI_T<Panel>("objectPluginColorConfigPanel", LocationData(LinearScale(0, 0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 200)), 0x00000000, nullptr);
+  _config = NGin::Graphics::createGUI_T<NGin::Graphics::Panel>("objectPluginColorConfigPanel", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(1, 0), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 200)), 0x00000000, nullptr);
   NGin::Graphics::setElements(_config, "html/colorToolbar.xml");
-  NGin::Graphics::CanvasHwnd colorSelector = NGin::Graphics::createGUI_T<Canvas>("objectEditorCanvas", fullContainer, IWindowManagers{
+  NGin::Graphics::CanvasHwnd colorSelector = NGin::Graphics::createGUI_T<NGin::Graphics::Canvas>("objectEditorCanvas", NGin::Graphics::fullContainer, NGin::Graphics::IWindowManagers{
     pluginColorHSVCanvas::renderManager,
     pluginColorHSVCanvas::resizeManager,
     pluginColorHSVCanvas::guiEventManager,
     pluginColorHSVCanvas::mouseEntryManager,
     pluginColorHSVCanvas::mouseMoveManager,
   }, (void*)this);
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_config->getElementById("objectPluginColorCanvasContainer")), colorSelector);
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginColorCanvasContainer")), colorSelector);
 
 
-  _toolbarElement = NGin::Graphics::createGUI_T<Button>("objectPluginColorMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "rgb", -1, pluginColorMainButton);
+  _toolbarElement = NGin::Graphics::createGUI_T<NGin::Graphics::Button>("objectPluginColorMainButton", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)_editor, "rgb", -1, pluginColorMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginColorIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 140)), 0x00000000, nullptr);
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreatePaintIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginColorPaintIcon, "paint", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreateFillIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginColorFillIcon, "fill", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginCreateSampleIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginColorSampleIcon, "sample", "html/icons.ilf"));
+  _ribbonElement = NGin::Graphics::createGUI_T<NGin::Graphics::Panel>("objectPluginColorIcons", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 140)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginCreatePaintIcon",  NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginColorPaintIcon, "paint", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginCreateFillIcon",   NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginColorFillIcon, "fill", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginCreateSampleIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60), NGin::Graphics::LinearScale(0, 90)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginColorSampleIcon, "sample", "html/icons.ilf"));
 }
 void PluginColor::onActivated() {
   _editor->registerRibbon(_ribbonElement);
@@ -180,7 +180,7 @@ void PluginColor::onDeactivated() {
 
 }
 
-int PluginColor::HSV__renderManager(NGin::Graphics::CanvasHwnd me, int ax, int ay, int bx, int by, set<key_location>& down) {
+int PluginColor::HSV__renderManager(NGin::Graphics::CanvasHwnd me, int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
   //draw color wheel
   float wheelRadius = min(bx - ax, by - ay)*HSV__radiusMult;
   fVec2 center = fVec2((bx + ax) / 2.0, by - (bx - ax) / 2.0);
@@ -191,45 +191,45 @@ int PluginColor::HSV__renderManager(NGin::Graphics::CanvasHwnd me, int ax, int a
   fVec2 black = center + fVec2(wheelRadius*sin(CONS_PI* HSV__col.x / 180.0 + 2 * CONS_THIRD_PI), wheelRadius*cos(CONS_PI*HSV__col.x / 180.0 + 2 * CONS_THIRD_PI))*HSV__triMult;
   fVec2 white = center + fVec2(wheelRadius*sin(CONS_PI* HSV__col.x / 180.0 + 4 * CONS_THIRD_PI), wheelRadius*cos(CONS_PI*HSV__col.x / 180.0 + 4 * CONS_THIRD_PI))*HSV__triMult;
 
-  Gll::gllBegin(Gll::GLL_QUADS);
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
   for (float h = 0; h < 360 - delta/2; h += delta) {
-    Gll::gllColor(HSV__hsv2rgb(fVec3(h, 255, 255), 255));
-    Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*h / 180.0), wheelRadius*cos(CONS_PI*h / 180.0)));
-    Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*h / 180.0), wheelRadius*cos(CONS_PI*h / 180.0)) * HSV__innerMult);
+    NGin::Gll::gllColor(HSV__hsv2rgb(fVec3(h, 255, 255), 255));
+    NGin::Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*h / 180.0), wheelRadius*cos(CONS_PI*h / 180.0)));
+    NGin::Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*h / 180.0), wheelRadius*cos(CONS_PI*h / 180.0)) * HSV__innerMult);
 
-    Gll::gllColor(HSV__hsv2rgb(fVec3(fmodf(h+ delta,360), 255, 255), 255));
-    Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*(h+ delta) / 180.0), wheelRadius*cos(CONS_PI*(h + delta) / 180.0)) * HSV__innerMult);
-    Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*(h + delta) / 180.0), wheelRadius*cos(CONS_PI*(h + delta) / 180.0)));
+    NGin::Gll::gllColor(HSV__hsv2rgb(fVec3(fmodf(h+ delta,360), 255, 255), 255));
+    NGin::Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*(h+ delta) / 180.0), wheelRadius*cos(CONS_PI*(h + delta) / 180.0)) * HSV__innerMult);
+    NGin::Gll::gllVertex(center + fVec2(wheelRadius*sin(CONS_PI*(h + delta) / 180.0), wheelRadius*cos(CONS_PI*(h + delta) / 180.0)));
   }
-  Gll::gllEnd();
+  NGin::Gll::gllEnd();
 
-  Gll::gllBegin(Gll::GLL_POLY);
-  Gll::gllColor(HSV__hsv2rgb(fVec3(HSV__col.x, 255, 255), 255));
-  Gll::gllVertex(color);
-  Gll::gllColor(0xff000000);
-  Gll::gllVertex(black);
-  Gll::gllColor(0xffffffff);
-  Gll::gllVertex(white);
+  NGin::Gll::gllBegin(NGin::Gll::GLL_POLY);
+  NGin::Gll::gllColor(HSV__hsv2rgb(fVec3(HSV__col.x, 255, 255), 255));
+  NGin::Gll::gllVertex(color);
+  NGin::Gll::gllColor(0xff000000);
+  NGin::Gll::gllVertex(black);
+  NGin::Gll::gllColor(0xffffffff);
+  NGin::Gll::gllVertex(white);
 
-  Gll::gllEnd();
+  NGin::Gll::gllEnd();
 
-  Gll::gllBegin(Gll::GLL_POLY);
-  Gll::gllColor(0xff000000);
-  Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.1 * wheelRadius));
-  Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius));
-  Gll::gllColor(0xffffffff);
-  Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.3 * wheelRadius));
-  Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius));
-  Gll::gllEnd();
+  NGin::Gll::gllBegin(NGin::Gll::GLL_POLY);
+  NGin::Gll::gllColor(0xff000000);
+  NGin::Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.1 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius));
+  NGin::Gll::gllColor(0xffffffff);
+  NGin::Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.3 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius));
+  NGin::Gll::gllEnd();
 
-  Gll::gllBegin(Gll::GLL_POLY);
-  Gll::gllColor(_color | 0xff000000);
-  Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius));
-  Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.1 * wheelRadius));
-  Gll::gllColor(_color & 0xffffff);
-  Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius));
-  Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.3 * wheelRadius));
-  Gll::gllEnd();
+  NGin::Gll::gllBegin(NGin::Gll::GLL_POLY);
+  NGin::Gll::gllColor(_color | 0xff000000);
+  NGin::Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.3 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(-0.9*wheelRadius, -1.1 * wheelRadius));
+  NGin::Gll::gllColor(_color & 0xffffff);
+  NGin::Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.1 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(+0.9*wheelRadius, -1.3 * wheelRadius));
+  NGin::Gll::gllEnd();
 
   fVec2 crossHairPos =
   black * (1 - HSV__col.z / 255) +
@@ -238,25 +238,25 @@ int PluginColor::HSV__renderManager(NGin::Graphics::CanvasHwnd me, int ax, int a
 
   colorargb antiColor = HSV__hsv2rgb(fVec3(fmodf(HSV__col.x + 180, 360), 255, 255), 255);
 
-  Gll::gllColor(antiColor);
-  Gll::gllBegin(Gll::GLL_QUADS);
-  Gll::gllVertex(crossHairPos + fVec2(-1, -5));
-  Gll::gllVertex(crossHairPos + fVec2(-1, +5));
-  Gll::gllVertex(crossHairPos + fVec2(+1, +5));
-  Gll::gllVertex(crossHairPos + fVec2(+1, -5));
+  NGin::Gll::gllColor(antiColor);
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+  NGin::Gll::gllVertex(crossHairPos + fVec2(-1, -5));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(-1, +5));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(+1, +5));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(+1, -5));
 
-  Gll::gllVertex(crossHairPos + fVec2(-5, -1));
-  Gll::gllVertex(crossHairPos + fVec2(-5, +1));
-  Gll::gllVertex(crossHairPos + fVec2(+5, +1));
-  Gll::gllVertex(crossHairPos + fVec2(+5, -1));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(-5, -1));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(-5, +1));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(+5, +1));
+  NGin::Gll::gllVertex(crossHairPos + fVec2(+5, -1));
 
   float alphaX = (wheelRadius * 1.8) * ((_color >> 24) - 127.5) / 255;
 
-  Gll::gllVertex(center + fVec2(alphaX-1, -1.35 * wheelRadius));
-  Gll::gllVertex(center + fVec2(alphaX-1, -1.05 * wheelRadius));
-  Gll::gllVertex(center + fVec2(alphaX+1, -1.05 * wheelRadius));
-  Gll::gllVertex(center + fVec2(alphaX+1, -1.35 * wheelRadius));
-  Gll::gllEnd();
+  NGin::Gll::gllVertex(center + fVec2(alphaX-1, -1.35 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(alphaX-1, -1.05 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(alphaX+1, -1.05 * wheelRadius));
+  NGin::Gll::gllVertex(center + fVec2(alphaX+1, -1.35 * wheelRadius));
+  NGin::Gll::gllEnd();
 
   return 0;
 
@@ -269,7 +269,7 @@ int PluginColor::HSV__mouseEntryManager(NGin::Graphics::CanvasHwnd me, int state
   return 0;
 
 }
-int PluginColor::HSV__mouseMoveManager(NGin::Graphics::CanvasHwnd me, int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+int PluginColor::HSV__mouseMoveManager(NGin::Graphics::CanvasHwnd me, int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
   float wheelRadius = min(me->cbx - me->cax, me->cby - me->cay)*HSV__radiusMult;
   fVec2 center = fVec2((me->cbx + me->cax) / 2.0, me->cby - (me->cbx - me->cax) / 2.0);
 
@@ -297,7 +297,7 @@ int PluginColor::HSV__mouseMoveManager(NGin::Graphics::CanvasHwnd me, int x, int
   }
   return 1;
 }
-int PluginColor::HSV__guiEventManager(NGin::Graphics::CanvasHwnd me, gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginColor::HSV__guiEventManager(NGin::Graphics::CanvasHwnd me, NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
   if(evt._key._type == evt._key.type_mouse&& evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
     if(!evt.captured && in && evt._type == evt.evt_down) {
       float wheelRadius = min(me->cbx - me->cax, me->cby - me->cay)*HSV__radiusMult;

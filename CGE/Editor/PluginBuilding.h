@@ -105,7 +105,7 @@ namespace Building {
 
     list<BuildingObject> _objects;
 
-    Gll::PolyVao _vao;
+    NGin::Gll::PolyVao _vao;
 
     float _startHeight;
     float _height;
@@ -124,11 +124,11 @@ namespace Building {
     shared_ptr<WallCorner> dragStart;
     
     //Event
-    int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
+    int renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down);
     int resizeManager(int x, int y);
     int mouseEntryManager(int state);
-    int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-    int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
+    int mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in);
+    int guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in);
 
     //Activation
     void onAdded();
@@ -163,7 +163,7 @@ namespace Building {
 
 class PluginBuilding : public EditorPlugin {
 public:
-  static Shader _checkShader_2D;
+  static NGin::Graphics::Shader _checkShader_2D;
   static GLuint _checkShader_2D_scale;
   static GLuint _checkShader_2D_offset;
 
@@ -185,17 +185,17 @@ public:
     static bool first = true;
     if (first) {
       first = false;
-      _checkShader_2D = make_shared<Shader_Raw>("Editor/Checkboard_2D");
+      _checkShader_2D = make_shared<NGin::Graphics::Shader_Raw>("Editor/Checkboard_2D");
       _checkShader_2D_scale = glGetUniformLocation(_checkShader_2D->_pID, "scale");
       _checkShader_2D_offset = glGetUniformLocation(_checkShader_2D->_pID, "offset");
     }
   }
 
-  int renderManager(int ax, int ay, int bx, int by, set<key_location>& down);
+  int renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down);
   int resizeManager(int x, int y);
   int mouseEntryManager(int state);
-  int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in);
-  int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in);
+  int mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in);
+  int guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in);
 
   string getClassName() {
     return "PluginBuilding";

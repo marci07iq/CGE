@@ -14,9 +14,8 @@ void PreviewCanvas::setViewport(float aspect) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void PreviewCanvas::render(set<key_location>& down) {
+void PreviewCanvas::render(set<NGin::Graphics::key_location>& down) {
   //_frameData->_time = _frameData->_frameCount * 1.0 / _frameData->_global->_frameRate;
-
   shared_ptr<Filter_Resource_RenderBuffer> buffer = _ctx.lock()->_exit->getFrame(_time);
   if (buffer == nullptr) return;
   if (buffer->_source == nullptr) return;
@@ -69,7 +68,7 @@ void PreviewCanvas::render(set<key_location>& down) {
   glUniform1i(FilterTexture::_texshader_uniform_texture, 0);
 
   //setViewport(_frameData->_global->_resolution.x * 1.0 / _frameData->_global->_resolution.y);
-  setViewport(1920.0 / 1080);
+  setViewport(buffer->_source->_size.x * 1.0 / buffer->_source->_size.y);
   glBindVertexArray(vao);
   glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -88,10 +87,10 @@ void PreviewCanvas::render(set<key_location>& down) {
 int PreviewCanvas::mouseEnter(int state) {
   return 0;
 }
-int PreviewCanvas::mouseMoved(int x, int y, int ox, int oy, set<key_location>& down) {
+int PreviewCanvas::mouseMoved(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down) {
   return 0;
 }
-int PreviewCanvas::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down) {
+int PreviewCanvas::guiEvent(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down) {
   return 0;
 }
 

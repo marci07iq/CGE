@@ -48,8 +48,8 @@ void createPreviewWindow_onSetup(NGin::Graphics::WinHwnd win) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   NGin::Graphics::setElements(objectPreviewWindowHwnd->myPanel, "html/previewScreen.xml");
-  objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", fullContainer, IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel, ctx);
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(objectPreviewWindowHwnd->myPanel->getElementById("objectEditorCanvasContainer")), objectMainPreviewCanvasHwnd->shared_from_this());
+  objectMainPreviewCanvasHwnd = make_shared<PreviewCanvas>("objectEditorCanvas", NGin::Graphics::fullContainer, NGin::Graphics::IWindowManagers(), nullptr, objectPreviewWindowHwnd->myPanel, ctx);
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(objectPreviewWindowHwnd->myPanel->getElementById("objectEditorCanvasContainer")), objectMainPreviewCanvasHwnd->shared_from_this());
   
 
   win->autoRedraw = false;
@@ -83,13 +83,14 @@ void createEditorWindow_onSetup(NGin::Graphics::WinHwnd win) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-  Gll::gllInit("NGin/GUI/GLL_Res/");
-  new IconLocationFile(ilfPath);
+  NGin::Gll::gllInit("NGin/GUI/GLL_Res/");
+  //Dont delete, this is added to the loaded ILF list
+  new NGin::Graphics::IconLocationFile(ilfPath);
 
   NGin::Graphics::setElements(objectEditorWindowHwnd->myPanel, "html/mainScreen.xml");
-  objectMainFilterGuiHwnd = make_shared<FilterGUI>("objectEditorCanvas", fullContainer, getColor("filter", "bgcolor"), getColor("filter", "activecolor"), getColor("filter", "textcolor"), ctx);
+  objectMainFilterGuiHwnd = make_shared<FilterGUI>("objectEditorCanvas", NGin::Graphics::fullContainer, NGin::Graphics::getColor("filter", "bgcolor"), NGin::Graphics::getColor("filter", "activecolor"), NGin::Graphics::getColor("filter", "textcolor"), ctx);
   ctx->gui = objectMainFilterGuiHwnd;
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(objectEditorWindowHwnd->myPanel->getElementById("objectEditorFilterGUIContainer")), objectMainFilterGuiHwnd->shared_from_this());
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(objectEditorWindowHwnd->myPanel->getElementById("objectEditorFilterGUIContainer")), objectMainFilterGuiHwnd->shared_from_this());
 
   win->autoRedraw = false;
 }
@@ -100,9 +101,9 @@ void createEditorWindow() {
 }
 
 void initGraphics() {
-  //NGin::Graphics::setName<ClickCallback>("editorMenuNewButton", editorMenuNewButton);
-  NGin::Graphics::setName<SliderInputFunc>("editorTimelineSlider", editorTimelineSlider);
-  NGin::Graphics::setName<ClickCallback>("editorTimelinePauseButton", editorTimelinePauseButton);
+  //NGin::Graphics::setName<ClickCallback>("editorMenuNewNGin::Graphics::Button", editorMenuNewNGin::Graphics::Button);
+  NGin::Graphics::setName<NGin::Graphics::SliderInputFunc>("editorTimelineSlider", editorTimelineSlider);
+  NGin::Graphics::setName<NGin::Graphics::ClickCallback>("editorTimelinePauseNGin::Graphics::Button", editorTimelinePauseButton);
 
   NGin::Graphics::initGraphics();
   glfwSetErrorCallback(glfwErrorCb);
@@ -120,20 +121,23 @@ int main(int argc, char* argv[]) {
   srand(time(NULL));
   ran1(time(NULL));
 
-  loadKeybinds();
-  loadColors();
+  NGin::Graphics::loadKeybinds();
+  NGin::Graphics::loadColors();
   ctx = make_shared<EditorContext>();
   ctx->_stream_desc._resolution = fVec2(1920, 1080);
   ctx->_stream_desc._frameRate = 30;
 
   initGraphics();
 
-  EditorContext::registerFilter("Filter3D", FilterDescription{ "3D", &(createFilter_T<Filter3D>), getIcon("3d", ilfPath) });
-  EditorContext::registerFilter("FilterCameraMatrix", FilterDescription{ "Camera matrix", &(createFilter_T<FilterCameraMatrix>), getIcon("camera", ilfPath) });
-  EditorContext::registerFilter("FilterColor", FilterDescription{ "Color", &(createFilter_T<FilterColor>), getIcon("color", ilfPath) });
-  EditorContext::registerFilter("FilterShader", FilterDescription{ "Shader", &(createFilter_T<FilterShader>), getIcon("shader", ilfPath) });
-  EditorContext::registerFilter("FilterTexture", FilterDescription{ "Texture", &(createFilter_T<FilterTexture>), getIcon("texture", ilfPath) });
-  EditorContext::registerFilter("FilterLiteral", FilterDescription{ "Literal", &(createFilter_T<FilterLiteral>), getIcon("out", ilfPath) });
+  EditorContext::registerFilter("Filter3D", FilterDescription{ "3D", &(createFilter_T<Filter3D>), NGin::Graphics::getIcon("3d", ilfPath) });
+  //EditorContext::registerFilter("FilterRenderBatch", FilterDescription{ "RenderBatch", &(createFilter_T<FilterRenderBatch>), NGin::Graphics::getIcon("vao", ilfPath) });
+  EditorContext::registerFilter("FilterCameraMatrix", FilterDescription{ "Camera matrix", &(createFilter_T<FilterCameraMatrix>), NGin::Graphics::getIcon("camera", ilfPath) });
+  EditorContext::registerFilter("FilterColor", FilterDescription{ "Color", &(createFilter_T<FilterColor>), NGin::Graphics::getIcon("color", ilfPath) });
+  EditorContext::registerFilter("FilterShader", FilterDescription{ "Shader", &(createFilter_T<FilterShader>), NGin::Graphics::getIcon("shader", ilfPath) });
+  EditorContext::registerFilter("FilterVAO", FilterDescription{ "VAO", &(createFilter_T<FilterVAO>), NGin::Graphics::getIcon("vao", ilfPath) });
+
+  EditorContext::registerFilter("FilterTexture", FilterDescription{ "Texture", &(createFilter_T<FilterTexture>), NGin::Graphics::getIcon("texture", ilfPath) });
+  EditorContext::registerFilter("FilterLiteral", FilterDescription{ "Literal", &(createFilter_T<FilterLiteral>), NGin::Graphics::getIcon("out", ilfPath) });
 
 
   ctx->init();
@@ -152,13 +156,94 @@ int main(int argc, char* argv[]) {
     ctx->_filters.push_back(filt);
   }*/
 
-  /*{
-    shared_ptr<FilterLiteral> filt = make_shared<FilterLiteral>(ctx);
+  shared_ptr<FilterLiteral> filt_dir = make_shared<FilterLiteral>(ctx);
+  filt_dir->init();
+  filt_dir->cax = 0;
+  filt_dir->cay = 500;
+  string eye_dir = "{\"x\":0, \"y\":0, \"z\":-1}";
+  filt_dir->_valInput->text = eye_dir;
+  filt_dir->valInput_cb(eye_dir);
+  ctx->_filters.push_back(filt_dir);
 
-    filt->init();
-    ctx->_filters.push_back(filt);
-  }*/
+  shared_ptr<FilterLiteral> filt_eye = make_shared<FilterLiteral>(ctx);
+  filt_eye->init();
+  filt_eye->cax = 0;
+  filt_eye->cay = 400;
+  string eye_pos = "{\"x\":1, \"y\":1, \"z\":2}";
+  filt_eye->_valInput->text = eye_pos;
+  filt_eye->valInput_cb(eye_pos);
+  ctx->_filters.push_back(filt_eye);
 
+  shared_ptr<FilterLiteral> filt_res = make_shared<FilterLiteral>(ctx);
+  filt_res->init();
+  filt_res->cax = 0;
+  filt_res->cay = 300;
+  string resolution = "{\"x\":1920, \"y\":1920}";
+  filt_res->_valInput->text = resolution;
+  filt_res->valInput_cb(resolution);
+  ctx->_filters.push_back(filt_res);
+
+  shared_ptr<FilterCameraMatrix> filt_cam = make_shared<FilterCameraMatrix>(ctx);
+  filt_cam->init();
+  filt_cam->cax = 300;
+  filt_cam->cay = 400;
+  ctx->_filters.push_back(filt_cam);
+  filt_cam->_inputs["resolution"]->tryBindInput(filt_res->_outputs["data"]);
+  filt_cam->_inputs["cam_dir"]->tryBindInput(filt_dir->_outputs["data"]);
+  filt_cam->_inputs["cam_eye"]->tryBindInput(filt_eye->_outputs["data"]);
+
+  shared_ptr<FilterColor> filt_col = make_shared<FilterColor>(ctx);
+  filt_col->init();
+  filt_col->cax = 300;
+  filt_col->cay = 250;
+  ctx->_filters.push_back(filt_col);
+  filt_col->_params["resolution"]->tryBindInput(filt_res->_outputs["data"]);
+
+  shared_ptr<FilterLiteral> filt_sha_path = make_shared<FilterLiteral>(ctx);
+  filt_sha_path->init();
+  filt_sha_path->cax = 0;
+  filt_sha_path->cay = 100;
+  string sha_path = "\"Filters/Shaders/Simple3D\"";
+  filt_sha_path->_valInput->text = sha_path;
+  filt_sha_path->valInput_cb(sha_path);
+  ctx->_filters.push_back(filt_sha_path);
+  
+  shared_ptr<FilterShader> filt_sha = make_shared<FilterShader>(ctx);
+  filt_sha->init();
+  filt_sha->cax = 300;
+  filt_sha->cay = 50;
+  ctx->_filters.push_back(filt_sha);
+  filt_sha->_params["path"]->tryBindInput(filt_sha_path->_outputs["data"]);
+
+  shared_ptr<FilterLiteral> filt_ply_path = make_shared<FilterLiteral>(ctx);
+  filt_ply_path->init();
+  filt_ply_path->cax = 0;
+  filt_ply_path->cay = 200;
+  string ply_path = "\"test.ply\"";
+  filt_ply_path->_valInput->text = sha_path;
+  filt_ply_path->valInput_cb(ply_path);
+  ctx->_filters.push_back(filt_ply_path);
+
+  shared_ptr<FilterVAO> filt_ply = make_shared<FilterVAO>(ctx);
+  filt_ply->init();
+  filt_ply->cax = 300;
+  filt_ply->cay = 150;
+  ctx->_filters.push_back(filt_ply);
+  filt_ply->_params["path"]->tryBindInput(filt_ply_path->_outputs["data"]);
+
+  shared_ptr<Filter3D> filt_3d = make_shared<Filter3D>(ctx);
+  filt_3d->init();
+  filt_3d->cax = 500;
+  filt_3d->cay = 100;
+  ctx->_filters.push_back(filt_3d);
+  filt_3d->_inputs["cam_mat"]->tryBindInput(filt_cam->_outputs["mat"]);
+  filt_3d->_inputs["in"]->tryBindInput(filt_col->_outputs["out"]);
+  filt_3d->_inputs["shader"]->tryBindInput(filt_sha->_outputs["out"]);
+  filt_3d->_inputs["objects"]->tryBindInput(filt_ply->_outputs["out"]);
+
+  ctx->_exit->cax = 700;
+  ctx->_exit->cay = 200;
+  ctx->_exit->_inputs["result"]->tryBindInput(filt_3d->_outputs["out"]);
   /*{
     //resolution = make_shared<Filter_Resource_Output>(ctx->_globalDummy, "resolution", "Resolution", "Resolution of the output frame", Filter_Resource_IO_Base::Restriction_Static, make_shared<Filter_Resource_Object>());
     //resolution->_res->castTo< Filter_Resource_Object>()->set_fVec2(fVec2(192, 108));
@@ -181,7 +266,7 @@ int main(int argc, char* argv[]) {
   objectMainPreviewCanvasHwnd->finishRender();
   //frames.join();
 
-  saveKeybinds();
+  NGin::Graphics::saveKeybinds();
 
   return 0;
 }

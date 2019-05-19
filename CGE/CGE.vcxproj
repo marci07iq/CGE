@@ -81,7 +81,7 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;NGin\NGin_x64_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib</AdditionalLibraryDirectories>
@@ -98,7 +98,7 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;NGin\NGin_x64_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib</AdditionalLibraryDirectories>
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>
@@ -118,7 +118,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;NGin\NGin_x64_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib</AdditionalLibraryDirectories>
@@ -139,7 +139,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;NGin\NGin_x64_Release.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gmp/libgmp-10.lib;gmp/libmpfr-4.lib;NGin\glfw3.lib;NGin\glfw3dll.lib;opengl32.lib;glu32.lib;NGin\NGin_x64_Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Programming\Libraries\Lib</AdditionalLibraryDirectories>
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>

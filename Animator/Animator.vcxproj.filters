@@ -36,6 +36,12 @@
     <Filter Include="Source Files\Filters\Literal">
       <UniqueIdentifier>{f9a1b1f4-a826-4c23-9429-251462aecff7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Filters\RenderBatch">
+      <UniqueIdentifier>{527fba28-13fe-410b-9059-47aac8f5e80b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Filters\VAO">
+      <UniqueIdentifier>{e097e2b1-1985-4c18-b911-55faf9973de6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Filters\Filter.cpp">
@@ -77,13 +83,16 @@
     <ClCompile Include="Filters\Literal\FilterLiteral.cpp">
       <Filter>Source Files\Filters\Literal</Filter>
     </ClCompile>
+    <ClCompile Include="Filters\RenderBatch\FilterRenderBatch.cpp">
+      <Filter>Source Files\Filters\RenderBatch</Filter>
+    </ClCompile>
+    <ClCompile Include="Filters\VAO\FilterVAO.cpp">
+      <Filter>Source Files\Filters\VAO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Filters\Filter.h">
       <Filter>Source Files\Filters</Filter>
-    </ClInclude>
-    <ClInclude Include="Filters\Color\FilterColor.h">
-      <Filter>Source Files\Filters\Color</Filter>
     </ClInclude>
     <ClInclude Include="Main\Main.h">
       <Filter>Source Files\Main</Filter>
@@ -124,6 +133,15 @@
     <ClInclude Include="Filters\Literal\FilterLiteral.h">
       <Filter>Source Files\Filters\Literal</Filter>
     </ClInclude>
+    <ClInclude Include="Filters\RenderBatch\FilterRenderBatch.h">
+      <Filter>Source Files\Filters\RenderBatch</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\VAO\FilterVAO.h">
+      <Filter>Source Files\Filters\VAO</Filter>
+    </ClInclude>
+    <ClInclude Include="Filters\Color\FilterColor.h">
+      <Filter>Source Files\Filters\Color</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Filters\Shaders\FilterColor.frag">
@@ -136,6 +154,12 @@
       <Filter>Source Files\Filters\Shaders</Filter>
     </None>
     <None Include="Filters\Shaders\FilterTexture.vert">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
+    <None Include="Filters\Shaders\Simple3D.frag">
+      <Filter>Source Files\Filters\Shaders</Filter>
+    </None>
+    <None Include="Filters\Shaders\Simple3D.vert">
       <Filter>Source Files\Filters\Shaders</Filter>
     </None>
   </ItemGroup>

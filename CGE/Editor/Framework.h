@@ -15,10 +15,10 @@ public:
 
   EditorPlugin(Editor* e) {
     _editor = e;
-    //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(LinearScale(0,0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 10)), 0xffff0000);
+    //_ribbonElement = NGin::Graphics::createGUI_T<Panel>("elementToolRibbonTemplate", LocationData(NGin::Graphics::LinearScale(0,0), NGin::Graphics::LinearScale(1, 0), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 10)), 0xffff0000);
   }
 
-  virtual int renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+  virtual int renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
     return 0;
   }
   virtual int resizeManager(int x, int y) {
@@ -27,11 +27,11 @@ public:
   virtual int mouseEntryManager(int state) {
     return 0;
   }
-  virtual int mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+  virtual int mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
     return 0;
   }
   //virtual void doCarve();
-  virtual int guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+  virtual int guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
     return 0;
   }
 

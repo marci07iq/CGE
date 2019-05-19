@@ -1,6 +1,6 @@
 #include "PluginBuilding.h"
 
-Shader PluginBuilding::_checkShader_2D;
+NGin::Graphics::Shader PluginBuilding::_checkShader_2D;
 GLuint PluginBuilding::_checkShader_2D_scale;
 GLuint PluginBuilding::_checkShader_2D_offset;
 
@@ -20,7 +20,7 @@ void pluginBuildingMainButton(NGin::Graphics::ElemHwnd elem) {
 }
 
 
-int PluginBuilding::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+int PluginBuilding::renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
   if (_selectedFloor) {
     if (_selectedFloor->_toDelete) {
       _selectedFloor = NULL;
@@ -50,7 +50,7 @@ int PluginBuilding::mouseEntryManager(int state) {
   }
   return 0;
 }
-int PluginBuilding::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+int PluginBuilding::mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
   if (_selectedFloor) {
     if (_selectedFloor->_toDelete) {
       _selectedFloor = NULL;
@@ -60,7 +60,7 @@ int PluginBuilding::mouseMoveManager(int x, int y, int ox, int oy, set<key_locat
   }
   return 0;
 }
-int PluginBuilding::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginBuilding::guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
   if (_selectedFloor) {
     if (_selectedFloor->_toDelete) {
       _selectedFloor = NULL;
@@ -72,19 +72,19 @@ int PluginBuilding::guiEventManager(gui_event& evt, int mx, int my, set<key_loca
 }
 
 void PluginBuilding::onAdded() {
-  //_config = NGin::Graphics::createGUI_T<Panel>("objectPluginColorConfigPanel", LocationData(LinearScale(0, 0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(0, 200)), 0x00000000, NULL);
+  //_config = NGin::Graphics::createGUI_T<Panel>("objectPluginColorConfigPanel", LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(1, 0), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 200)), 0x00000000, NULL);
   
-  _toolbarElement = NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "building", -1, pluginBuildingMainButton, "building", "html/icons.ilf");
+  _toolbarElement = NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginBuildingMainButton", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)_editor, "building", -1, pluginBuildingMainButton, "building", "html/icons.ilf");
   _editor->registerSidebar(_toolbarElement);
 
   _building = make_shared<Building::Building>();
   _building->_plugin = this;
   _selectedFloor = _building->createFloor("0", 0, 3);
 
-  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginColorIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 140)), 0x00000000, nullptr);
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallAddIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallAddIcon, "wall_add", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallModIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallModIcon, "wall_mod", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginBuildingWallDelIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallDelIcon, "wall_del", "html/icons.ilf"));
+  _ribbonElement = NGin::Graphics::createGUI_T<NGin::Graphics::Panel>("objectPluginColorIcons", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 140)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginBuildingWallAddIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallAddIcon, "wall_add", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginBuildingWallModIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallModIcon, "wall_mod", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginBuildingWallDelIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60), NGin::Graphics::LinearScale(0, 90)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginBuildingWallDelIcon, "wall_del", "html/icons.ilf"));
 
   setMode(WallModeUnd);
 }
@@ -103,9 +103,9 @@ void PluginBuilding::onDeactivated() {
 void PluginBuilding::setMode(WallMode mode) {
   _mode = mode;
 
-  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallAddIcon")))->stuck = _mode == WallModeAdd;
-  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallModIcon")))->stuck = _mode == WallModeMod;
-  static_pointer_cast<Button, GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallDelIcon")))->stuck = _mode == WallModeDel;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallAddIcon")))->stuck = _mode == WallModeAdd;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallModIcon")))->stuck = _mode == WallModeMod;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>((_ribbonElement->getElementById("objectPluginBuildingWallDelIcon")))->stuck = _mode == WallModeDel;
 }
 
 
@@ -341,17 +341,17 @@ namespace Building {
   }
 
   void Wallsegment::compile() {
-    Gll::gllColor(0xff808080);
+    NGin::Gll::gllColor(0xff808080);
 
-    Gll::gllVertex(*(_pos[0]));
-    Gll::gllVertex(*(_pos_virt[0][0]));
-    Gll::gllVertex(*(_pos_virt[1][1]));
-    Gll::gllVertex(*(_pos[1]));
+    NGin::Gll::gllVertex(*(_pos[0]));
+    NGin::Gll::gllVertex(*(_pos_virt[0][0]));
+    NGin::Gll::gllVertex(*(_pos_virt[1][1]));
+    NGin::Gll::gllVertex(*(_pos[1]));
 
-    Gll::gllVertex(*(_pos[1]));
-    Gll::gllVertex(*(_pos_virt[1][0]));
-    Gll::gllVertex(*(_pos_virt[0][1]));
-    Gll::gllVertex(*(_pos[0]));
+    NGin::Gll::gllVertex(*(_pos[1]));
+    NGin::Gll::gllVertex(*(_pos_virt[1][0]));
+    NGin::Gll::gllVertex(*(_pos_virt[0][1]));
+    NGin::Gll::gllVertex(*(_pos[0]));
   }
 
   //WallSegment
@@ -389,19 +389,19 @@ namespace Building {
   }
 
   void BuildingFloor::upload() {
-    Gll::gllBegin(Gll::GLL_QUADS);
+    NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
 
     for (auto&& it : _walls) {
       it->compile();
     }
 
-    _vao = Gll::gllBuild();
+    _vao = NGin::Gll::gllBuild();
   }
 
   void BuildingFloor::render() {
 
 
-    Gll::gllRender(_vao, Render2D_offset, fVec2(Render2D_scale));
+    NGin::Gll::gllRender(_vao, Render2D_offset, fVec2(Render2D_scale));
   }
 
   float BuildingFloor::Render2D_gridSize() {
@@ -482,7 +482,7 @@ namespace Building {
     return res;
   }
 
-  int BuildingFloor::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+  int BuildingFloor::renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
     NGin::Graphics::resetViewport();
     
     float scale = Render2D_gridSize();
@@ -560,17 +560,17 @@ namespace Building {
     fVec2 snapPoint;
     float dist;
 
-    Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, false, down.count(key(GLFW_KEY_LEFT_SHIFT, key::type_key)));
+    Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, false, down.count(NGin::Graphics::key(GLFW_KEY_LEFT_SHIFT, NGin::Graphics::key::type_key)));
     snapPoint = Render2D_toScreenCoordinates(snapPoint);
     //cout << snapPoint.x << " " << snapPoint.y << endl;
     
-    Gll::gllBegin(Gll::GLL_QUADS);
-    Gll::gllColor(0xffff0000);
-    Gll::gllVertex(snapPoint + fVec2(-5, -5));
-    Gll::gllVertex(snapPoint + fVec2(5, -5));
-    Gll::gllVertex(snapPoint + fVec2(5, 5));
-    Gll::gllVertex(snapPoint + fVec2(-5, 5));
-    Gll::gllEnd();
+    NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+    NGin::Gll::gllColor(0xffff0000);
+    NGin::Gll::gllVertex(snapPoint + fVec2(-5, -5));
+    NGin::Gll::gllVertex(snapPoint + fVec2(5, -5));
+    NGin::Gll::gllVertex(snapPoint + fVec2(5, 5));
+    NGin::Gll::gllVertex(snapPoint + fVec2(-5, 5));
+    NGin::Gll::gllEnd();
 
 
 
@@ -582,33 +582,33 @@ namespace Building {
   int BuildingFloor::mouseEntryManager(int state) {
     return 0;
   }
-  int BuildingFloor::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+  int BuildingFloor::mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
     Render2D_mousePos = fVec2(x, y);
     
-    if (down.count(key(GLFW_MOUSE_BUTTON_RIGHT, key::type_mouse))) {
+    if (down.count(NGin::Graphics::key(GLFW_MOUSE_BUTTON_RIGHT, NGin::Graphics::key::type_mouse))) {
       Render2D_offset -= fVec2(x - ox, y - oy) * Render2D_scale;
     }
     //cout << x << " " << y << endl;
     //cout << Render2D_mousePos << endl;
     return 3;
   }
-  int BuildingFloor::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
-    if (in && evt._key._type == key::type_wheel) {
+  int BuildingFloor::guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
+    if (in && evt._key._type == NGin::Graphics::key::type_wheel) {
       float newScale = pow(10, round((log10(Render2D_scale) - 0.1 * evt._key._keycode) * 10) / 10);
       Render2D_offset += fVec2(mx, my) * (Render2D_scale - newScale);
       Render2D_scale = newScale;
     }
 
-    if (!evt.captured && evt._key._type == key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) { //mouse, down, left
+    if (!evt.captured && evt._key._type == NGin::Graphics::key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) { //mouse, down, left
       fVec2 snapPoint;
       float dist;
-      if (evt._type == gui_event::evt_down && in) {
-        dragStart = Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, true, down.count(key(GLFW_KEY_LEFT_SHIFT, key::type_key)));
+      if (evt._type == NGin::Graphics::gui_event::evt_down && in) {
+        dragStart = Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, true, down.count(NGin::Graphics::key(GLFW_KEY_LEFT_SHIFT, NGin::Graphics::key::type_key)));
         evt.captured = true;
       }
-      if (evt._type == gui_event::evt_up) {
+      if (evt._type == NGin::Graphics::gui_event::evt_up) {
         if (in) {
-          shared_ptr<WallCorner> dragEnd = Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, true, down.count(key(GLFW_KEY_LEFT_SHIFT, key::type_key)));
+          shared_ptr<WallCorner> dragEnd = Render2D_snapToScreenCoords(Render2D_mousePos, dist, snapPoint, true, down.count(NGin::Graphics::key(GLFW_KEY_LEFT_SHIFT, NGin::Graphics::key::type_key)));
           if (dragStart != NULL && dragEnd != NULL && dragStart != dragEnd) {
             addWall(dragStart, dragEnd, Render2D_scale * 5);
             dragStart = NULL;

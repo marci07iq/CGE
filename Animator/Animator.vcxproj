@@ -147,8 +147,10 @@
     <ClCompile Include="Filters\Filter.cpp" />
     <ClCompile Include="Filters\FilterResource.cpp" />
     <ClCompile Include="Filters\Literal\FilterLiteral.cpp" />
+    <ClCompile Include="Filters\RenderBatch\FilterRenderBatch.cpp" />
     <ClCompile Include="Filters\Shaders\FilterShader.cpp" />
     <ClCompile Include="Filters\Texture\FilterTexture.cpp" />
+    <ClCompile Include="Filters\VAO\FilterVAO.cpp" />
     <ClCompile Include="Main\Main.cpp" />
     <ClCompile Include="Main\PreviewCanvas.cpp" />
     <ClCompile Include="Main\Render.cpp" />
@@ -163,8 +165,10 @@
     <ClInclude Include="Filters\Filter.h" />
     <ClInclude Include="Filters\FilterResource.h" />
     <ClInclude Include="Filters\Literal\FilterLiteral.h" />
+    <ClInclude Include="Filters\RenderBatch\FilterRenderBatch.h" />
     <ClInclude Include="Filters\Shaders\FilterShader.h" />
     <ClInclude Include="Filters\Texture\FilterTexture.h" />
+    <ClInclude Include="Filters\VAO\FilterVAO.h" />
     <ClInclude Include="Main\Defs.h" />
     <ClInclude Include="Main\Main.h" />
     <ClInclude Include="Main\PreviewCanvas.h" />
@@ -175,6 +179,8 @@
     <None Include="Filters\Shaders\FilterColor.vert" />
     <None Include="Filters\Shaders\FilterTexture.frag" />
     <None Include="Filters\Shaders\FilterTexture.vert" />
+    <None Include="Filters\Shaders\Simple3D.frag" />
+    <None Include="Filters\Shaders\Simple3D.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

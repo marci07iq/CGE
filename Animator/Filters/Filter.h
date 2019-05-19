@@ -29,7 +29,7 @@ class EditorContext;
 struct FilterDescription {
   string _display_name;
   shared_ptr<Filter>(*_constructor)(weak_ptr<EditorContext>);
-  Icon* _icon;
+  NGin::Graphics::Icon* _icon;
 };
 
 class EditorContext : public enable_shared_from_this<EditorContext> {
@@ -44,6 +44,9 @@ public:
   static void registerFilter(string name, FilterDescription description);
 
   void init();
+
+  void load_caf(string filename);
+  void save_caf(string filename);
 #ifdef M_CLIENT
   shared_ptr<FilterGUI> gui;
 #endif
@@ -55,7 +58,7 @@ class IOVideoData : public StreamData {
 };
 
 #ifdef M_CLIENT
-class FilterGUI : public GUIElement {
+class FilterGUI : public NGin::Graphics::GUIElement {
 public:
   //Global coord to low left
   iVec2 dragOffset = iVec2(-100, -100);
@@ -67,15 +70,15 @@ public:
   weak_ptr<EditorContext> _editor;
   weak_ptr<Filter_Resource_Output> _draggedConnection;
 
-  FilterGUI(string name, LocationData llocation, colorargb lbgcolor, colorargb lactivecolor, colorargb ltextcolor, shared_ptr<EditorContext> editor);
+  FilterGUI(string name, NGin::Graphics::LocationData llocation, colorargb lbgcolor, colorargb lactivecolor, colorargb ltextcolor, shared_ptr<EditorContext> editor);
 
   void getRect();
   void getRect(int winWidth, int winHeight, int offsetX, int offsetY);
 
   int mouseEnter(int state);
-  int mouseMoved(int mx, int my, int ox, int oy, set<key_location>& down);
-  int guiEvent(gui_event& evt, int mx, int my, set<key_location>& down);
-  void render(set<key_location>& down);
+  int mouseMoved(int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down);
+  int guiEvent(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down);
+  void render(set<NGin::Graphics::key_location>& down);
 };
 
 #endif
@@ -103,22 +106,34 @@ public:
 
   virtual void configure();
 
+  virtual void set(const DataElement* from) {
+    const DataElement* rootVal = from->_children[0];
+    vSFunc(_id, rootVal->_children[0]);
+    vSFunc(cax, rootVal->_children[1]);
+    vSFunc(cay, rootVal->_children[2]);
+
+  }
+
+  virtual void get(const DataElement* to) const {
+
+  }
+
   virtual void calculate(float t);
 
   void addInput(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray = false
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
   );
 
   void addParam(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray = false
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
   );
   void addOutput(string internalName, string displayName, string description, Filter_Resource_IO_Base::Restriction restriction, shared_ptr<Filter_Resource> res
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
   );
 
@@ -134,14 +149,14 @@ public:
   virtual int mouseEnter(iVec2 offset, int state);
 private:
   //Do not call from outside
-  virtual int mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, set<key_location>& down);
-  virtual int guiEvent(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down);
-  virtual void render(iVec2 offset, set<key_location>& down);
+  virtual int mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down);
+  virtual int guiEvent(iVec2 offset, NGin::Graphics::gui_event evt, int mx, int my, std::set<NGin::Graphics::key_location>& down);
+  virtual void render(iVec2 offset, std::set<NGin::Graphics::key_location>& down);
 public:
 
-  int mouseMoved_base(iVec2 offset, int mx, int my, int ox, int oy, set<key_location>& down);
-  int guiEvent_base(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down);
-  void render_base(iVec2 offset, set<key_location>& down);
+  int mouseMoved_base(iVec2 offset, int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down);
+  int guiEvent_base(iVec2 offset, NGin::Graphics::gui_event evt, int mx, int my, std::set<NGin::Graphics::key_location>& down);
+  void render_base(iVec2 offset, std::set<NGin::Graphics::key_location>& down);
 
   bool findOutput(shared_ptr<Filter_Resource_Output> val, iVec2& pos);
 
@@ -165,7 +180,7 @@ public:
   }
 
   void init() {
-    addInput("result", "Result", "Final image", Filter_Resource::Type_RenderBuffer, false, getIcon("finish", ilfPath));
+    addInput("result", "Result", "Final image", Filter_Resource::Type_RenderBuffer, false, NGin::Graphics::getIcon("finish", ilfPath));
 
     updateSize();
 

@@ -21,12 +21,12 @@ public:
   }
 
   void init() {
-    _valInput = NGin::Graphics::createGUI_T<TextInput>(
+    _valInput = NGin::Graphics::createGUI_T<NGin::Graphics::TextInput>(
       "data",
-      LocationData(LinearScale(0, 0), LinearScale(1, 0), LinearScale(0, 0), LinearScale(1, 0)),
-      getColor("input", "bgcolor"),
-      getColor("input", "activecolor"),
-      getColor("input", "textcolor"),
+      NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(1, 0), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(1, 0)),
+      NGin::Graphics::getColor("input", "bgcolor"),
+      NGin::Graphics::getColor("input", "activecolor"),
+      NGin::Graphics::getColor("input", "textcolor"),
       this,
       "",
       valInput_cb_stat);
@@ -51,9 +51,9 @@ public:
   int mouseEnter(iVec2 offset, int state);
 private:
   //Do not call from outside
-  int mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, set<key_location>& down);
-  int guiEvent(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down);
-  void render(iVec2 offset, set<key_location>& down);
+  int mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down);
+  int guiEvent(iVec2 offset, NGin::Graphics::gui_event evt, int mx, int my, std::set<NGin::Graphics::key_location>& down);
+  void render(iVec2 offset, std::set<NGin::Graphics::key_location>& down);
 
 
   iVec2 getInternalSize() {

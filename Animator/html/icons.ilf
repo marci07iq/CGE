@@ -8,6 +8,7 @@ eye			3 0 1 1
 up			4 0 1 1
 fov			5 0 1 1
 finish		6 0 1 1
+close		7 0 1 1
 
 float		0 1 1 1
 vector		1 1 1 1

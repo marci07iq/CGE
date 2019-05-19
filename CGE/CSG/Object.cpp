@@ -28,18 +28,18 @@ void Object::upload() {
   float* light = new float[3 * _mesh.faces()];
 
   for (int i = 0; i < _mesh.faces(); i++) {
-    insertVector(vert, 9 * i + 0, _mesh.vertex(i, 0));
-    insertVector(vert, 9 * i + 3, _mesh.vertex(i, 1));
-    insertVector(vert, 9 * i + 6, _mesh.vertex(i, 2));
+    NGin::Graphics::insertVector(vert, 9 * i + 0, _mesh.vertex(i, 0));
+    NGin::Graphics::insertVector(vert, 9 * i + 3, _mesh.vertex(i, 1));
+    NGin::Graphics::insertVector(vert, 9 * i + 6, _mesh.vertex(i, 2));
 
     light[3* i] = light[3 * i + 1] = light[3 * i + 2] = 0.7 + 0.3*dot(crs(
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 1),
        _mesh.vertex(i, 0) -  _mesh.vertex(i, 2)).norm(),
       vec3<double>(1, 2, 3).norm());
 
-    insertColor(col, 12 * i + 0, _mesh._color[i]);
-    insertColor(col, 12 * i + 4, _mesh._color[i]);
-    insertColor(col, 12 * i + 8, _mesh._color[i]);
+    NGin::Graphics::insertColor(col, 12 * i + 0, _mesh._color[i]);
+    NGin::Graphics::insertColor(col, 12 * i + 4, _mesh._color[i]);
+    NGin::Graphics::insertColor(col, 12 * i + 8, _mesh._color[i]);
   }
 
   glGenBuffers(1, &_obj_pos_vbo);

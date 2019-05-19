@@ -33,7 +33,7 @@ void Filter::calculate(float t) {
 
 void Filter::addInput(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray
 #ifdef M_CLIENT
-  , Icon* icon
+  , NGin::Graphics::Icon* icon
 #endif
 ) {
   _inputs[internalName] = make_shared<Filter_Resource_Input>(weak_from_this(), internalName, displayName, description, Filter_Resource_IO_Base::Restriction_Dynamic, type, isArray
@@ -44,7 +44,7 @@ void Filter::addInput(string internalName, string displayName, string descriptio
 }
 void Filter::addParam(string internalName, string displayName, string description, Filter_Resource::Type type, bool isArray
 #ifdef M_CLIENT
-  , Icon* icon
+  , NGin::Graphics::Icon* icon
 #endif
 ) {
   _params[internalName] = make_shared<Filter_Resource_Input>(weak_from_this(), internalName, displayName, description, Filter_Resource_IO_Base::Restriction_Static, type, isArray
@@ -55,7 +55,7 @@ void Filter::addParam(string internalName, string displayName, string descriptio
 }
 void Filter::addOutput(string internalName, string displayName, string description, Filter_Resource_IO_Base::Restriction restriction, shared_ptr<Filter_Resource> res
 #ifdef M_CLIENT
-  , Icon* icon
+  , NGin::Graphics::Icon* icon
 #endif
 ) {
   _outputs[internalName] = make_shared<Filter_Resource_Output>(weak_from_this(), internalName, displayName, description, restriction, res
@@ -68,8 +68,8 @@ void Filter::addOutput(string internalName, string displayName, string descripti
 #ifdef M_CLIENT
 const int FilterGUI::toolbar_width = 24;
 
-FilterGUI::FilterGUI(string name, LocationData llocation, colorargb lbgcolor, colorargb lactivecolor, colorargb ltextcolor, shared_ptr<EditorContext> editor)
-  : GUIElement(name, llocation, lbgcolor, lactivecolor, ltextcolor, editor.get()) {
+FilterGUI::FilterGUI(string name, NGin::Graphics::LocationData llocation, colorargb lbgcolor, colorargb lactivecolor, colorargb ltextcolor, shared_ptr<EditorContext> editor)
+  : NGin::Graphics::GUIElement(name, llocation, lbgcolor, lactivecolor, ltextcolor, editor.get()) {
   _editor = editor;
 }
 
@@ -94,7 +94,7 @@ int FilterGUI::mouseEnter(int state) {
   return res;
 }
 
-int FilterGUI::mouseMoved(int mx, int my, int ox, int oy, set<key_location>& down) {
+int FilterGUI::mouseMoved(int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down) {
   int res = 0;
   if (dragging) {
     dragOffset += iVec2(ox - mx, oy - my);
@@ -117,9 +117,9 @@ int FilterGUI::mouseMoved(int mx, int my, int ox, int oy, set<key_location>& dow
   return res;
 }
 
-int FilterGUI::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down) {
+int FilterGUI::guiEvent(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down) {
   int res = 0;
-  if (evt._key._type == key::type_mouse && !evt.captured && evt._type == gui_event::evt_down && isIn(mx, my)) {
+  if (evt._key._type == NGin::Graphics::key::type_mouse && !evt.captured && evt._type == NGin::Graphics::gui_event::evt_down && isIn(mx, my)) {
     if (evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
       _draggedConnection.reset();
       res |= 1;
@@ -128,6 +128,8 @@ int FilterGUI::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down)
         cay <= my && my <= cby
       ) {
         iVec2 pos = iVec2(cax + Filter_Resource_IO_Base::iconPad, cby);
+        pos -= iVec2(0, Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth);
+
         for (auto&& it : EditorContext::_registeredFilters) {
           pos -= iVec2(0, Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth);
 
@@ -138,22 +140,40 @@ int FilterGUI::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down)
 
             shared_ptr<Filter> filt = it.second._constructor(_editor);
             filt->init();
-            filt->cax = mx;
-            filt->cay = my;
+            filt->cax = mx + dragOffset.x;
+            filt->cay = my + dragOffset.y;
             filt->dragging = true;
             _editor.lock()->_filters.push_back(filt);
-
+            evt.captured = true;
 
             break;
           }
 
-          Gll::gllColor(textColor);
-          Gll::gllIcon(it.second._icon, pos.x, pos.y, pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
+          NGin::Gll::gllColor(textColor);
+          NGin::Gll::gllIcon(it.second._icon, pos.x, pos.y, pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
         }
       }
     }
     if (evt._key._keycode == GLFW_MOUSE_BUTTON_RIGHT) {
       dragging = true;
+      evt.captured = true;
+    }
+  }
+
+  if (evt._key._type == NGin::Graphics::key::type_mouse && evt._type == NGin::Graphics::gui_event::evt_up && isIn(mx, my) && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+    if (
+      cax <= mx && mx <= cax + 2 * Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth &&
+      cay <= my && my <= cby
+      ) {
+      iVec2 pos = iVec2(cax + Filter_Resource_IO_Base::iconPad, cby);
+      pos -= iVec2(0, Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth);
+
+      if (
+        pos.x <= mx && mx <= pos.x + Filter_Resource_IO_Base::iconWidth &&
+        pos.y <= my && my <= pos.y + Filter_Resource_IO_Base::iconWidth
+      ) {
+        _editor.lock()->_filters.remove_if([](shared_ptr<Filter>& f) { return f->dragging; });
+      }
     }
   }
 
@@ -162,7 +182,7 @@ int FilterGUI::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down)
     if (res & 2) { return res; }
   }
 
-  if (evt._key._type == key::type_mouse && !evt.captured && evt._type == gui_event::evt_up && isIn(mx, my)) {
+  if (evt._key._type == NGin::Graphics::key::type_mouse && !evt.captured && evt._type == NGin::Graphics::gui_event::evt_up && isIn(mx, my)) {
     if (evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
       _draggedConnection.reset();
       res |= 1;
@@ -174,7 +194,7 @@ int FilterGUI::guiEvent(gui_event& evt, int mx, int my, set<key_location>& down)
   return res;
 }
 
-void FilterGUI::render(set<key_location>& down) {
+void FilterGUI::render(set<NGin::Graphics::key_location>& down) {
   shared_ptr<EditorContext> editor = _editor.lock();
 
   for (auto&& filt : editor->_filters) {
@@ -186,24 +206,42 @@ void FilterGUI::render(set<key_location>& down) {
   iVec2 inp_pos;
   if (inp != nullptr && inp->_filter.lock()->findOutput(inp, inp_pos)) {
     inp_pos -= dragOffset - iVec2(cax, cay);
-    Gll::gllBegin(Gll::GLL_QUADS);
-    Gll::gllColor(activeColor);
-    Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
-    Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
-    Gll::gllVertex(NGin::Graphics::current->oldMouseX, NGin::Graphics::current->oldMouseY + 5);
-    Gll::gllVertex(NGin::Graphics::current->oldMouseX, NGin::Graphics::current->oldMouseY - 5);
-    Gll::gllEnd();
+    NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+    NGin::Gll::gllColor(activeColor);
+    NGin::Gll::gllVertex(inp_pos.x, inp_pos.y - 5);
+    NGin::Gll::gllVertex(inp_pos.x, inp_pos.y + 5);
+    NGin::Gll::gllVertex(NGin::Graphics::current->oldMouseX, NGin::Graphics::current->oldMouseY + 5);
+    NGin::Gll::gllVertex(NGin::Graphics::current->oldMouseX, NGin::Graphics::current->oldMouseY - 5);
+    NGin::Gll::gllEnd();
   }
 
-  Gll::gllBegin(Gll::GLL_QUADS);
-  Gll::gllColor(bgColor);
-  Gll::gllVertex(cax, cay);
-  Gll::gllVertex(cax, cby);
-  Gll::gllVertex(cax + 2* Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth, cby);
-  Gll::gllVertex(cax + 2* Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth, cay);
-  Gll::gllEnd();
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+  NGin::Gll::gllColor(bgColor);
+  NGin::Gll::gllVertex(cax, cay);
+  NGin::Gll::gllVertex(cax, cby);
+  NGin::Gll::gllVertex(cax + 2* Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth, cby);
+  NGin::Gll::gllVertex(cax + 2* Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth, cay);
+  NGin::Gll::gllEnd();
 
   iVec2 pos = iVec2(cax + Filter_Resource_IO_Base::iconPad, cby);
+  pos -= iVec2(0, Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth);
+
+  if (
+    pos.x <= NGin::Graphics::current->oldMouseX && NGin::Graphics::current->oldMouseX <= pos.x + Filter_Resource_IO_Base::iconWidth &&
+    pos.y <= NGin::Graphics::current->oldMouseY && NGin::Graphics::current->oldMouseY <= pos.y + Filter_Resource_IO_Base::iconWidth
+    ) {
+    NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+    NGin::Gll::gllColor(activeColor);
+    NGin::Gll::gllVertex(pos.x, pos.y);
+    NGin::Gll::gllVertex(pos.x, pos.y + Filter_Resource_IO_Base::iconWidth);
+    NGin::Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
+    NGin::Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y);
+    NGin::Gll::gllEnd();
+  }
+
+  NGin::Gll::gllColor(textColor);
+  NGin::Gll::gllIcon(NGin::Graphics::getIcon("close", ilfPath), pos.x, pos.y, pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
+
   for (auto&& it : EditorContext::_registeredFilters) {
     pos -= iVec2(0, Filter_Resource_IO_Base::iconPad + Filter_Resource_IO_Base::iconWidth);
 
@@ -211,17 +249,17 @@ void FilterGUI::render(set<key_location>& down) {
       pos.x <= NGin::Graphics::current->oldMouseX && NGin::Graphics::current->oldMouseX <= pos.x + Filter_Resource_IO_Base::iconWidth &&
       pos.y <= NGin::Graphics::current->oldMouseY && NGin::Graphics::current->oldMouseY <= pos.y + Filter_Resource_IO_Base::iconWidth
       ) {
-      Gll::gllBegin(Gll::GLL_QUADS);
-      Gll::gllColor(activeColor);
-      Gll::gllVertex(pos.x, pos.y);
-      Gll::gllVertex(pos.x, pos.y + Filter_Resource_IO_Base::iconWidth);
-      Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
-      Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y);
-      Gll::gllEnd();
+      NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+      NGin::Gll::gllColor(activeColor);
+      NGin::Gll::gllVertex(pos.x, pos.y);
+      NGin::Gll::gllVertex(pos.x, pos.y + Filter_Resource_IO_Base::iconWidth);
+      NGin::Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
+      NGin::Gll::gllVertex(pos.x + Filter_Resource_IO_Base::iconWidth, pos.y);
+      NGin::Gll::gllEnd();
     }
 
-    Gll::gllColor(textColor);
-    Gll::gllIcon(it.second._icon, pos.x, pos.y, pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
+    NGin::Gll::gllColor(textColor);
+    NGin::Gll::gllIcon(it.second._icon, pos.x, pos.y, pos.x + Filter_Resource_IO_Base::iconWidth, pos.y + Filter_Resource_IO_Base::iconWidth);
   }
 }
 
@@ -231,7 +269,7 @@ bool Filter::isIn(iVec2 offset, int mx, int my) {
     cay <= offset.y + my && offset.y + my <= cay + ch;
 }
 
-int Filter::mouseMoved_base(iVec2 offset, int mx, int my, int ox, int oy, set<key_location>& down) {
+int Filter::mouseMoved_base(iVec2 offset, int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down) {
   int res = 0;
 
   if (dragging) {
@@ -266,18 +304,18 @@ int Filter::mouseMoved_base(iVec2 offset, int mx, int my, int ox, int oy, set<ke
   if (res & 2) return res;
   return res | mouseMoved(offset, mx, my, ox, oy, down);
 }
-int Filter::guiEvent_base(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down) {
+int Filter::guiEvent_base(iVec2 offset, NGin::Graphics::gui_event evt, int mx, int my, std::set<NGin::Graphics::key_location>& down) {
   int res = 0;
 
-  if (evt._key._type == key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
+  if (evt._key._type == NGin::Graphics::key::type_mouse && evt._key._keycode == GLFW_MOUSE_BUTTON_LEFT) {
     if (cax + cw - 20 <= offset.x + mx && offset.x + mx <= cax + cw &&
       cay + ch - 20 <= offset.y + my && offset.y + my <= cay + ch)
-      if (!evt.captured && evt._type == gui_event::evt_down) {
+      if (!evt.captured && evt._type == NGin::Graphics::gui_event::evt_down) {
         evt.captured = true;
         res |= 2;
         dragging = true;
       }
-    if (evt._type == gui_event::evt_up) {
+    if (evt._type == NGin::Graphics::gui_event::evt_up) {
       dragging = false;
       res |= 1;
     }
@@ -309,22 +347,22 @@ int Filter::guiEvent_base(iVec2 offset, gui_event evt, int mx, int my, set<key_l
   if (res & 2) return res;
   return res | guiEvent(offset, evt, mx, my, down);
 }
-void Filter::render_base(iVec2 offset, set<key_location>& down) {
-  Gll::gllBegin(Gll::GLL_QUADS);
-  Gll::gllColor(getGUI_ctx()->bgColor);
-  Gll::gllVertex(cax - offset.x, cay - offset.y);
-  Gll::gllVertex(cax - offset.x, cay - offset.y + ch);
-  Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch);
-  Gll::gllVertex(cax - offset.x + cw, cay - offset.y);
-  Gll::gllEnd();
+void Filter::render_base(iVec2 offset, std::set<NGin::Graphics::key_location>& down) {
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+  NGin::Gll::gllColor(getGUI_ctx()->bgColor);
+  NGin::Gll::gllVertex(cax - offset.x, cay - offset.y);
+  NGin::Gll::gllVertex(cax - offset.x, cay - offset.y + ch);
+  NGin::Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch);
+  NGin::Gll::gllVertex(cax - offset.x + cw, cay - offset.y);
+  NGin::Gll::gllEnd();
 
-  Gll::gllBegin(Gll::GLL_QUADS);
-  Gll::gllColor(getGUI_ctx()->activeColor);
-  Gll::gllVertex(cax - offset.x + cw - 20, cay - offset.y + ch - 20);
-  Gll::gllVertex(cax - offset.x + cw - 20, cay - offset.y + ch);
-  Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch);
-  Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch - 20);
-  Gll::gllEnd();
+  NGin::Gll::gllBegin(NGin::Gll::GLL_QUADS);
+  NGin::Gll::gllColor(getGUI_ctx()->activeColor);
+  NGin::Gll::gllVertex(cax - offset.x + cw - 20, cay - offset.y + ch - 20);
+  NGin::Gll::gllVertex(cax - offset.x + cw - 20, cay - offset.y + ch);
+  NGin::Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch);
+  NGin::Gll::gllVertex(cax - offset.x + cw, cay - offset.y + ch - 20);
+  NGin::Gll::gllEnd();
 
   {
     iVec2 pos = iVec2(cax, cay + ch - Filter_Resource_IO_Base::iconWidth - Filter_Resource_IO_Base::iconPad) - offset;
@@ -347,7 +385,7 @@ void Filter::render_base(iVec2 offset, set<key_location>& down) {
       pos = it.second->next(pos);
     }
   }
-  Gll::gllEnd();
+  NGin::Gll::gllEnd();
 
   render(offset, down);
 }
@@ -368,23 +406,29 @@ int Filter::mouseEnter(iVec2 offset, int state) {
   return 0;
 }
 
-int Filter::mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, set<key_location>& down) {
+int Filter::mouseMoved(iVec2 offset, int mx, int my, int ox, int oy, std::set<NGin::Graphics::key_location>& down) {
   return 0;
 }
-int Filter::guiEvent(iVec2 offset, gui_event evt, int mx, int my, set<key_location>& down) {
+int Filter::guiEvent(iVec2 offset, NGin::Graphics::gui_event evt, int mx, int my, std::set<NGin::Graphics::key_location>& down) {
   return 0;
 }
-void Filter::render(iVec2 offset, set<key_location>& down) {
+void Filter::render(iVec2 offset, std::set<NGin::Graphics::key_location>& down) {
 
 }
 
 void Filter::updateSize() {
   iVec2 internalSize = getInternalSize();
+
+  int in_size = 0;
+  for (auto&& it : _inputs) {
+    in_size += it.second->hasBinding() + (it.second->_isArray ? 1 : 0);
+  }
+
   cw = 
     2*(Filter_Resource_IO_Base::iconWidth + Filter_Resource_IO_Base::iconPad) +
     max<int>(_params.size() * (Filter_Resource_IO_Base::iconWidth + Filter_Resource_IO_Base::iconPad) - Filter_Resource_IO_Base::iconPad, internalSize.x);
   ch = 2*(Filter_Resource_IO_Base::iconWidth + Filter_Resource_IO_Base::iconPad) +
-    max<int>(max<int>(_inputs.size(), _outputs.size()) * (Filter_Resource_IO_Base::iconWidth + Filter_Resource_IO_Base::iconPad) - Filter_Resource_IO_Base::iconPad, internalSize.y);
+    max<int>(max<int>(in_size, _outputs.size()) * (Filter_Resource_IO_Base::iconWidth + Filter_Resource_IO_Base::iconPad) - Filter_Resource_IO_Base::iconPad, internalSize.y);
 }
 
 iVec2 Filter::getInternalSize() {
@@ -399,8 +443,18 @@ void EditorContext::registerFilter(string name, FilterDescription creator) {
 }
 
 void EditorContext::init() {
+  _filters.clear();
+
   _globalDummy = make_shared<Filter>(weak_from_this());
   _exit = make_shared<FilterExitNode>(weak_from_this());
   _exit->init();
   _filters.push_back(_exit);
+}
+
+void EditorContext::load_caf(string filename) {
+
+}
+
+void EditorContext::save_caf(string filename) {
+
 }

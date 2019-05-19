@@ -63,22 +63,22 @@ void pluginObjectMainButton(NGin::Graphics::ElemHwnd elem) {
 }
 
 void PluginObject::staticInit() {
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMovePositionXInput", pluginObjectMovePositionXInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMovePositionYInput", pluginObjectMovePositionYInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMovePositionZInput", pluginObjectMovePositionZInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMovePositionXInput", pluginObjectMovePositionXInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMovePositionYInput", pluginObjectMovePositionYInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMovePositionZInput", pluginObjectMovePositionZInput);
 
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMoveSizeXInput", pluginObjectMoveSizeXInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMoveSizeYInput", pluginObjectMoveSizeYInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectMoveSizeZInput", pluginObjectMoveSizeZInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMoveSizeXInput", pluginObjectMoveSizeXInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMoveSizeYInput", pluginObjectMoveSizeYInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectMoveSizeZInput", pluginObjectMoveSizeZInput);
 
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectRotationTiltInput", pluginObjectRotationTiltInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectRotationDirInput", pluginObjectRotationDirInput);
-  NGin::Graphics::setName<TextInputFunc>("pluginObjectRotationTurnInput", pluginObjectRotationTurnInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectRotationTiltInput", pluginObjectRotationTiltInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectRotationDirInput", pluginObjectRotationDirInput);
+  NGin::Graphics::setName<NGin::Graphics::TextInputFunc>("pluginObjectRotationTurnInput", pluginObjectRotationTurnInput);
 
-  NGin::Graphics::setName<ClickCallback>("pluginObjectMoveModeButton", pluginObjectMoveModeButton);
-  NGin::Graphics::setName<ClickCallback>("pluginObjectMoveRefButton", pluginObjectMoveRefButton);
+  NGin::Graphics::setName<NGin::Graphics::ClickCallback>("pluginObjectMoveModeNGin::Graphics::Button", pluginObjectMoveModeButton);
+  NGin::Graphics::setName<NGin::Graphics::ClickCallback>("pluginObjectMoveRefNGin::Graphics::Button", pluginObjectMoveRefButton);
 
-  NGin::Graphics::setName<ClickCallback>("pluginObjectMoveDoneButton", pluginObjectMoveDoneButton);
+  NGin::Graphics::setName<NGin::Graphics::ClickCallback>("pluginObjectMoveDoneNGin::Graphics::Button", pluginObjectMoveDoneButton);
 }
 
 void PluginObject::drawVirtualObject(shared_ptr<Object>& it) {
@@ -120,7 +120,7 @@ void PluginObject::drawVirtualObject(shared_ptr<Object>& it) {
   _editor->drawXYZ(ref_trans, _editor->camview, _editor->viewCenter + _editor->viewOffset.toCartesian());
 }
 
-int PluginObject::renderManager(int ax, int ay, int bx, int by, set<key_location>& down) {
+int PluginObject::renderManager(int ax, int ay, int bx, int by, std::set<NGin::Graphics::key_location>& down) {
   _editor->beginObjectDraw();
   for (auto&& it : _editor->objs) {
     if (selectorPlugin->selectedObjects.count(it)) {
@@ -149,45 +149,45 @@ int PluginObject::resizeManager(int x, int y) {
 int PluginObject::mouseEntryManager(int state) {
   return selectorPlugin->mouseEntryManager(state);
 }
-int PluginObject::mouseMoveManager(int x, int y, int ox, int oy, set<key_location>& down, bool in) {
+int PluginObject::mouseMoveManager(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down, bool in) {
   return selectorPlugin->mouseMoveManager(x, y, ox, oy, down, in);
 }
-int PluginObject::guiEventManager(gui_event& evt, int mx, int my, set<key_location>& down, bool in) {
+int PluginObject::guiEventManager(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down, bool in) {
   return selectorPlugin->guiEventManager(evt, mx, my, down, in);
 }
 
 void PluginObject::onAdded() {
-  _config = NGin::Graphics::createGUI_T<Panel>("objectPluginObjectMoveConfigPanel", fullContainer, 0x00000000, nullptr);
+  _config = NGin::Graphics::createGUI_T<NGin::Graphics::Panel>("objectPluginObjectMoveConfigPanel", NGin::Graphics::fullContainer, 0x00000000, nullptr);
   NGin::Graphics::setElements(_config, "html/moveToolbar.xml");
 
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMovePositionXInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMovePositionYInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMovePositionZInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMovePositionXInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMovePositionYInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMovePositionZInput"))->data = this;
 
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMoveSizeXInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMoveSizeYInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectMoveSizeZInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveSizeXInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveSizeYInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveSizeZInput"))->data = this;
 
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectRotationTiltInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectRotationDirInput"))->data = this;
-  static_pointer_cast<TextInput, GUIElement>(_config->getElementById("objectPluginObjectRotationTurnInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectRotationTiltInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectRotationDirInput"))->data = this;
+  static_pointer_cast<NGin::Graphics::TextInput, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectRotationTurnInput"))->data = this;
   
-  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginObjectMoveModeButton"))->data = this;
-  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginObjectMoveRefButton"))->data = this;
-  static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginObjectMoveDoneButton"))->data = this;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveModeNGin::Graphics::Button"))->data = this;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveRefNGin::Graphics::Button"))->data = this;
+  static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveDoneNGin::Graphics::Button"))->data = this;
 
   cycleMode();
   cycleRef();
 
-  _toolbarElement = NGin::Graphics::createGUI_T<Button>("objectPluginObjectMainButton", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)_editor, "O", -1, pluginObjectMainButton);
+  _toolbarElement = NGin::Graphics::createGUI_T<NGin::Graphics::Button>("objectPluginObjectMainButton", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)_editor, "O", -1, pluginObjectMainButton);
   _editor->registerSidebar(_toolbarElement);
 
-  _ribbonElement = NGin::Graphics::createGUI_T<Panel>("objectPluginObjectIcons", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 170)), 0x00000000, nullptr);
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectDeleteIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 0), LinearScale(0, 30)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 16, pluginObjectDeleteIcon, "delete", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectCopyIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 30), LinearScale(0, 60)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 17, pluginObjectCopyIcon, "copy", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectPaseIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 60), LinearScale(0, 90)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 18, pluginObjectPasteIcon, "paste", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectCutIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 90), LinearScale(0, 120)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", 19, pluginObjectCutIcon, "cut", "html/icons.ilf"));
-  NGin::Graphics::addElement(static_pointer_cast<Panel, GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<IconButton>("objectPluginObjectMoveIcon", LocationData(LinearScale(0, 0), LinearScale(0, 30), LinearScale(0, 120), LinearScale(0, 150)), getColor("button", "bgcolor"), getColor("button", "activecolor"), getColor("button", "textcolor"), (void*)this, "X", -1, pluginObjectMoveIcon, "move", "html/icons.ilf"));
+  _ribbonElement = NGin::Graphics::createGUI_T<NGin::Graphics::Panel>("objectPluginObjectIcons", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 170)), 0x00000000, nullptr);
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginObjectDeleteIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", 16, pluginObjectDeleteIcon, "delete", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginObjectCopyIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", 17, pluginObjectCopyIcon, "copy", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginObjectPaseIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 60), NGin::Graphics::LinearScale(0, 90)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", 18, pluginObjectPasteIcon, "paste", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginObjectCutIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 90), NGin::Graphics::LinearScale(0, 120)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", 19, pluginObjectCutIcon, "cut", "html/icons.ilf"));
+  NGin::Graphics::addElement(static_pointer_cast<NGin::Graphics::Panel, NGin::Graphics::GUIElement>(_ribbonElement), NGin::Graphics::createGUI_T<NGin::Graphics::IconButton>("objectPluginObjectMoveIcon", NGin::Graphics::LocationData(NGin::Graphics::LinearScale(0, 0), NGin::Graphics::LinearScale(0, 30), NGin::Graphics::LinearScale(0, 120), NGin::Graphics::LinearScale(0, 150)), NGin::Graphics::getColor("NGin::Graphics::Button", "bgcolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "activecolor"), NGin::Graphics::getColor("NGin::Graphics::Button", "textcolor"), (void*)this, "X", -1, pluginObjectMoveIcon, "move", "html/icons.ilf"));
 }
 void PluginObject::onActivated() {
   _editor->registerRibbon(_ribbonElement);
@@ -234,7 +234,7 @@ void PluginObject::onMoveIcon() {
 }
 
 void PluginObject::cycleMode() {
-  NGin::Graphics::ButtonHwnd lockButton = static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginObjectMoveModeButton"));
+  NGin::Graphics::ButtonHwnd lockButton = static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveModeNGin::Graphics::Button"));
   
   switch (_offsetLockMode) {
     case PluginObject::OffsetModeLockRelative:
@@ -253,7 +253,7 @@ void PluginObject::cycleMode() {
   }
 }
 void PluginObject::cycleRef() {
-  NGin::Graphics::ButtonHwnd refButton = static_pointer_cast<Button, GUIElement>(_config->getElementById("objectPluginObjectMoveRefButton"));
+  NGin::Graphics::ButtonHwnd refButton = static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_config->getElementById("objectPluginObjectMoveRefNGin::Graphics::Button"));
 
   switch (_offsetRefMode) {
     case PluginObject::OffsetModeRefRelative:

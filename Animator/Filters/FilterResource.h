@@ -22,6 +22,7 @@ public:
   bool valid();
 
   void bind();
+  void clear();
 
   ~Raw_FrameBuffer();
 };
@@ -161,6 +162,8 @@ public:
     for (int i = 0; i < 16; i++) {
       def._vals[i] = getFloat(to_string(i), def._vals[i]);
     }
+
+    return def;
   }
 
   void set_fVec2(fVec2 val) {
@@ -189,7 +192,7 @@ public:
 
 class Filter_Resource_VAO : public Filter_Resource {
 public:
-  Gll::PolyVao  _vao;
+  NGin::Gll::PolyVao  _vao;
 
   Filter_Resource_VAO();
 
@@ -197,14 +200,14 @@ public:
 
   Type type();
 
-  Gll::PolyVao get_VAO(Gll::PolyVao def) const {
+  NGin::Gll::PolyVao get_VAO(NGin::Gll::PolyVao def) const {
     return _vao;
   }
 };
 
 class Filter_Resource_Shader : public Filter_Resource {
 public:
-  Shader _shader;
+  NGin::Graphics::Shader _shader;
 
   Filter_Resource_Shader();
 
@@ -212,7 +215,7 @@ public:
 
   Type type();
 
-  Shader get_Shader(Shader def) const {
+  NGin::Graphics::Shader get_Shader(NGin::Graphics::Shader def) const {
     return _shader;
   }
 };
@@ -222,7 +225,7 @@ class Filter;
 class Filter_Resource_IO_Base : public enable_shared_from_this<Filter_Resource_IO_Base> {
 public:
 #ifdef M_CLIENT
-  Icon* _icon;
+  NGin::Graphics::Icon* _icon;
 
   static const int iconWidth = 24;
   static const int iconPad = 4;
@@ -249,7 +252,7 @@ public:
 
   Filter_Resource_IO_Base(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
   ) {
     _filter = filter;
@@ -267,11 +270,11 @@ public:
 
   int mouseEnter(int state);
   //Local coordiantes (top left)
-  int mouseMoved(iVec2 mouse_now, iVec2 mouse_old, set<key_location>& down);
+  int mouseMoved(iVec2 mouse_now, iVec2 mouse_old, std::set<NGin::Graphics::key_location>& down);
   //Local coordiantes (top left)
-  virtual int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  virtual int guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down);
   //screenPos: Local coordiantes (top left)
-  virtual void render(iVec2 screenPos, set<key_location>& down);
+  virtual void render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down);
 
   virtual iVec2 next(iVec2 pos);
 #endif
@@ -288,39 +291,40 @@ public:
 
   Filter_Resource_Output(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, shared_ptr<Filter_Resource> res
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
     );
 
   Filter_Resource::Type type() const;
 
   template <typename T>
-  bool validateType() {
+  bool validateType() const {
     return (T::staticType() == type());
   }
 
   template <typename T>
-  shared_ptr<T> castTo() {
+  shared_ptr<T> castTo() const {
     assert(validateType<T>());
     return static_pointer_cast<T, Filter_Resource>(_res);
   }
 
   //Eval and cast
   template <typename T>
-  shared_ptr<T> getAs(float t) {
+  shared_ptr<T> getAs(float t) const {
     _filter.lock()->calculate(t);
     return castTo<T>();
   }
 
   #define FILTER_RESOURCE_OUTPUT_GET(type, hostType, defal) \
-  type get_##type(type def = defal) const { \
+  type get_##type(float t, type def = defal) const { \
     if (_res->validateType<hostType>()) { \
-      return _res->castTo<hostType>()->get_##type(def); \
+      return getAs<hostType>(t)->get_##type(def); \
     } \
     return def; \
   }
 
-  using VAO = Gll::PolyVao;
+  using VAO = NGin::Gll::PolyVao;
+  using Shader = NGin::Graphics::Shader;
   FILTER_RESOURCE_OUTPUT_GET(VAO, Filter_Resource_VAO, VAO());
   FILTER_RESOURCE_OUTPUT_GET(Shader, Filter_Resource_Shader, Shader());
   FILTER_RESOURCE_OUTPUT_GET(string, Filter_Resource_String, "");
@@ -333,9 +337,9 @@ public:
 
 #ifdef M_CLIENT
   //mx, my transformed into object coordinats
-  int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  int guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down);
   //at: screen cordiante of top-left corner
-  void render(iVec2 screenPos, set<key_location>& down);
+  void render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down);
 
   iVec2 next(iVec2 pos);
 #endif
@@ -356,7 +360,7 @@ class Filter_Resource_Input : public Filter_Resource_IO_Base {
 
   Filter_Resource_Input(weak_ptr<Filter> filter, string internalName, string displayName, string description, Restriction restriction, Filter_Resource::Type type, bool isArray = false
 #ifdef M_CLIENT
-    , Icon* icon = nullptr
+    , NGin::Graphics::Icon* icon = nullptr
 #endif
   );
 
@@ -390,12 +394,13 @@ class Filter_Resource_Input : public Filter_Resource_IO_Base {
   Filter_Resource::Type type();
 
   #define FILTER_RESOURCE_INPUT_GET(type, hostType, defal) \
-  type get_##type(type def = defal, int id = 0) const { \
+  type get_##type(float t, type def = defal, int id = 0) const { \
     if (id >= hasBinding() || _bindings[id].expired()) return def; \
-    return _bindings[id].lock()->get_##type(defal); \
+    return _bindings[id].lock()->get_##type(t, defal); \
   }
 
-  using VAO = Gll::PolyVao;
+  using VAO = NGin::Gll::PolyVao;
+  using Shader = NGin::Graphics::Shader;
   FILTER_RESOURCE_INPUT_GET(VAO, Filter_Resource_VAO, VAO());
   FILTER_RESOURCE_INPUT_GET(Shader, Filter_Resource_Shader, Shader());
   FILTER_RESOURCE_INPUT_GET(string, Filter_Resource_String, "");
@@ -408,9 +413,9 @@ class Filter_Resource_Input : public Filter_Resource_IO_Base {
 
 #ifdef M_CLIENT
   //mx, my transformed into object coordinats
-  int guiEvent(gui_event& evt, iVec2 mouse_now, set<key_location>& down);
+  int guiEvent(NGin::Graphics::gui_event& evt, iVec2 mouse_now, std::set<NGin::Graphics::key_location>& down);
   //screenPos: screen cordiante of top-left corner
-  void render(iVec2 screenPos, set<key_location>& down);
+  void render(iVec2 screenPos, std::set<NGin::Graphics::key_location>& down);
 
   iVec2 next(iVec2 pos);
 #endif

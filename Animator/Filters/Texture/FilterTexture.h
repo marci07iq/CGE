@@ -4,10 +4,10 @@
 
 class FilterTexture : public Filter {
   FrameBuffer _img;
-  Texture _tex;
+  NGin::Graphics::Texture _tex;
 
 public:
-  static Shader _texshader;
+  static NGin::Graphics::Shader _texshader;
   static GLint _texshader_uniform_texture;
 
   static void staticInit() {
@@ -15,7 +15,7 @@ public:
     if (first) {
       first = false;
 
-      _texshader = make_shared<Shader_Raw>("Filters/Shaders/FilterTexture");
+      _texshader = make_shared<NGin::Graphics::Shader_Raw>("Filters/Shaders/FilterTexture");
       _texshader_uniform_texture = glGetUniformLocation(_texshader->_pID, "uniform_texture");
     }
   }
@@ -26,9 +26,9 @@ public:
 
   void init() {
     weak_ptr<Filter> me = weak_from_this();
-    addParam("resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object, false, getIcon("resolution", ilfPath));
+    addParam("resolution", "Resolution", "Resolution of output stream", Filter_Resource::Type_Object, false, NGin::Graphics::getIcon("resolution", ilfPath));
 
-    addOutput("out", "Out", "Output image", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_RenderBuffer>(nullptr), getIcon("texture", ilfPath));
+    addOutput("out", "Out", "Output image", Filter_Resource_IO_Base::Restriction_Dynamic, make_shared<Filter_Resource_RenderBuffer>(nullptr), NGin::Graphics::getIcon("texture", ilfPath));
 
     updateSize();
   }

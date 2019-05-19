@@ -3,7 +3,7 @@
 #include "../Filters/AllFilters.h"
 #include "../Encode/Encode.h"
 
-class PreviewCanvas : public Canvas {
+class PreviewCanvas : public NGin::Graphics::Canvas {
   shared_ptr<VideoEncoder> _enc;
   bool _playing;
   NGin::Graphics::ElemHwnd _parent;
@@ -20,7 +20,7 @@ public:
     }
   }
 
-  PreviewCanvas(string lname, LocationData llocation, IWindowManagers lmanagers, void* ldata, NGin::Graphics::ElemHwnd parent, shared_ptr<EditorContext> ctx) : Canvas(lname, llocation, lmanagers, ldata) {
+  PreviewCanvas(string lname, NGin::Graphics::LocationData llocation, NGin::Graphics::IWindowManagers lmanagers, void* ldata, NGin::Graphics::ElemHwnd parent, shared_ptr<EditorContext> ctx) : NGin::Graphics::Canvas(lname, llocation, lmanagers, ldata) {
     staticInit();
 
     _ctx = ctx;
@@ -59,7 +59,7 @@ public:
   void scrollTimeline(float t, bool refreshSlider = false) {
     _time = t;
     if (refreshSlider) {
-      (static_pointer_cast<Slider, GUIElement>(_parent->getElementById("objectEditorTimelineSlider")))->val = _time;
+      (static_pointer_cast<NGin::Graphics::Slider, NGin::Graphics::GUIElement>(_parent->getElementById("objectEditorTimelineSlider")))->val = _time;
     }
   }
 
@@ -68,13 +68,13 @@ public:
   }
   void setPlay(bool playing) {
     _playing = playing;
-    (static_pointer_cast<Button, GUIElement>(_parent->getElementById("objectEditorTimelinePauseButton")))->text = playing ? "||" : ">";
+    (static_pointer_cast<NGin::Graphics::Button, NGin::Graphics::GUIElement>(_parent->getElementById("objectEditorTimelinePauseButton")))->text = playing ? "||" : ">";
   }
 
-  void render(set<key_location>& down);
+  void render(set<NGin::Graphics::key_location>& down);
   int mouseEnter(int state);
-  int mouseMoved(int x, int y, int ox, int oy, set<key_location>& down);
-  int guiEvent(gui_event& evt, int mx, int my, set<key_location>& down);
+  int mouseMoved(int x, int y, int ox, int oy, std::set<NGin::Graphics::key_location>& down);
+  int guiEvent(NGin::Graphics::gui_event& evt, int mx, int my, std::set<NGin::Graphics::key_location>& down);
 
   void finishRender();
 };
